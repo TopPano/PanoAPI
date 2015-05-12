@@ -44,6 +44,8 @@ $(document).ready(function() {
             1, // Near Plane
             1100 // Far Plane
         );
+        // change the positon of the camera
+        // camera.position.set(100, 100, 150);
         camera.target = new THREE.Vector3(0, 0, 0);
         scene = new THREE.Scene();
         geometry = new THREE.SphereGeometry(500, 60, 40);
@@ -66,11 +68,12 @@ $(document).ready(function() {
   //       });
 		// end of video
 
-        material = new THREE.MeshBasicMaterial({
-            map: THREE.ImageUtils.loadTexture(defaultMap)
-        });
+        var texture = new THREE.ImageUtils.loadTexture(defaultMap);
+        texture.minFilter = THREE.LinearFilter;
+        material = new THREE.MeshBasicMaterial({ map : texture });
 
         mesh = new THREE.Mesh(geometry, material);
+        mesh.material.opacity = 0.1;
         scene.add(mesh);
 
         // add some object
@@ -144,10 +147,13 @@ $(document).ready(function() {
 		        }
     		}
     		else
+                // press 's'
 	        	if(key.which === 83) {
 	        		saveImage();
 	        	}
-	        if (key.which === 80) {
+	        
+            // press 'p'
+            if (key.which === 80) {
 	        	if (showObj) {
 	        		objects.forEach(function(item){
 	        		item.visible = false;
@@ -225,7 +231,24 @@ $(document).ready(function() {
         if (showObj) {
 	        var isHit = hitSomething(event)[0];
 	        if (isHit) {
-	            material.map = THREE.ImageUtils.loadTexture(defaultMap2);
+
+                // var geometry2 = new THREE.SphereGeometry(500, 60, 40);
+                // geometry2.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));  // inside-out
+                // var material2 = new THREE.MeshBasicMaterial({
+                //     map: THREE.ImageUtils.loadTexture(defaultMap2)
+                // });
+                // material2.minFilter = THREE.LinearFilter;
+
+                // var mesh2 = new THREE.Mesh(geometry2, material2);
+                // // mesh2.material.opacity = 0.1;
+                // scene.add(mesh2);
+
+                var texture = new THREE.ImageUtils.loadTexture(defaultMap2);
+                texture.minFilter = THREE.LinearFilter;
+                material = new THREE.MeshBasicMaterial({ map : texture });
+
+	            // material.map = THREE.ImageUtils.loadTexture(defaultMap2);
+             //    material.minFilter = THREE.LinearFilter;
 	            delete mesh;
 		        mesh = new THREE.Mesh(geometry, material);
 		        scene.add(mesh);
