@@ -1,12 +1,16 @@
 $(document).ready(function() {
-    var camera, scene, geometry, material, mesh, renderer; // Three.js Basic Elements
-    var objects = []; 
-    // var defaultMap = 'smallRapeseed.jpg';
-    // var defaultMap = 'equirectangular.jpeg';
-    var defaultMap2 = './image/map/4.jpg';
-    var defaultMap = './image/map/sunset.jpg';
+    // Three.js GLOBAL scene objects
+    var camera, scene, geometry, material, mesh, renderer;
+    
+    // some objects on the scene
+    var objects = [], 
+        showObj = true;
 
-    var isUserInteracting = false,
+    var defaultMap  = './image/map/sunset.jpg';
+    var defaultMap2 = './image/map/4.jpg';
+
+    var camPos = new THREE.Vector3(0, 0, 0),
+        isUserInteracting = false,
         onMouseDownMouseX = 0,
         onMouseDownMouseY = 0,
         lon = 0,
@@ -16,26 +20,28 @@ $(document).ready(function() {
         phi = 0,
         theta = 0;
 
-    // Setting the controlled FoV
-    var fov_max = 100,
-        fov_min = 40;
+    // setting the constrained FoV
+    var fovMax = 100,
+        fovMin = 40;
 
-    var showObj = true;
     var littlePlanet = false;
-    var camPos = new THREE.Vector3( 0, 0, 0 );
 
+    // initialization
     init();
     animate();
 
     function init() {
-    	// crop image (canvas)
+    	// virtual camera canvas (for cropping image)
     	drawCanvas();
     	var canvas = $('#mycanvas');
     	canvas.hide();
+
     	var flash = $('#flash');
     	flash.hide();
+
     	var downloadLink = $('#downLink');
     	downloadLink.hide();
+        
         var container, mesh;
         container = document.getElementById('container');
         camera = new THREE.PerspectiveCamera(
@@ -52,7 +58,7 @@ $(document).ready(function() {
         geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));	// inside-out
 
         // video
-        var video = document.createElement( 'video' );
+        var video = document.createElement('video');
 		video.width = 640;
 		video.height = 360;
 		video.autoplay = true;
@@ -70,26 +76,28 @@ $(document).ready(function() {
 
         var texture = new THREE.ImageUtils.loadTexture(defaultMap);
         texture.minFilter = THREE.LinearFilter;
-        material = new THREE.MeshBasicMaterial({ map : texture });
+        material = new THREE.MeshBasicMaterial({map : texture});
 
         mesh = new THREE.Mesh(geometry, material);
-        mesh.material.opacity = 0.1;
         scene.add(mesh);
 
-        // add some object
-        var geometry2 = new THREE.BoxGeometry( 30, 30, 0 );
-        var material2 = new THREE.MeshBasicMaterial({ color: 'white', opacity: 0.3});
-        material2.transparent = true;
-		var sphere2 = new THREE.Mesh(geometry2, material2);
-		sphere2.position.set(45,45,45);
-		scene.add(sphere2);
-		objects.push(sphere2);
+        addObject();
 
+        // if(Detector.webgl){ 
+        //       renderer = new THREE.WebGLRenderer({antialias:true}); 
 
-
-        renderer = new THREE.WebGLRenderer({
-        	preserveDrawingBuffer: true 
-        });
+        //      // If its not supported, instantiate the canvas renderer to support all non WebGL 
+        //      // browsers 
+        // } 
+        // else { 
+        //      renderer = new THREE.CanvasRenderer(); 
+        // } 
+        
+        renderer = Detector.webgl? new THREE.WebGLRenderer(): new THREE.CanvasRenderer();
+        // renderer = new THREE.WebGLRenderer({
+        // 	preserveDrawingBuffer: true 
+        // });
+        renderer.sortObjects = false; // render in the order objects added to the scene
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
@@ -231,7 +239,6 @@ $(document).ready(function() {
         if (showObj) {
 	        var isHit = hitSomething(event)[0];
 	        if (isHit) {
-
                 // var geometry2 = new THREE.SphereGeometry(500, 60, 40);
                 // geometry2.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));  // inside-out
                 // var material2 = new THREE.MeshBasicMaterial({
@@ -243,15 +250,33 @@ $(document).ready(function() {
                 // // mesh2.material.opacity = 0.1;
                 // scene.add(mesh2);
 
+                for (var i = scene.children.length - 1; i >= 0; i--) {
+                    scene.remove(scene.children[i]);
+                };
+
                 var texture = new THREE.ImageUtils.loadTexture(defaultMap2);
                 texture.minFilter = THREE.LinearFilter;
-                material = new THREE.MeshBasicMaterial({ map : texture });
-
+                material = new THREE.MeshBasicMaterial({map : texture});
+                
+                
 	            // material.map = THREE.ImageUtils.loadTexture(defaultMap2);
              //    material.minFilter = THREE.LinearFilter;
-	            delete mesh;
+	            
+                delete mesh;
 		        mesh = new THREE.Mesh(geometry, material);
-		        scene.add(mesh);
+                material.transparent = true;
+                
+                // for(var i = 0 ; i <=10000000 ; i ++) {
+                //     material.opacity =  1 - new Date().getTime() * 0.00025;
+
+                // }
+                    
+                scene.add(mesh);
+
+                for (var i = objects.length - 1; i >= 0; i--) {
+                    scene.add(objects[i]);
+                };
+
 		        // swap
 		        var temp = defaultMap2;
 		        defaultMap2 = defaultMap;
@@ -261,7 +286,7 @@ $(document).ready(function() {
     }
 
     function onDocumentMouseWheel(event) {
-        if (camera.fov <= fov_max && camera.fov >= fov_min) {
+        if (camera.fov <= fovMax && camera.fov >= fovMin) {
             // WebKit
             if (event.wheelDeltaY) {
                 camera.fov -= event.wheelDeltaY * 0.05;
@@ -276,8 +301,8 @@ $(document).ready(function() {
             }
         }
 
-        if (camera.fov > fov_max) camera.fov = fov_max;
-        if (camera.fov < fov_min) camera.fov = fov_min;
+        if (camera.fov > fovMax) camera.fov = fovMax;
+        if (camera.fov < fovMin) camera.fov = fovMin;
 
         camera.updateProjectionMatrix();
     }
@@ -303,6 +328,17 @@ $(document).ready(function() {
     function animate() {
         requestAnimationFrame(animate);
         update();
+    }
+
+    function addObject() {
+        // add some object
+        var geometryObj = new THREE.BoxGeometry(30, 30, 0);
+        var materialObj = new THREE.MeshBasicMaterial({ color: 'white', opacity: 0.2});
+        materialObj.transparent = true;
+        var sphereObj = new THREE.Mesh(geometryObj, materialObj);
+        sphereObj.position.set(45,45,45);
+        scene.add(sphereObj);
+        objects.push(sphereObj);
     }
 
     function saveImage() {
@@ -366,17 +402,17 @@ $(document).ready(function() {
   //   function littlePlanetEffect() {
   //   	if (littlePlanet) {
   //   		camPos.copy(camera.position);
-  //   		camera.position.copy( camera.target ).negate();	 fov_max = 300;
+  //   		camera.position.copy( camera.target ).negate();	 fovMax = 300;
   //   		littlePlanet = false;
   //   	}
   //   	else {
 		// 	littlePlanet = true;
 		// 	camera.position = camPos;
-		// 	fov_max = 100;
+		// 	fovMax = 100;
 		// 	if (camera.fov > 100) camera.fov = 100;
   //   	}
 		// // Little planet effect
-		// // FoV = 160, Lat = -85, Lon = 85, and also set fov_max = 300
+		// // FoV = 160, Lat = -85, Lon = 85, and also set fovMax = 300
 		// // position of the camera from center to the circle of the sphere (opposite side of camera target)
 		
   //   }
@@ -400,9 +436,9 @@ $(document).ready(function() {
         camera.lookAt(camera.target);
 		
 		// Little planet effect
-		// FoV = 160, Lat = -85, Lon = 85, and also set fov_max = 300
+		// FoV = 160, Lat = -85, Lon = 85, and also set fovMax = 300
 		// position of the camera from center to the circle of the sphere (opposite side of camera target)
-		// camera.position.copy( camera.target ).negate();	 fov_max = 300;
+		// camera.position.copy( camera.target ).negate();	 fovMax = 300;
 
 		// littlePlanetEffect();
 
