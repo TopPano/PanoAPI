@@ -11,11 +11,11 @@ $(document).ready(function() {
 
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
+        lon = 0,  // default: 0
+        lat = 0,  // default: 0
         onMouseDownMouseX = 0,
         onMouseDownMouseY = 0,
-        lon = 0,
         onMouseDownLon = 0,
-        lat = 0,
         onMouseDownLat = 0,
         phi = 0,
         theta = 0;
@@ -51,18 +51,22 @@ $(document).ready(function() {
             1100 // Far Plane
         );
         // change the positon of the camera
-        // camera.position.set(100, 100, 150);
-        camera.target = new THREE.Vector3(0, 0, 0);
+        camera.target = new THREE.Vector3(100, 100, 100);
         scene = new THREE.Scene();
         geometry = new THREE.SphereGeometry(500, 60, 40);
         geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));	// inside-out
 
-        // video
-        var video = document.createElement('video');
-		video.width = 640;
-		video.height = 360;
-		video.autoplay = true;
-		video.loop = true;
+
+        /** Panorama Video
+        * DONE: play panorama video
+        * TODO: load different video, drop and play
+        **/
+
+  //       var video = document.createElement('video');
+		// video.width = 640;
+		// video.height = 360;
+		// video.autoplay = true;
+		// video.loop = true;
 		// video.src = "./kr.mp4";
 
 		// video.src = "./ntu.mp4";
@@ -74,29 +78,21 @@ $(document).ready(function() {
   //       });
 		// end of video
 
+
+        // load texture
         var texture = new THREE.ImageUtils.loadTexture(defaultMap);
         texture.minFilter = THREE.LinearFilter;
-        material = new THREE.MeshBasicMaterial({map : texture});
+        material = new THREE.MeshBasicMaterial({map: texture, overdraw: true});
 
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
         addObject();
-
-        // if(Detector.webgl){ 
-        //       renderer = new THREE.WebGLRenderer({antialias:true}); 
-
-        //      // If its not supported, instantiate the canvas renderer to support all non WebGL 
-        //      // browsers 
-        // } 
-        // else { 
-        //      renderer = new THREE.CanvasRenderer(); 
-        // } 
         
-        renderer = Detector.webgl? new THREE.WebGLRenderer(): new THREE.CanvasRenderer();
-        // renderer = new THREE.WebGLRenderer({
-        // 	preserveDrawingBuffer: true 
-        // });
+        renderer = Detector.webgl ? new THREE.WebGLRenderer({preserveDrawingBuffer: true})
+                                  : new THREE.CanvasRenderer(); // with no WebGL supported
+                                  // TODO: canvas renderer snapshot
+
         renderer.sortObjects = false; // render in the order objects added to the scene
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -256,7 +252,7 @@ $(document).ready(function() {
 
                 var texture = new THREE.ImageUtils.loadTexture(defaultMap2);
                 texture.minFilter = THREE.LinearFilter;
-                material = new THREE.MeshBasicMaterial({map : texture});
+                material = new THREE.MeshBasicMaterial({map : texture, overdraw: true});
                 
                 
 	            // material.map = THREE.ImageUtils.loadTexture(defaultMap2);
