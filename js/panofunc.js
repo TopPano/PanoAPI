@@ -7,8 +7,10 @@ $(document).ready(function() {
         showObj = true;
 
     // var defaultMap  = './image/map/sunset.jpg';
-    var defaultMap = './image/map/bm1920.jpg';
-    var defaultMap2 = './image/map/4.jpg';
+    // var defaultMap  = './image/map/bm1920.jpg';
+    // var defaultMap2 = './image/map/4.jpg';
+    var defaultMap  = './image/fly/1.jpg';
+    var defaultMap2 = './image/fly/2.jpg';
 
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
@@ -23,8 +25,8 @@ $(document).ready(function() {
 
     // setting the constrained FoV
     var fovMax = 100,
-        fovMin = 40;
-
+        fovMin = 45;
+    var sphereSize = 100;
     var littlePlanet = false;
 
     // initialization
@@ -52,9 +54,10 @@ $(document).ready(function() {
             1100 // Far Plane
         );
         // change the positon of the camera
-        camera.target = new THREE.Vector3(100, 100, 100);
+        
+        camera.target = new THREE.Vector3(sphereSize, sphereSize, sphereSize);
         scene = new THREE.Scene();
-        geometry = new THREE.SphereGeometry(500, 60, 40);
+        geometry = new THREE.SphereGeometry(sphereSize, 60, 40);
         geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1)); // inside-out
 
         // /** Panorama Video
@@ -86,7 +89,7 @@ $(document).ready(function() {
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
-        addObject();
+        addObject(20, 20, 20);
 
         renderer = Detector.webgl ? new THREE.WebGLRenderer({
             preserveDrawingBuffer: true
@@ -125,10 +128,10 @@ $(document).ready(function() {
                 console.log(fileType);
 
                 if (fileType === 'image') {
-                    material.map.image.src = event.target.result; 
+                    material.map.image.src = event.target.result;
                     material.map.needsUpdate = true;
                 }
-                
+
                 // TODO: video reader (bug: maybe readAsDataURL doesn't work)
                 // 
                 // if (fileType === 'video') {
@@ -222,7 +225,7 @@ $(document).ready(function() {
     function onDocumentMouseMove(event) {
         if (isUserInteracting === true) {
             deltaX = onPointerDownPointerX - event.clientX,
-            deltaY = event.clientY - onPointerDownPointerY;
+                deltaY = event.clientY - onPointerDownPointerY;
 
             lon = deltaX * 0.1 + onPointerDownLon;
             lat = deltaY * 0.1 + onPointerDownLat;
@@ -246,9 +249,9 @@ $(document).ready(function() {
 
     function onDocumentMouseUp(event) {
         isUserInteracting = false;
-        
+
         // TODO: inertia moving effects
-        
+
         // // inertia moving effects
         // var nowTime = new Date().getTime();
 
@@ -312,17 +315,18 @@ $(document).ready(function() {
     }
 
     function onDocumentMouseWheel(event) {
+        // check FoV range
         if (camera.fov <= fovMax && camera.fov >= fovMin) {
-            // WebKit
+            // WebKit (Safari / Chrome)
             if (event.wheelDeltaY) {
                 camera.fov -= event.wheelDeltaY * 0.05;
-
-                // Opera / Explorer 9
-            } else if (event.wheelDelta) {
+            } 
+            // Opera / IE 9
+            else if (event.wheelDelta) {
                 camera.fov -= event.wheelDelta * 0.05;
-
-                // Firefox
-            } else if (event.detail) {
+            } 
+            // Firefox
+            else if (event.detail) {
                 camera.fov += event.detail * 1.0;
             }
         }
@@ -333,21 +337,21 @@ $(document).ready(function() {
         camera.updateProjectionMatrix();
     }
 
-    function preventDefaultBrowser(e) {
-        // Opera / Chrome / Firefox
-        if (e.preventDefault)
-            e.preventDefault();
-        // IE
-        e.returnValue = false;
+    function preventDefaultBrowser(event) {
+        // Chrome / Opera / Firefox
+        if (event.preventDefault)
+            event.preventDefault();
+        // IE 9
+        event.returnValue = false;
     }
 
     function hitSomething(event) {
-        // If hit the objects(and the objects are visible!):
+        // If hit the objects(and the objects are visible!)
         // ref: http://goo.gl/eQmcX3
 
         var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
-            -(event.clientY / window.innerHeight) * 2 + 1, //y
-            0.5); //z
+                                      -(event.clientY / window.innerHeight) * 2 + 1, //y
+                                        0.5); //z
         mouse3D.unproject(camera);
         mouse3D.sub(camera.position);
         mouse3D.normalize();
@@ -364,16 +368,25 @@ $(document).ready(function() {
         update();
     }
 
-    function addObject() {
-        // add some object
-        var geometryObj = new THREE.BoxGeometry(30, 30, 0);
+    function addObject(latObj, lonObj, objBoxSize) {
+        // add some objects
+        var radiusObj = 70;
+        
+        phiObj = THREE.Math.degToRad(90 - latObj);
+        thetaObj = THREE.Math.degToRad(lonObj);
+        
+        var geometryObj = new THREE.BoxGeometry(objBoxSize, objBoxSize, 0);
         var materialObj = new THREE.MeshBasicMaterial({
             color: 'white',
             opacity: 0.2
         });
         materialObj.transparent = true;
         var sphereObj = new THREE.Mesh(geometryObj, materialObj);
-        sphereObj.position.set(45, 45, 45);
+
+        var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
+            yObj = radiusObj * Math.cos(phiObj),
+            zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
+        sphereObj.position.set(xObj, yObj, zObj);
         scene.add(sphereObj);
         objects.push(sphereObj);
     }
@@ -390,17 +403,14 @@ $(document).ready(function() {
                 var theta = THREE.Math.degToRad(camera.fov / 2);
                 var img_width = 1 / Math.cos(theta);
                 img_width = img_width * Math.sin(theta) * 0.8;
-                // camera.fov = camera.fov * 0.85;
                 var flash = $('#flash');
                 camera.fov = Math.atan(img_width);
                 camera.fov = camera.fov * 180 / Math.PI * 2;
                 camera.updateProjectionMatrix();
-                // flash.fadeIn(3);
                 objects.forEach(function(item) {
                     item.visible = false;
                 });
                 renderer.render(scene, camera);
-                // flash.fadeOut(3);
                 capImg = renderer.domElement.toDataURL('image/jpeg');
                 objects.forEach(function(item) {
                     item.visible = true;
@@ -413,7 +423,6 @@ $(document).ready(function() {
                 var canvas = $('#mycanvas');
                 canvas.fadeOut(600);
             });
-        // window.open(capImg, 'new_window');
     }
 
     function drawCanvas() {
