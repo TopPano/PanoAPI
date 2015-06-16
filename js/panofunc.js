@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    console.log(flyInfo.sphere[0].transition1.position);
+
     // Three.js GLOBAL scene objects
     var camera, scene, geometry, material, mesh, renderer;
     var geometry2, texture2, mesh2;
@@ -7,11 +9,8 @@ $(document).ready(function() {
     var objects = [],
         showObj = true;
 
-    // var defaultMap  = './image/map/sunset.jpg';
-    // var defaultMap  = './image/map/bm1920.jpg';
-    // var defaultMap2 = './image/map/4.jpg';
     var defaultMap = './image/fly/1.jpg';
-    var defaultMap2 = './image/fly/2.jpg';
+    var defaultMap2 = './image/fly/3.jpg';
 
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
@@ -96,11 +95,11 @@ $(document).ready(function() {
             overdraw: true
         });
 
-        
+
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
         addObject(20, 20, 20);
-        
+
 
         renderer = Detector.webgl ? new THREE.WebGLRenderer({
             preserveDrawingBuffer: true,
@@ -356,14 +355,13 @@ $(document).ready(function() {
     }
 
     function changeScene() {
-        //**** remove all object in the scene ****//
-        if(scene.children.length > 1) {
+        // remove all object in the scene (except for the last sphere)
+        if (scene.children.length > 1) {
             for (var i = 1; i <= scene.children.length - 1; i++) {
-                // console.log(scene.children.length);
                 scene.remove(scene.children[i]);
-            };
+            }
         }
-        
+
         texture2 = new THREE.ImageUtils.loadTexture(defaultMap2);
         texture2.minFilter = THREE.LinearFilter;
 
@@ -372,10 +370,6 @@ $(document).ready(function() {
             overdraw: true
         });
 
-        // material.map = THREE.ImageUtils.loadTexture(defaultMap2);
-        //    material.minFilter = THREE.LinearFilter;
-
-        // delete mesh;
         mesh2 = new THREE.Mesh(geometry2, material2);
         material2.transparent = true;
 
@@ -392,7 +386,6 @@ $(document).ready(function() {
         // sleep(1000);
         isAnimate = true;
         material2.opacity = 0;
-        // renderScene(isAnimate);
     }
 
     function sleep(milliseconds) {
@@ -488,10 +481,10 @@ $(document).ready(function() {
 
     function renderScene() {
         if (isAnimate) {
-            var fadeInSpeed = 0.05; // ms
+            var fadeInSpeed = 0.04; // ms
             if (material2.opacity >= 1) {
                 isAnimate = false;
-                scene.remove(scene.children[0]); // remove last scene
+                scene.remove(scene.children[0]); // remove last sphere
                 requestAnimationFrame(update);
                 return 0;
             }
