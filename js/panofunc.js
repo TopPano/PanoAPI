@@ -1,6 +1,7 @@
 $(document).ready(function() {
     // Three.js GLOBAL scene objects
     var camera, scene, geometry, material, mesh, renderer;
+    var geometry2, texture2, mesh2;
 
     // some objects on the scene
     var objects = [],
@@ -64,6 +65,11 @@ $(document).ready(function() {
         geometry = new THREE.SphereGeometry(sphereSize, 60, 40);
         geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1)); // inside-out
 
+        // for changing scene
+        geometry2 = new THREE.SphereGeometry(sphereSize, 60, 40);
+        geometry2.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+
+
         // /** Panorama Video
         //  * DONE: play panorama video
         //  * TODO: load different video, drop and play
@@ -90,10 +96,11 @@ $(document).ready(function() {
             overdraw: true
         });
 
+        
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
-
         addObject(20, 20, 20);
+        
 
         renderer = Detector.webgl ? new THREE.WebGLRenderer({
             preserveDrawingBuffer: true,
@@ -132,7 +139,7 @@ $(document).ready(function() {
                 var fileType = event.target.result.slice(5, 10);
                 console.log(fileType);
 
-                if(fileType === 'image') {
+                if (fileType === 'image') {
                     material.map.image.src = event.target.result;
                     material.map.needsUpdate = true;
                 }
@@ -164,20 +171,20 @@ $(document).ready(function() {
         }, false);
         window.addEventListener('resize', onWindowResize, false);
         document.addEventListener('keyup', function(key) {
-            if(downloadLink.is(":visible") == true) {
-                if(key.which === 83) {
+            if (downloadLink.is(":visible") == true) {
+                if (key.which === 83) {
                     downloadLink.fadeOut(600);
                     canvas.fadeOut(600);
                 }
             } else
             // press 's'
-            if(key.which === 83) {
+            if (key.which === 83) {
                 saveImage();
             }
 
             // press 'p'
-            if(key.which === 80) {
-                if(showObj) {
+            if (key.which === 80) {
+                if (showObj) {
                     objects.forEach(function(item) {
                         item.visible = false;
                     });
@@ -194,11 +201,11 @@ $(document).ready(function() {
         });
 
         var snapshot = $('#snapshot');
-        if(canvas.is(":visible") == false)
+        if (canvas.is(":visible") == false)
             snapshot.click(function(event) {
                 // snapshot.prop('src', '../image/snapshot.png')
                 var downloadLink = $('#downLink');
-                if(downloadLink.is(":visible") == false)
+                if (downloadLink.is(":visible") == false)
                     saveImage();
             });
     }
@@ -208,7 +215,7 @@ $(document).ready(function() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         var canvas = $('#mycanvas');
-        if(canvas.is(":visible") == true)
+        if (canvas.is(":visible") == true)
             drawCanvas();
     }
 
@@ -228,20 +235,20 @@ $(document).ready(function() {
     }
 
     function onDocumentMouseMove(event) {
-        if(isUserInteracting === true) {
+        if (isUserInteracting === true) {
             deltaX = onPointerDownPointerX - event.clientX,
-                deltaY = event.clientY - onPointerDownPointerY;
+            deltaY = event.clientY - onPointerDownPointerY;
 
             lon = deltaX * 0.1 + onPointerDownLon;
             lat = deltaY * 0.1 + onPointerDownLat;
         }
 
         // check is hover something, and change the color
-        if(showObj) {
+        if (showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
             var hitObject = hit[1];
-            if(isHit) {
+            if (isHit) {
                 hitObject.material.color.set('orange');
             } else {
                 objects.forEach(function(item) {
@@ -267,9 +274,9 @@ $(document).ready(function() {
 
 
         // check if hit something, and change the background
-        if(showObj) {
+        if (showObj) {
             var isHit = hitSomething(event)[0];
-            if(isHit) {
+            if (isHit) {
                 // change the scene
                 changeScene();
             }
@@ -278,30 +285,30 @@ $(document).ready(function() {
 
     function onDocumentMouseWheel(event) {
         // check FoV range
-        if(camera.fov <= fovMax && camera.fov >= fovMin) {
+        if (camera.fov <= fovMax && camera.fov >= fovMin) {
             // WebKit (Safari / Chrome)
-            if(event.wheelDeltaY) {
+            if (event.wheelDeltaY) {
                 camera.fov -= event.wheelDeltaY * 0.05;
             }
             // Opera / IE 9
-            else if(event.wheelDelta) {
+            else if (event.wheelDelta) {
                 camera.fov -= event.wheelDelta * 0.05;
             }
             // Firefox
-            else if(event.detail) {
+            else if (event.detail) {
                 camera.fov += event.detail * 1.0;
             }
         }
 
-        if(camera.fov > fovMax) camera.fov = fovMax;
-        if(camera.fov < fovMin) camera.fov = fovMin;
+        if (camera.fov > fovMax) camera.fov = fovMax;
+        if (camera.fov < fovMin) camera.fov = fovMin;
 
         camera.updateProjectionMatrix();
     }
 
     function preventDefaultBrowser(event) {
         // Chrome / Opera / Firefox
-        if(event.preventDefault)
+        if (event.preventDefault)
             event.preventDefault();
         // IE 9
         event.returnValue = false;
@@ -319,7 +326,7 @@ $(document).ready(function() {
         mouse3D.normalize();
         var raycaster = new THREE.Raycaster(camera.position, mouse3D);
         var intersects = raycaster.intersectObjects(objects);
-        if(intersects.length > 0)
+        if (intersects.length > 0)
             return [true, intersects[0].object];
         else
             return [false, null];
@@ -349,32 +356,32 @@ $(document).ready(function() {
     }
 
     function changeScene() {
-        for(var i = scene.children.length - 1; i >= 0; i--) {
-            // console.log(scene.children.length);
-            scene.remove(scene.children[i]);
-        };
+        //**** remove all object in the scene ****//
+        if(scene.children.length > 1) {
+            for (var i = 1; i <= scene.children.length - 1; i++) {
+                // console.log(scene.children.length);
+                scene.remove(scene.children[i]);
+            };
+        }
+        
+        texture2 = new THREE.ImageUtils.loadTexture(defaultMap2);
+        texture2.minFilter = THREE.LinearFilter;
 
-        var texture = new THREE.ImageUtils.loadTexture(defaultMap2);
-        texture.minFilter = THREE.LinearFilter;
-        material = new THREE.MeshBasicMaterial({
-            map: texture,
+        material2 = new THREE.MeshBasicMaterial({
+            map: texture2,
             overdraw: true
         });
 
         // material.map = THREE.ImageUtils.loadTexture(defaultMap2);
         //    material.minFilter = THREE.LinearFilter;
 
-        delete mesh;
-        mesh = new THREE.Mesh(geometry, material);
-        material.transparent = true;
+        // delete mesh;
+        mesh2 = new THREE.Mesh(geometry2, material2);
+        material2.transparent = true;
 
-        // for(var i = 0 ; i <=10000000 ; i ++) {
-        //     material.opacity =  1 - new Date().getTime() * 0.00025;
-        // }
+        scene.add(mesh2);
 
-        scene.add(mesh);
-
-        for(var i = objects.length - 1; i >= 0; i--) {
+        for (var i = objects.length - 1; i >= 0; i--) {
             scene.add(objects[i]);
         };
 
@@ -384,19 +391,18 @@ $(document).ready(function() {
         defaultMap = temp;
         // sleep(1000);
         isAnimate = true;
-        material.opacity = 0;
+        material2.opacity = 0;
         // renderScene(isAnimate);
     }
 
     function sleep(milliseconds) {
-      var start = new Date().getTime();
-      for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds){
-          break;
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds) {
+                break;
+            }
         }
-      }
     }
-
 
     function saveImage() {
         var snapshot = $('#snapshot');
@@ -458,7 +464,7 @@ $(document).ready(function() {
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.left = '0px';
         stats.domElement.style.top = '0px';
-        $("#Stats-output").append( stats.domElement );
+        $('#Stats-output').append(stats.domElement);
         return stats;
     }
 
@@ -479,23 +485,23 @@ $(document).ready(function() {
     // // position of the camera from center to the circle of the sphere (opposite side of camera target)
 
     //   }
-      
-    function renderScene(_isAnimate) {
-        // console.log(isAnimate);
-        if(_isAnimate) {
-            if (material.opacity >= 1) {
+
+    function renderScene() {
+        if (isAnimate) {
+            var fadeInSpeed = 0.05; // ms
+            if (material2.opacity >= 1) {
                 isAnimate = false;
+                scene.remove(scene.children[0]); // remove last scene
                 requestAnimationFrame(update);
                 return 0;
             }
-            material.opacity +=  0.05;
+            material2.opacity += fadeInSpeed;
             requestAnimationFrame(renderScene);
-            renderer.render(scene, camera); 
-        }
-        else {
+            renderer.render(scene, camera);
+            stats.update();
+        } else {
             requestAnimationFrame(update);
-            // console.log("isAnimate");
-            renderer.render(scene, camera);            
+            renderer.render(scene, camera);
         }
     }
 
@@ -522,6 +528,6 @@ $(document).ready(function() {
         // littlePlanetEffect();
 
         stats.update();
-        renderScene(isAnimate);
+        renderScene();
     }
 }); // end of jQuery
