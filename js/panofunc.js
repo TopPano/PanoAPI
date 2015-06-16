@@ -9,7 +9,7 @@ $(document).ready(function() {
     // var defaultMap  = './image/map/sunset.jpg';
     // var defaultMap  = './image/map/bm1920.jpg';
     // var defaultMap2 = './image/map/4.jpg';
-    var defaultMap  = './image/fly/1.jpg';
+    var defaultMap = './image/fly/1.jpg';
     var defaultMap2 = './image/fly/2.jpg';
 
     var camPos = new THREE.Vector3(0, 0, 0),
@@ -29,9 +29,13 @@ $(document).ready(function() {
     var sphereSize = 100;
     var littlePlanet = false;
 
+    // if changing the scene, need some transition effects
+    var isAnimate = false;
+
     // initialization
+    var stats = initStats();
     init();
-    animate();
+    update();
 
     function init() {
         // virtual camera canvas (for cropping image)
@@ -54,7 +58,7 @@ $(document).ready(function() {
             1100 // Far Plane
         );
         // change the positon of the camera
-        
+
         camera.target = new THREE.Vector3(sphereSize, sphereSize, sphereSize);
         scene = new THREE.Scene();
         geometry = new THREE.SphereGeometry(sphereSize, 60, 40);
@@ -92,7 +96,8 @@ $(document).ready(function() {
         addObject(20, 20, 20);
 
         renderer = Detector.webgl ? new THREE.WebGLRenderer({
-            preserveDrawingBuffer: true
+            preserveDrawingBuffer: true,
+            autoClearColor: false
         }) : new THREE.CanvasRenderer(); // with no WebGL supported
         // TODO: canvas renderer snapshot (using no WebGL supported method)
 
@@ -127,7 +132,7 @@ $(document).ready(function() {
                 var fileType = event.target.result.slice(5, 10);
                 console.log(fileType);
 
-                if (fileType === 'image') {
+                if(fileType === 'image') {
                     material.map.image.src = event.target.result;
                     material.map.needsUpdate = true;
                 }
@@ -159,20 +164,20 @@ $(document).ready(function() {
         }, false);
         window.addEventListener('resize', onWindowResize, false);
         document.addEventListener('keyup', function(key) {
-            if (downloadLink.is(":visible") == true) {
-                if (key.which === 83) {
+            if(downloadLink.is(":visible") == true) {
+                if(key.which === 83) {
                     downloadLink.fadeOut(600);
                     canvas.fadeOut(600);
                 }
             } else
             // press 's'
-            if (key.which === 83) {
+            if(key.which === 83) {
                 saveImage();
             }
 
             // press 'p'
-            if (key.which === 80) {
-                if (showObj) {
+            if(key.which === 80) {
+                if(showObj) {
                     objects.forEach(function(item) {
                         item.visible = false;
                     });
@@ -189,11 +194,11 @@ $(document).ready(function() {
         });
 
         var snapshot = $('#snapshot');
-        if (canvas.is(":visible") == false)
+        if(canvas.is(":visible") == false)
             snapshot.click(function(event) {
                 // snapshot.prop('src', '../image/snapshot.png')
                 var downloadLink = $('#downLink');
-                if (downloadLink.is(":visible") == false)
+                if(downloadLink.is(":visible") == false)
                     saveImage();
             });
     }
@@ -203,7 +208,7 @@ $(document).ready(function() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         var canvas = $('#mycanvas');
-        if (canvas.is(":visible") == true)
+        if(canvas.is(":visible") == true)
             drawCanvas();
     }
 
@@ -223,7 +228,7 @@ $(document).ready(function() {
     }
 
     function onDocumentMouseMove(event) {
-        if (isUserInteracting === true) {
+        if(isUserInteracting === true) {
             deltaX = onPointerDownPointerX - event.clientX,
                 deltaY = event.clientY - onPointerDownPointerY;
 
@@ -232,11 +237,11 @@ $(document).ready(function() {
         }
 
         // check is hover something, and change the color
-        if (showObj) {
+        if(showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
             var hitObject = hit[1];
-            if (isHit) {
+            if(isHit) {
                 hitObject.material.color.set('orange');
             } else {
                 objects.forEach(function(item) {
@@ -261,85 +266,42 @@ $(document).ready(function() {
         // lat = deltaY * inertiaRate + event.clientY;
 
 
-        // check is hit something, and change the bg
-        if (showObj) {
+        // check if hit something, and change the background
+        if(showObj) {
             var isHit = hitSomething(event)[0];
-            if (isHit) {
-                // var geometry2 = new THREE.SphereGeometry(500, 60, 40);
-                // geometry2.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));  // inside-out
-                // var material2 = new THREE.MeshBasicMaterial({
-                //     map: THREE.ImageUtils.loadTexture(defaultMap2)
-                // });
-                // material2.minFilter = THREE.LinearFilter;
-
-                // var mesh2 = new THREE.Mesh(geometry2, material2);
-                // // mesh2.material.opacity = 0.1;
-                // scene.add(mesh2);
-
-                for (var i = scene.children.length - 1; i >= 0; i--) {
-                    scene.remove(scene.children[i]);
-                };
-
-                var texture = new THREE.ImageUtils.loadTexture(defaultMap2);
-                texture.minFilter = THREE.LinearFilter;
-                material = new THREE.MeshBasicMaterial({
-                    map: texture,
-                    overdraw: true
-                });
-
-
-                // material.map = THREE.ImageUtils.loadTexture(defaultMap2);
-                //    material.minFilter = THREE.LinearFilter;
-
-                delete mesh;
-                mesh = new THREE.Mesh(geometry, material);
-                material.transparent = true;
-
-                // for(var i = 0 ; i <=10000000 ; i ++) {
-                //     material.opacity =  1 - new Date().getTime() * 0.00025;
-
-                // }
-
-                scene.add(mesh);
-
-                for (var i = objects.length - 1; i >= 0; i--) {
-                    scene.add(objects[i]);
-                };
-
-                // swap
-                var temp = defaultMap2;
-                defaultMap2 = defaultMap;
-                defaultMap = temp;
+            if(isHit) {
+                // change the scene
+                changeScene();
             }
         }
     }
 
     function onDocumentMouseWheel(event) {
         // check FoV range
-        if (camera.fov <= fovMax && camera.fov >= fovMin) {
+        if(camera.fov <= fovMax && camera.fov >= fovMin) {
             // WebKit (Safari / Chrome)
-            if (event.wheelDeltaY) {
+            if(event.wheelDeltaY) {
                 camera.fov -= event.wheelDeltaY * 0.05;
-            } 
+            }
             // Opera / IE 9
-            else if (event.wheelDelta) {
+            else if(event.wheelDelta) {
                 camera.fov -= event.wheelDelta * 0.05;
-            } 
+            }
             // Firefox
-            else if (event.detail) {
+            else if(event.detail) {
                 camera.fov += event.detail * 1.0;
             }
         }
 
-        if (camera.fov > fovMax) camera.fov = fovMax;
-        if (camera.fov < fovMin) camera.fov = fovMin;
+        if(camera.fov > fovMax) camera.fov = fovMax;
+        if(camera.fov < fovMin) camera.fov = fovMin;
 
         camera.updateProjectionMatrix();
     }
 
     function preventDefaultBrowser(event) {
         // Chrome / Opera / Firefox
-        if (event.preventDefault)
+        if(event.preventDefault)
             event.preventDefault();
         // IE 9
         event.returnValue = false;
@@ -350,31 +312,26 @@ $(document).ready(function() {
         // ref: http://goo.gl/eQmcX3
 
         var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
-                                      -(event.clientY / window.innerHeight) * 2 + 1, //y
-                                        0.5); //z
+            -(event.clientY / window.innerHeight) * 2 + 1, //y
+            0.5); //z
         mouse3D.unproject(camera);
         mouse3D.sub(camera.position);
         mouse3D.normalize();
         var raycaster = new THREE.Raycaster(camera.position, mouse3D);
         var intersects = raycaster.intersectObjects(objects);
-        if (intersects.length > 0)
+        if(intersects.length > 0)
             return [true, intersects[0].object];
         else
             return [false, null];
     }
 
-    function animate() {
-        requestAnimationFrame(animate);
-        update();
-    }
-
     function addObject(latObj, lonObj, objBoxSize) {
         // add some objects
         var radiusObj = 70;
-        
+
         phiObj = THREE.Math.degToRad(90 - latObj);
         thetaObj = THREE.Math.degToRad(lonObj);
-        
+
         var geometryObj = new THREE.BoxGeometry(objBoxSize, objBoxSize, 0);
         var materialObj = new THREE.MeshBasicMaterial({
             color: 'white',
@@ -390,6 +347,56 @@ $(document).ready(function() {
         scene.add(sphereObj);
         objects.push(sphereObj);
     }
+
+    function changeScene() {
+        for(var i = scene.children.length - 1; i >= 0; i--) {
+            // console.log(scene.children.length);
+            scene.remove(scene.children[i]);
+        };
+
+        var texture = new THREE.ImageUtils.loadTexture(defaultMap2);
+        texture.minFilter = THREE.LinearFilter;
+        material = new THREE.MeshBasicMaterial({
+            map: texture,
+            overdraw: true
+        });
+
+        // material.map = THREE.ImageUtils.loadTexture(defaultMap2);
+        //    material.minFilter = THREE.LinearFilter;
+
+        delete mesh;
+        mesh = new THREE.Mesh(geometry, material);
+        material.transparent = true;
+
+        // for(var i = 0 ; i <=10000000 ; i ++) {
+        //     material.opacity =  1 - new Date().getTime() * 0.00025;
+        // }
+
+        scene.add(mesh);
+
+        for(var i = objects.length - 1; i >= 0; i--) {
+            scene.add(objects[i]);
+        };
+
+        // swap
+        var temp = defaultMap2;
+        defaultMap2 = defaultMap;
+        defaultMap = temp;
+        // sleep(1000);
+        isAnimate = true;
+        material.opacity = 0;
+        // renderScene(isAnimate);
+    }
+
+    function sleep(milliseconds) {
+      var start = new Date().getTime();
+      for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds){
+          break;
+        }
+      }
+    }
+
 
     function saveImage() {
         var snapshot = $('#snapshot');
@@ -445,6 +452,16 @@ $(document).ready(function() {
         context.stroke();
     }
 
+    function initStats() {
+        var stats = new Stats();
+        stats.setMode(0);
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.top = '0px';
+        $("#Stats-output").append( stats.domElement );
+        return stats;
+    }
+
     //   function littlePlanetEffect() {
     //      if (littlePlanet) {
     //          camPos.copy(camera.position);
@@ -462,6 +479,25 @@ $(document).ready(function() {
     // // position of the camera from center to the circle of the sphere (opposite side of camera target)
 
     //   }
+      
+    function renderScene(_isAnimate) {
+        // console.log(isAnimate);
+        if(_isAnimate) {
+            if (material.opacity >= 1) {
+                isAnimate = false;
+                requestAnimationFrame(update);
+                return 0;
+            }
+            material.opacity +=  0.05;
+            requestAnimationFrame(renderScene);
+            renderer.render(scene, camera); 
+        }
+        else {
+            requestAnimationFrame(update);
+            // console.log("isAnimate");
+            renderer.render(scene, camera);            
+        }
+    }
 
     function update() {
         lat = Math.max(-85, Math.min(85, lat));
@@ -476,7 +512,6 @@ $(document).ready(function() {
         camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
         camera.target.y = 500 * Math.cos(phi);
         camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
-
         camera.lookAt(camera.target);
 
         // Little planet effect
@@ -486,6 +521,7 @@ $(document).ready(function() {
 
         // littlePlanetEffect();
 
-        renderer.render(scene, camera);
+        stats.update();
+        renderScene(isAnimate);
     }
 }); // end of jQuery
