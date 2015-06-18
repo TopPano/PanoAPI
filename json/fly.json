@@ -2,20 +2,11 @@ var flyInfo = {
 	"sphere": [{ // id: 0
 		"transition": [{
 			"position": {
-				"lat": 20,
-				"lon": 20,
+				"lat": 10,
+				"lon": 10,
 				"size": 20
 			},
-			"nextScene": "1.jpg",
 			"nextSceneID": 1
-		}, {
-			"position": {
-				"lat": -30,
-				"lon": -30,
-				"size": 20
-			},
-			"nextScene": "3.jpg",
-			"nextSceneID": 3
 		}]
 	}, { // id: 1
 		"transition": [{
@@ -24,17 +15,24 @@ var flyInfo = {
 				"lon": 30,
 				"size": 20
 			},
-			"nextScene": "2.jpg",
 			"nextSceneID": 2
 		}]
 	}, { // id: 2
 		"transition": [{
 			"position": {
-				"lat": 40,
-				"lon": 40,
+				"lat": 20,
+				"lon": 20,
 				"size": 20
 			},
-			"nextScene": "3.jpg",
+			"nextSceneID": 3
+		}]
+	}, { // id: 3
+		"transition": [{
+			"position": {
+				"lat": 20,
+				"lon": 30,
+				"size": 20
+			},
 			"nextSceneID": 0
 		}]
 	}]

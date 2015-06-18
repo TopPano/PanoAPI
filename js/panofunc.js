@@ -14,7 +14,6 @@ $(document).ready(function() {
         showObj = true;
 
     var defaultMap = './image/fly/0.jpg';
-    var defaultMap2 = './image/fly/2.jpg';
 
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
@@ -250,9 +249,14 @@ $(document).ready(function() {
         if (showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
-            var hitObject = hit[1];
+            var hitObj = hit[1];
             if (isHit) {
-                hitObject.material.color.set('orange');
+                for (var i = 0; i < objects.length; i++) {
+                    if (hitObj.position.distanceTo(objects[i].position) < 1) {
+                        objects[i].material.color.set('orange');
+                    }
+                }
+
             } else {
                 objects.forEach(function(item) {
                     item.material.color.set('white');
@@ -276,12 +280,22 @@ $(document).ready(function() {
         // lat = deltaY * inertiaRate + event.clientY;
 
 
-        // check if hit something, and change the background
+
+        // check if hit something, and change the sphere
         if (showObj) {
-            var isHit = hitSomething(event)[0];
+            var hit = hitSomething(event);
+            var isHit = hit[0];
+            var hitObj = hit[1];
+            console.log(hitObj);
             if (isHit) {
                 // change the scene
-                changeScene();
+                for (var i = 0; i < objects.length; i++) {
+                    if (hitObj.position.distanceTo(objects[i].position) < 1) {
+                        // console.log(nowSphereID);
+
+                        changeScene(objects[i].name);
+                    }
+                }
             }
         }
     }
@@ -337,10 +351,11 @@ $(document).ready(function() {
 
     function addObject() {
         // console.log(nowSphere.transition.length);
-        for(var i = 0; i < nowSphere.transition.length; i++) {
+        nowSphere = flyInfo.sphere[nowSphereID];
+        for (var i = 0; i < nowSphere.transition.length; i++) {
             var nowTransition = nowSphere.transition[i];
-            var latObj = nowTransition.position.lat, 
-                lonObj = nowTransition.position.lon, 
+            var latObj = nowTransition.position.lat,
+                lonObj = nowTransition.position.lon,
                 objBoxSize = nowTransition.position.size;
             // add some objects
             var radiusObj = 70;
@@ -360,12 +375,15 @@ $(document).ready(function() {
                 yObj = radiusObj * Math.cos(phiObj),
                 zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
             sphereObj.position.set(xObj, yObj, zObj);
+            // record obj's position for checking whether hitting objs
+            sphereObj.name = nowTransition.nextSceneID;
+            // console.log(nowTransition.nextSceneID);
             scene.add(sphereObj);
             objects.push(sphereObj);
         }
     }
 
-    function changeScene() {
+    function changeScene(_nextSceneID) {
         // remove all object in the scene (except for the last sphere)
         if (scene.children.length > 1) {
             for (var i = 1; i <= scene.children.length - 1; i++) {
@@ -373,7 +391,10 @@ $(document).ready(function() {
             }
         }
 
-        texture2 = new THREE.ImageUtils.loadTexture(defaultMap2);
+        var nowMap = './image/fly/' + nowSphereID + '.jpg';
+        var nextMap = './image/fly/' + _nextSceneID + '.jpg';
+
+        texture2 = new THREE.ImageUtils.loadTexture(nextMap);
         texture2.minFilter = THREE.LinearFilter;
 
         material2 = new THREE.MeshBasicMaterial({
@@ -387,13 +408,10 @@ $(document).ready(function() {
         scene.add(mesh2);
 
         for (var i = objects.length - 1; i >= 0; i--) {
-            scene.add(objects[i]);
-        };
+            objects[i].remove();
+        }
+        nowSphereID = _nextSceneID;
 
-        // swap
-        var temp = defaultMap2;
-        defaultMap2 = defaultMap;
-        defaultMap = temp;
         // sleep(1000);
         isAnimate = true;
         material2.opacity = 0;
@@ -497,6 +515,7 @@ $(document).ready(function() {
                 isAnimate = false;
                 scene.remove(scene.children[0]); // remove last sphere
                 requestAnimationFrame(update);
+                addObject();
                 return 0;
             }
             material2.opacity += fadeInSpeed;
