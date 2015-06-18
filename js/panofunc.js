@@ -4,7 +4,7 @@ $(document).ready(function() {
     var geometry2, texture2, mesh2;
 
     // which sphere now
-    var nowSphereID = 9,
+    var nowSphereID = 0,
         nowSphere = flyInfo.sphere[nowSphereID];
 
     // some objects on the scene
@@ -356,7 +356,7 @@ $(document).ready(function() {
             var geometryObj = new THREE.BoxGeometry(objBoxSize, objBoxSize, 0);
             var materialObj = new THREE.MeshBasicMaterial({
                 color: 'white',
-                opacity: 0.2
+                opacity: 0.35
             });
             materialObj.transparent = true;
             var sphereObj = new THREE.Mesh(geometryObj, materialObj);
@@ -500,7 +500,7 @@ $(document).ready(function() {
 
     function renderScene() {
         if (isAnimate) {
-            var fadeInSpeed = 0.03; // ms
+            var fadeInSpeed = 0.025; // ms
             if (material2.opacity >= 1) {
                 isAnimate = false;
                 scene.remove(scene.children[0]); // remove last sphere
