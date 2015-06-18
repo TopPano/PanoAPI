@@ -1,42 +1,41 @@
 var flyInfo = {
-	"sphere": [{
-		"transition1": {
+	"sphere": [{ // id: 0
+		"transition": [{
 			"position": {
 				"lat": 20,
 				"lon": 20,
 				"size": 20
 			},
-			"nextScene": "2.jpg",
+			"nextScene": "1.jpg",
 			"nextSceneID": 1
-		},
-		"transition2": {
+		}, {
 			"position": {
-				"lat": 120,
-				"lon": 120,
+				"lat": -30,
+				"lon": -30,
 				"size": 20
 			},
-			"nextScene": "4.jpg",
+			"nextScene": "3.jpg",
 			"nextSceneID": 3
-		}
-		
-	}, {
-		"transition1": {
+		}]
+	}, { // id: 1
+		"transition": [{
 			"position": {
-				"lat": 20,
-				"lon": 20,
+				"lat": 30,
+				"lon": 30,
 				"size": 20
 			},
 			"nextScene": "2.jpg",
-			"nextSceneID": 1
-		}
-	}, {"transition1": {
+			"nextSceneID": 2
+		}]
+	}, { // id: 2
+		"transition": [{
 			"position": {
-				"lat": 20,
-				"lon": 20,
+				"lat": 40,
+				"lon": 40,
 				"size": 20
 			},
-			"nextScene": "2.jpg",
-			"nextSceneID": 1
-		}
+			"nextScene": "3.jpg",
+			"nextSceneID": 0
+		}]
 	}]
 }

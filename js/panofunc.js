@@ -1,16 +1,20 @@
 $(document).ready(function() {
-    console.log(flyInfo.sphere[0].transition1.position);
+    // console.log(flyInfo.sphere[0].transition[0]);
 
     // Three.js GLOBAL scene objects
     var camera, scene, geometry, material, mesh, renderer;
     var geometry2, texture2, mesh2;
 
+    // which sphere now
+    var nowSphereID = 0,
+        nowSphere = flyInfo.sphere[nowSphereID];
+
     // some objects on the scene
     var objects = [],
         showObj = true;
 
-    var defaultMap = './image/fly/1.jpg';
-    var defaultMap2 = './image/fly/3.jpg';
+    var defaultMap = './image/fly/0.jpg';
+    var defaultMap2 = './image/fly/2.jpg';
 
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
@@ -98,7 +102,7 @@ $(document).ready(function() {
 
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
-        addObject(20, 20, 20);
+        addObject();
 
 
         renderer = Detector.webgl ? new THREE.WebGLRenderer({
@@ -331,27 +335,34 @@ $(document).ready(function() {
             return [false, null];
     }
 
-    function addObject(latObj, lonObj, objBoxSize) {
-        // add some objects
-        var radiusObj = 70;
+    function addObject() {
+        // console.log(nowSphere.transition.length);
+        for(var i = 0; i < nowSphere.transition.length; i++) {
+            var nowTransition = nowSphere.transition[i];
+            var latObj = nowTransition.position.lat, 
+                lonObj = nowTransition.position.lon, 
+                objBoxSize = nowTransition.position.size;
+            // add some objects
+            var radiusObj = 70;
 
-        phiObj = THREE.Math.degToRad(90 - latObj);
-        thetaObj = THREE.Math.degToRad(lonObj);
+            phiObj = THREE.Math.degToRad(90 - latObj);
+            thetaObj = THREE.Math.degToRad(lonObj);
 
-        var geometryObj = new THREE.BoxGeometry(objBoxSize, objBoxSize, 0);
-        var materialObj = new THREE.MeshBasicMaterial({
-            color: 'white',
-            opacity: 0.2
-        });
-        materialObj.transparent = true;
-        var sphereObj = new THREE.Mesh(geometryObj, materialObj);
+            var geometryObj = new THREE.BoxGeometry(objBoxSize, objBoxSize, 0);
+            var materialObj = new THREE.MeshBasicMaterial({
+                color: 'white',
+                opacity: 0.2
+            });
+            materialObj.transparent = true;
+            var sphereObj = new THREE.Mesh(geometryObj, materialObj);
 
-        var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
-            yObj = radiusObj * Math.cos(phiObj),
-            zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
-        sphereObj.position.set(xObj, yObj, zObj);
-        scene.add(sphereObj);
-        objects.push(sphereObj);
+            var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
+                yObj = radiusObj * Math.cos(phiObj),
+                zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
+            sphereObj.position.set(xObj, yObj, zObj);
+            scene.add(sphereObj);
+            objects.push(sphereObj);
+        }
     }
 
     function changeScene() {
@@ -481,7 +492,7 @@ $(document).ready(function() {
 
     function renderScene() {
         if (isAnimate) {
-            var fadeInSpeed = 0.04; // ms
+            var fadeInSpeed = 0.03; // ms
             if (material2.opacity >= 1) {
                 isAnimate = false;
                 scene.remove(scene.children[0]); // remove last sphere
