@@ -1,19 +1,17 @@
 $(document).ready(function() {
-    // console.log(flyInfo.sphere[0].transition[0]);
-
     // Three.js GLOBAL scene objects
     var camera, scene, geometry, material, mesh, renderer;
     var geometry2, texture2, mesh2;
 
     // which sphere now
-    var nowSphereID = 0,
+    var nowSphereID = 9,
         nowSphere = flyInfo.sphere[nowSphereID];
 
     // some objects on the scene
     var objects = [],
         showObj = true;
 
-    var defaultMap = './image/fly/0.jpg';
+    var defaultMap = './image/fly/' + nowSphereID + '.jpg';
 
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
@@ -251,12 +249,7 @@ $(document).ready(function() {
             var isHit = hit[0];
             var hitObj = hit[1];
             if (isHit) {
-                for (var i = 0; i < objects.length; i++) {
-                    if (hitObj.position.distanceTo(objects[i].position) < 1) {
-                        objects[i].material.color.set('orange');
-                    }
-                }
-
+                hitObj.material.color.set('orange');
             } else {
                 objects.forEach(function(item) {
                     item.material.color.set('white');
@@ -286,16 +279,9 @@ $(document).ready(function() {
             var hit = hitSomething(event);
             var isHit = hit[0];
             var hitObj = hit[1];
-            console.log(hitObj);
             if (isHit) {
                 // change the scene
-                for (var i = 0; i < objects.length; i++) {
-                    if (hitObj.position.distanceTo(objects[i].position) < 1) {
-                        // console.log(nowSphereID);
-
-                        changeScene(objects[i].name);
-                    }
-                }
+                changeScene(hitObj.name);
             }
         }
     }
@@ -343,14 +329,18 @@ $(document).ready(function() {
         mouse3D.normalize();
         var raycaster = new THREE.Raycaster(camera.position, mouse3D);
         var intersects = raycaster.intersectObjects(objects);
-        if (intersects.length > 0)
-            return [true, intersects[0].object];
-        else
+        if (intersects.length > 0) {
+            // return which object is hit
+            for (var i = 0; i < objects.length; i++) {
+                if (intersects[0].object.position.distanceTo(objects[i].position) < 10) {
+                    return [true, objects[i]];
+                }
+            }
+        } else
             return [false, null];
     }
 
     function addObject() {
-        // console.log(nowSphere.transition.length);
         nowSphere = flyInfo.sphere[nowSphereID];
         for (var i = 0; i < nowSphere.transition.length; i++) {
             var nowTransition = nowSphere.transition[i];
@@ -375,9 +365,10 @@ $(document).ready(function() {
                 yObj = radiusObj * Math.cos(phiObj),
                 zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
             sphereObj.position.set(xObj, yObj, zObj);
+
+            sphereObj.rotation.set(0, (Math.sin(thetaObj) - 1) * Math.PI / 2, 0);
             // record obj's position for checking whether hitting objs
             sphereObj.name = nowTransition.nextSceneID;
-            // console.log(nowTransition.nextSceneID);
             scene.add(sphereObj);
             objects.push(sphereObj);
         }
@@ -385,6 +376,7 @@ $(document).ready(function() {
 
     function changeScene(_nextSceneID) {
         // remove all object in the scene (except for the last sphere)
+        console.log(nowSphereID);
         if (scene.children.length > 1) {
             for (var i = 1; i <= scene.children.length - 1; i++) {
                 scene.remove(scene.children[i]);
@@ -407,12 +399,10 @@ $(document).ready(function() {
 
         scene.add(mesh2);
 
-        for (var i = objects.length - 1; i >= 0; i--) {
-            objects[i].remove();
-        }
+        // remove all elements in objects array
+        objects.length = 0;
         nowSphereID = _nextSceneID;
 
-        // sleep(1000);
         isAnimate = true;
         material2.opacity = 0;
     }
@@ -549,7 +539,6 @@ $(document).ready(function() {
         // camera.position.copy( camera.target ).negate();   fovMax = 300;
 
         // littlePlanetEffect();
-
         stats.update();
         renderScene();
     }
