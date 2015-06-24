@@ -525,7 +525,7 @@ $(document).ready(function() {
 
     function renderScene() {
         if (isAnimate) {
-            var fadeInSpeed = 0.025; // ms
+            var fadeInSpeed = 0.035; // ms
             if (material2.opacity >= 1) {
                 isAnimate = false;
                 scene.remove(scene.children[0]); // remove last sphere
