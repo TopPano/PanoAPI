@@ -39,9 +39,6 @@ $(document).ready(function() {
     update();
 
     function init() {
-        // pre-load all scene images
-        preLoadImages();
-
         // virtual camera canvas (for cropping image)
         drawCanvas();
         var canvas = $('#mycanvas');
@@ -65,6 +62,10 @@ $(document).ready(function() {
 
         camera.target = new THREE.Vector3(sphereSize, sphereSize, sphereSize);
         scene = new THREE.Scene();
+
+        // pre-load all scene images
+        preLoadImages();
+
         geometry = new THREE.SphereGeometry(sphereSize, 60, 40);
         geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1)); // inside-out
 
@@ -140,11 +141,14 @@ $(document).ready(function() {
             var reader = new FileReader();
             reader.addEventListener('load', function(event) {
                 var fileType = event.target.result.slice(5, 10);
-                console.log(fileType);
+                // console.log(fileType);  // for 'image' or 'video'
 
                 if (fileType === 'image') {
                     material.map.image.src = event.target.result;
                     material.map.needsUpdate = true;
+
+                    material2.map.image.src = event.target.result;
+                    material2.map.needsUpdate = true;
                 }
 
                 // TODO: video reader (bug: maybe readAsDataURL doesn't work)
@@ -169,7 +173,6 @@ $(document).ready(function() {
             }, false);
             // console.log(event.dataTransfer.files[0]);
             reader.readAsDataURL(event.dataTransfer.files[0]);
-
             document.body.style.opacity = 1;
         }, false);
         window.addEventListener('resize', onWindowResize, false);
@@ -380,7 +383,6 @@ $(document).ready(function() {
 
     function changeScene(_nextSceneID) {
         // remove all object in the scene (except for the last sphere)
-        console.log(nowSphereID);
         if (scene.children.length > 1) {
             for (var i = 1; i <= scene.children.length - 1; i++) {
                 scene.remove(scene.children[i]);
@@ -503,10 +505,21 @@ $(document).ready(function() {
     //   }
 
     function preLoadImages() {
-        var map_init, texture_init;
-        for (var i = flyInfo.sphere.length; i >= 0; i--) {
+        var map_init, texture_init, material_init, mesh_init;
+        var geometry_init = new THREE.SphereGeometry(sphereSize, 60, 40);
+        for (var i = flyInfo.sphere.length - 1; i >= 0; i--) {
             map_init = './image/fly/' + i + '.jpg';
             texture_init = new THREE.ImageUtils.loadTexture(map_init);
+            texture_init.minFilter = THREE.LinearFilter;
+            material_init = new THREE.MeshBasicMaterial({
+                map: texture_init,
+                overdraw: true
+            });
+
+
+            mesh_init = new THREE.Mesh(geometry_init, material_init);
+            scene.add(mesh_init);
+            scene.remove(mesh_init);
         }
     }
 
