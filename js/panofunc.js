@@ -39,6 +39,12 @@ $(document).ready(function() {
     update();
 
     function init() {
+        // pre-load all scene images
+        for (var i = flyInfo.sphere.length ; i >= 0 ; i--) {  
+            var map_init = './image/fly/' + i + '.jpg';
+            var texture_init = new THREE.ImageUtils.loadTexture(map_init);
+        }
+
         // virtual camera canvas (for cropping image)
         drawCanvas();
         var canvas = $('#mycanvas');
@@ -318,7 +324,7 @@ $(document).ready(function() {
     }
 
     function hitSomething(event) {
-        // If hit the objects(and the objects are visible!)
+        // If hit the objects(and the objects are visible)
         // ref: http://goo.gl/eQmcX3
 
         var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
