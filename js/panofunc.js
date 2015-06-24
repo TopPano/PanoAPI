@@ -40,10 +40,7 @@ $(document).ready(function() {
 
     function init() {
         // pre-load all scene images
-        for (var i = flyInfo.sphere.length ; i >= 0 ; i--) {  
-            var map_init = './image/fly/' + i + '.jpg';
-            var texture_init = new THREE.ImageUtils.loadTexture(map_init);
-        }
+        preLoadImages();
 
         // virtual camera canvas (for cropping image)
         drawCanvas();
@@ -214,6 +211,7 @@ $(document).ready(function() {
                 if (downloadLink.is(":visible") == false)
                     saveImage();
             });
+        $('#loading').hide();
     }
 
     function onWindowResize() {
@@ -503,6 +501,14 @@ $(document).ready(function() {
     // // position of the camera from center to the circle of the sphere (opposite side of camera target)
 
     //   }
+
+    function preLoadImages() {
+        var map_init, texture_init;
+        for (var i = flyInfo.sphere.length; i >= 0; i--) {
+            map_init = './image/fly/' + i + '.jpg';
+            texture_init = new THREE.ImageUtils.loadTexture(map_init);
+        }
+    }
 
     function renderScene() {
         if (isAnimate) {
