@@ -100,11 +100,12 @@ $(document).ready(function() {
             overdraw: true
         });
 
-
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
-        addObject();
 
+        // TODO: add deformation matrix here
+
+        addObject();
 
         renderer = Detector.webgl ? new THREE.WebGLRenderer({
             preserveDrawingBuffer: true,
@@ -143,7 +144,7 @@ $(document).ready(function() {
                 var fileType = event.target.result.slice(5, 10);
                 // console.log(fileType);  // for 'image' or 'video'
 
-                if (fileType === 'image') {
+                if(fileType === 'image') {
                     material.map.image.src = event.target.result;
                     material.map.needsUpdate = true;
 
@@ -152,7 +153,7 @@ $(document).ready(function() {
                 }
 
                 // TODO: video reader (bug: maybe readAsDataURL doesn't work)
-                // 
+                //
                 // if (fileType === 'video') {
                 //     var video = document.createElement('video');
                 //     // video.width = 640;
@@ -177,20 +178,19 @@ $(document).ready(function() {
         }, false);
         window.addEventListener('resize', onWindowResize, false);
         document.addEventListener('keyup', function(key) {
-            if (downloadLink.is(":visible") == true) {
-                if (key.which === 83) {
+            if(downloadLink.is(":visible") == true) {
+                if(key.which === 83) {
                     downloadLink.fadeOut(600);
                     canvas.fadeOut(600);
                 }
             } else
             // press 's'
-            if (key.which === 83) {
+            if(key.which === 83) {
                 saveImage();
             }
-
             // press 'p'
-            if (key.which === 80) {
-                if (showObj) {
+            if(key.which === 80) {
+                if(showObj) {
                     objects.forEach(function(item) {
                         item.visible = false;
                     });
@@ -202,16 +202,14 @@ $(document).ready(function() {
                     showObj = true;
                 }
             }
-            // if (key.which === 82)
-            //  littlePlanet = !littlePlanet;
         });
 
         var snapshot = $('#snapshot');
-        if (canvas.is(":visible") == false)
+        if(canvas.is(":visible") == false)
             snapshot.click(function(event) {
                 // snapshot.prop('src', '../image/snapshot.png')
                 var downloadLink = $('#downLink');
-                if (downloadLink.is(":visible") == false)
+                if(downloadLink.is(":visible") == false)
                     saveImage();
             });
         $('#loading').hide();
@@ -222,7 +220,7 @@ $(document).ready(function() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         var canvas = $('#mycanvas');
-        if (canvas.is(":visible") == true)
+        if(canvas.is(":visible") == true)
             drawCanvas();
     }
 
@@ -242,20 +240,20 @@ $(document).ready(function() {
     }
 
     function onDocumentMouseMove(event) {
-        if (isUserInteracting === true) {
+        if(isUserInteracting === true) {
             deltaX = onPointerDownPointerX - event.clientX,
-            deltaY = event.clientY - onPointerDownPointerY;
+                deltaY = event.clientY - onPointerDownPointerY;
 
             lon = deltaX * 0.1 + onPointerDownLon;
             lat = deltaY * 0.1 + onPointerDownLat;
         }
 
         // check is hover something, and change the color
-        if (showObj) {
+        if(showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
             var hitObj = hit[1];
-            if (isHit) {
+            if(isHit) {
                 hitObj.material.color.set('orange');
             } else {
                 objects.forEach(function(item) {
@@ -274,7 +272,7 @@ $(document).ready(function() {
         // // inertia moving effects
         // var nowTime = new Date().getTime();
 
-        // var inertiaRate =  0.4 * THREE.Math.clamp(Math.sqrt(deltaX * deltaX + deltaY * deltaY) / 
+        // var inertiaRate =  0.4 * THREE.Math.clamp(Math.sqrt(deltaX * deltaX + deltaY * deltaY) /
         //                    (nowTime - onPointerDownTime), 0, 1);
         // lon = deltaX * inertiaRate + event.clientX;
         // lat = deltaY * inertiaRate + event.clientY;
@@ -282,11 +280,11 @@ $(document).ready(function() {
 
 
         // check if hit something, and change the sphere
-        if (showObj) {
+        if(showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
             var hitObj = hit[1];
-            if (isHit) {
+            if(isHit) {
                 // change the scene
                 changeScene(hitObj.name);
             }
@@ -295,30 +293,30 @@ $(document).ready(function() {
 
     function onDocumentMouseWheel(event) {
         // check FoV range
-        if (camera.fov <= fovMax && camera.fov >= fovMin) {
+        if(camera.fov <= fovMax && camera.fov >= fovMin) {
             // WebKit (Safari / Chrome)
-            if (event.wheelDeltaY) {
+            if(event.wheelDeltaY) {
                 camera.fov -= event.wheelDeltaY * 0.05;
             }
             // Opera / IE 9
-            else if (event.wheelDelta) {
+            else if(event.wheelDelta) {
                 camera.fov -= event.wheelDelta * 0.05;
             }
             // Firefox
-            else if (event.detail) {
+            else if(event.detail) {
                 camera.fov += event.detail * 1.0;
             }
         }
 
-        if (camera.fov > fovMax) camera.fov = fovMax;
-        if (camera.fov < fovMin) camera.fov = fovMin;
+        if(camera.fov > fovMax) camera.fov = fovMax;
+        if(camera.fov < fovMin) camera.fov = fovMin;
 
         camera.updateProjectionMatrix();
     }
 
     function preventDefaultBrowser(event) {
         // Chrome / Opera / Firefox
-        if (event.preventDefault)
+        if(event.preventDefault)
             event.preventDefault();
         // IE 9
         event.returnValue = false;
@@ -336,10 +334,10 @@ $(document).ready(function() {
         mouse3D.normalize();
         var raycaster = new THREE.Raycaster(camera.position, mouse3D);
         var intersects = raycaster.intersectObjects(objects);
-        if (intersects.length > 0) {
+        if(intersects.length > 0) {
             // return which object is hit
-            for (var i = 0; i < objects.length; i++) {
-                if (intersects[0].object.position.distanceTo(objects[i].position) < 10) {
+            for(var i = 0; i < objects.length; i++) {
+                if(intersects[0].object.position.distanceTo(objects[i].position) < 10) {
                     return [true, objects[i]];
                 }
             }
@@ -349,7 +347,7 @@ $(document).ready(function() {
 
     function addObject() {
         nowSphere = flyInfo.sphere[nowSphereID];
-        for (var i = 0; i < nowSphere.transition.length; i++) {
+        for(var i = 0; i < nowSphere.transition.length; i++) {
             var nowTransition = nowSphere.transition[i];
             var latObj = nowTransition.position.lat,
                 lonObj = nowTransition.position.lon,
@@ -383,8 +381,8 @@ $(document).ready(function() {
 
     function changeScene(_nextSceneID) {
         // remove all object in the scene (except for the last sphere)
-        if (scene.children.length > 1) {
-            for (var i = 1; i <= scene.children.length - 1; i++) {
+        if(scene.children.length > 1) {
+            for(var i = 1; i <= scene.children.length - 1; i++) {
                 scene.remove(scene.children[i]);
             }
         }
@@ -415,8 +413,8 @@ $(document).ready(function() {
 
     function sleep(milliseconds) {
         var start = new Date().getTime();
-        for (var i = 0; i < 1e7; i++) {
-            if ((new Date().getTime() - start) > milliseconds) {
+        for(var i = 0; i < 1e7; i++) {
+            if((new Date().getTime() - start) > milliseconds) {
                 break;
             }
         }
@@ -486,28 +484,10 @@ $(document).ready(function() {
         return stats;
     }
 
-    //   function littlePlanetEffect() {
-    //      if (littlePlanet) {
-    //          camPos.copy(camera.position);
-    //          camera.position.copy( camera.target ).negate();  fovMax = 300;
-    //          littlePlanet = false;
-    //      }
-    //      else {
-    //  littlePlanet = true;
-    //  camera.position = camPos;
-    //  fovMax = 100;
-    //  if (camera.fov > 100) camera.fov = 100;
-    //      }
-    // // Little planet effect
-    // // FoV = 160, Lat = -85, Lon = 85, and also set fovMax = 300
-    // // position of the camera from center to the circle of the sphere (opposite side of camera target)
-
-    //   }
-
     function preLoadImages() {
         var map_init, texture_init, material_init, mesh_init;
         var geometry_init = new THREE.SphereGeometry(sphereSize, 60, 40);
-        for (var i = flyInfo.sphere.length - 1; i >= 0; i--) {
+        for(var i = flyInfo.sphere.length - 1; i >= 0; i--) {
             map_init = './image/fly/' + i + '.jpg';
             texture_init = new THREE.ImageUtils.loadTexture(map_init);
             texture_init.minFilter = THREE.LinearFilter;
@@ -516,7 +496,6 @@ $(document).ready(function() {
                 overdraw: true
             });
 
-
             mesh_init = new THREE.Mesh(geometry_init, material_init);
             scene.add(mesh_init);
             scene.remove(mesh_init);
@@ -524,9 +503,9 @@ $(document).ready(function() {
     }
 
     function renderScene() {
-        if (isAnimate) {
+        if(isAnimate) {
             var fadeInSpeed = 0.025; // ms
-            if (material2.opacity >= 1) {
+            if(material2.opacity >= 1) {
                 isAnimate = false;
                 scene.remove(scene.children[0]); // remove last sphere
                 requestAnimationFrame(update);
@@ -550,7 +529,9 @@ $(document).ready(function() {
         theta = THREE.Math.degToRad(lon);
 
         var camFOV = $('#fov');
-        camFOV.text('FoV: ' + Math.round(camera.fov * 100) / 100 + ' Lat:' + Math.round(lat * 100) / 100 + ' Lon:' + Math.round(lon * 100) / 100);
+        camFOV.text('FoV: ' + Math.round(camera.fov * 100) / 100 +
+            ' Lat:' + Math.round(lat * 100) / 100 +
+            ' Lon:' + Math.round(lon * 100) / 100);
 
         // y: up
         camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
@@ -558,12 +539,6 @@ $(document).ready(function() {
         camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
         camera.lookAt(camera.target);
 
-        // Little planet effect
-        // FoV = 160, Lat = -85, Lon = 85, and also set fovMax = 300
-        // position of the camera from center to the circle of the sphere (opposite side of camera target)
-        // camera.position.copy( camera.target ).negate();   fovMax = 300;
-
-        // littlePlanetEffect();
         stats.update();
         renderScene();
     }
