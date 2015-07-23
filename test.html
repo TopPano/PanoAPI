@@ -5,7 +5,7 @@
 		<title>Panorama Viewer</title>
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<meta property="og:title" content="Viewer Test"/>
-		<meta property="og:image" content=""/>
+		<meta property="og:image" content="http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/map/smallRapeseed.jpg"/>
 		<meta property="og:site_name" content="Pano Viewer Test"/>
 		<meta property="og:description" content="This is the test for pano viewer."/>
 		
@@ -51,6 +51,10 @@
 			a {
 				color: rgba(0, 0, 0, 0);
 			}
+			.fb-share-button {
+				bottom: 30px;
+				left: 95%;
+			}
 			/*#snapshot:hover {
 					content: url('./image/snapshot_hover.png');
 					height: 50px;
@@ -65,6 +69,10 @@
 		<script src="./js/Projector.js"></script>
 		<script src="./js/stats.js"></script>
 		<script type="text/javascript" src="./json/fly.json"></script>
+		<script language="javascript">
+		function fbshareCurrentPage()
+		{window.open("https://www.facebook.com/sharer/sharer.php?u="+escape(window.location.href)+"&t="+document.title, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; }
+		</script>
 	</head>
 	<body>
 		<div id="fb-root"></div>
@@ -86,6 +94,7 @@
 		<div id="container"></div>
 		<div id="info">
 			<p id="fov">Calculating...</p>
+			<a href="javascript:fbshareCurrentPage()" target="_blank" alt="Share on Facebook">Facebook</a>
 		</div>
 		<div id="download">
 			<a href="#" id="snapshot">
@@ -94,8 +103,8 @@
 			<a href="#" download="1.jpg" target="_blank" id="downLink">
 				<img src="./image/download.png" height="50px" width="50px">
 			</a>
-			<div class="fb-share-button" data-href="http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/test.html" data-layout="button"></div>
 		</div>
+		<div class="fb-share-button" data-href="" data-layout="button"></div>
 		<div id="Stats-output"></div>
 	</body>
 </html>

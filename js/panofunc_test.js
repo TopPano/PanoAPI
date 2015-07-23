@@ -507,5 +507,15 @@ $(document).ready(function() {
 
         stats.update();
         renderScene();
+
+        var datahref = "http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/test.html?" + camera.fov.toString() + lon.toString() + lat.toString();
+        $(".fb-share-button").attr("data-href", datahref);
+    }
+    // $("meta[property=og\\:title]").attr("content", "hello");
+     function fbshareCurrentPage() {
+        var datahref = "http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/test.html?" + camera.fov.toString() + lon.toString() + lat.toString();
+        window.open("https://www.facebook.com/sharer/sharer.php?u="
+            + datahref
+            + "&t="+document.title, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; 
     }
 }); // end of jQuery
