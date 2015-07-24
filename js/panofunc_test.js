@@ -15,14 +15,31 @@ $(document).ready(function() {
 
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
-        lon = 0, // default: 0
-        lat = 0, // default: 0
+        lon = 0,
+        lat = 0,
         onMouseDownMouseX = 0,
         onMouseDownMouseY = 0,
         onMouseDownLon = 0,
         onMouseDownLat = 0,
         phi = 0,
         theta = 0;
+
+    // default position
+    var urlHash = window.location.hash;
+    console.log(isNaN(urlHash));
+    
+    if (!isNaN(urlHash)) {
+        lon = 0;
+        lat = 0;
+    }
+    else {
+        urlHash = urlHash.slice(1, urlHash.length)
+        // console.log(urlHash);
+        var urlHash2 = urlHash.split(',');
+        lat = parseInt(urlHash2[0]);
+        lon = parseInt(urlHash2[1]);
+    }
+
 
     // setting the constrained FoV
     var fovMax = 100,
