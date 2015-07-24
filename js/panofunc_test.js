@@ -17,12 +17,23 @@ $(document).ready(function() {
         isUserInteracting = false,
         lon = 0,
         lat = 0,
+        camFOV_dafault = 70,
         onMouseDownMouseX = 0,
         onMouseDownMouseY = 0,
         onMouseDownLon = 0,
         onMouseDownLat = 0,
         phi = 0,
         theta = 0;
+
+
+    // setting the constrained FoV
+    var fovMax = 100,
+        fovMin = 65;
+    var sphereSize = 100;
+    var littlePlanet = false;
+
+    // if changing the scene, need some transition effects
+    var isAnimate = false;
 
     // default position
     var urlHash = window.location.hash;
@@ -36,19 +47,14 @@ $(document).ready(function() {
         urlHash = urlHash.slice(1, urlHash.length)
         // console.log(urlHash);
         var urlHash2 = urlHash.split(',');
-        lat = parseInt(urlHash2[0]);
-        lon = parseInt(urlHash2[1]);
+        console.log(urlHash2);
+        if (urlHash2.length === 3) {
+            isNaN(urlHash2[0]) ? camFOV_dafault = 70 : camFOV_dafault = clamp(parseInt(urlHash2[0]), fovMin, fovMax);
+            isNaN(urlHash2[1]) ? lat = 0 : lat = parseInt(urlHash2[1]);
+            isNaN(urlHash2[2]) ? lon = 0 : lon = parseInt(urlHash2[2]);
+            console.log(parseInt(urlHash2[2]));
+        }   
     }
-
-
-    // setting the constrained FoV
-    var fovMax = 100,
-        fovMin = 65;
-    var sphereSize = 100;
-    var littlePlanet = false;
-
-    // if changing the scene, need some transition effects
-    var isAnimate = false;
 
     // initialization
     var stats = initStats();
@@ -70,7 +76,7 @@ $(document).ready(function() {
         var container, mesh;
         container = document.getElementById('container');
         camera = new THREE.PerspectiveCamera(
-            70, // Field of View
+            camFOV_dafault, // Field of View
             window.innerWidth / window.innerHeight, // Aspect Ratio
             1, // Near Plane
             1100 // Far Plane
@@ -272,7 +278,7 @@ $(document).ready(function() {
                 // changeScene(hitObj.name);
             }
         }
-        window.location.hash = lat + ',' + lon
+        window.location.hash = camera.fov + ',' + lat + ',' + lon
     }
 
     function onDocumentMouseWheel(event) {
@@ -296,6 +302,7 @@ $(document).ready(function() {
         if(camera.fov < fovMin) camera.fov = fovMin;
 
         camera.updateProjectionMatrix();
+        window.location.hash = camera.fov + ',' + lat + ',' + lon
     }
 
     function preventDefaultBrowser(event) {
@@ -402,6 +409,10 @@ $(document).ready(function() {
                 break;
             }
         }
+    }
+
+    function clamp(number, min, max) {
+        return number > max ? max : (number < min ? min : number);
     }
 
     function saveImage() {
