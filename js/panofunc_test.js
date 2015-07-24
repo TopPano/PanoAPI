@@ -35,7 +35,7 @@ $(document).ready(function() {
     // if changing the scene, need some transition effects
     var isAnimate = false;
 
-    // default position
+    // default fov and position
     var urlHash = window.location.hash;
     console.log(isNaN(urlHash));
     
@@ -52,6 +52,7 @@ $(document).ready(function() {
             isNaN(urlHash2[0]) ? camFOV_dafault = 70 : camFOV_dafault = clamp(parseInt(urlHash2[0]), fovMin, fovMax);
             isNaN(urlHash2[1]) ? lat = 0 : lat = parseInt(urlHash2[1]);
             isNaN(urlHash2[2]) ? lon = 0 : lon = parseInt(urlHash2[2]);
+            window.location.hash = camFOV_dafault + ',' + lat + ',' + lon
             console.log(parseInt(urlHash2[2]));
         }   
     }
@@ -536,15 +537,5 @@ $(document).ready(function() {
 
         stats.update();
         renderScene();
-
-        // var datahref = "http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/test.html?" + camera.fov.toString() + lon.toString() + lat.toString();
-        // $(".fb-share-button").attr("data-href", datahref);
     }
-    // $("meta[property=og\\:title]").attr("content", "hello");
-    //  function fbshareCurrentPage() {
-    //     var datahref = "http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/test.html?" + camera.fov.toString() + lon.toString() + lat.toString();
-    //     window.open("https://www.facebook.com/sharer/sharer.php?u="
-    //         + datahref
-    //         + "&t="+document.title, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false; 
-    // }
 }); // end of jQuery
