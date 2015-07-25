@@ -45,8 +45,7 @@ $(document).ready(function() {
     if (!isNaN(urlHash)) {
         lon = 0;
         lat = 0;
-    }
-    else {
+    } else {
         urlHash = urlHash.slice(1, urlHash.length)
         // console.log(urlHash);
         var urlHash2 = urlHash.split(',');
@@ -55,9 +54,18 @@ $(document).ready(function() {
             isNaN(urlHash2[0]) ? camFOV_dafault = 70 : camFOV_dafault = clamp(parseInt(urlHash2[0]), fovMin, fovMax);
             isNaN(urlHash2[1]) ? lat = 0 : lat = parseInt(urlHash2[1]);
             isNaN(urlHash2[2]) ? lon = 0 : lon = parseInt(urlHash2[2]);
+            if (isEmpty(urlHash2[0])) {
+                camFOV_dafault = 70;
+            }
+            if (isEmpty(urlHash2[1])) {
+                lat = 0;
+            }
+            if (isEmpty(urlHash2[2])) {
+                lon = 0;
+            }
             window.location.hash = camFOV_dafault + ',' + lat + ',' + lon;
             console.log(parseInt(urlHash2[2]));
-        }   
+        }
     }
 
     // initialization
@@ -327,6 +335,10 @@ $(document).ready(function() {
         window.location.hash = camera.fov + ',' + lat + ',' + lon
     }
 
+    function isEmpty(str) {
+        return (!str || 0 === str.length || /^\s*$/.test(str));
+    }
+    
     function hitSomething(event) {
         // If hit the objects(and the objects are visible)
         // ref: http://goo.gl/eQmcX3

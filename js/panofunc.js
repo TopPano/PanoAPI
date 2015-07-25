@@ -17,6 +17,7 @@ $(document).ready(function() {
         isUserInteracting = false,
         lon = 0, // default: 0
         lat = 0, // default: 0
+        camFOV_dafault = 70,
         onMouseDownMouseX = 0,
         onMouseDownMouseY = 0,
         onMouseDownLon = 0,
@@ -32,6 +33,38 @@ $(document).ready(function() {
 
     // if changing the scene, need some transition effects
     var isAnimate = false;
+
+    var urlHash = window.location.hash;
+    // console.log(isNaN(urlHash));
+
+    // timer for scroll stop
+    var timer = null;
+
+    if (!isNaN(urlHash)) {
+        lon = 0;
+        lat = 0;
+    } else {
+        urlHash = urlHash.slice(1, urlHash.length)
+        // console.log(urlHash);
+        var urlHash2 = urlHash.split(',');
+        console.log(urlHash2);
+        if (urlHash2.length === 3) {
+            isNaN(urlHash2[0]) ? camFOV_dafault = 70 : camFOV_dafault = clamp(parseInt(urlHash2[0]), fovMin, fovMax);
+            isNaN(urlHash2[1]) ? lat = 0 : lat = parseInt(urlHash2[1]);
+            isNaN(urlHash2[2]) ? lon = 0 : lon = parseInt(urlHash2[2]);
+            if (isEmpty(urlHash2[0])) {
+                camFOV_dafault = 70;
+            }
+            if (isEmpty(urlHash2[1])) {
+                lat = 0;
+            }
+            if (isEmpty(urlHash2[2])) {
+                lon = 0;
+            }
+            window.location.hash = camFOV_dafault + ',' + lat + ',' + lon;
+            console.log(parseInt(urlHash2[2]));
+        }
+    }
 
     // initialization
     var stats = initStats();
@@ -53,7 +86,7 @@ $(document).ready(function() {
         var container, mesh;
         container = document.getElementById('container');
         camera = new THREE.PerspectiveCamera(
-            70, // Field of View
+            camFOV_dafault, // Field of View
             window.innerWidth / window.innerHeight, // Aspect Ratio
             1, // Near Plane
             1100 // Far Plane
@@ -144,7 +177,7 @@ $(document).ready(function() {
                 var fileType = event.target.result.slice(5, 10);
                 // console.log(fileType);  // for 'image' or 'video'
 
-                if(fileType === 'image') {
+                if (fileType === 'image') {
                     material.map.image.src = event.target.result;
                     material.map.needsUpdate = true;
 
@@ -178,19 +211,19 @@ $(document).ready(function() {
         }, false);
         window.addEventListener('resize', onWindowResize, false);
         document.addEventListener('keyup', function(key) {
-            if(downloadLink.is(":visible") == true) {
-                if(key.which === 83) {
+            if (downloadLink.is(":visible") == true) {
+                if (key.which === 83) {
                     downloadLink.fadeOut(600);
                     canvas.fadeOut(600);
                 }
             } else
             // press 's'
-            if(key.which === 83) {
+            if (key.which === 83) {
                 saveImage();
             }
             // press 'p'
-            if(key.which === 80) {
-                if(showObj) {
+            if (key.which === 80) {
+                if (showObj) {
                     objects.forEach(function(item) {
                         item.visible = false;
                     });
@@ -205,11 +238,11 @@ $(document).ready(function() {
         });
 
         var snapshot = $('#snapshot');
-        if(canvas.is(":visible") == false)
+        if (canvas.is(":visible") == false)
             snapshot.click(function(event) {
                 // snapshot.prop('src', '../image/snapshot.png')
                 var downloadLink = $('#downLink');
-                if(downloadLink.is(":visible") == false)
+                if (downloadLink.is(":visible") == false)
                     saveImage();
             });
         $('#loading').hide();
@@ -220,7 +253,7 @@ $(document).ready(function() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         var canvas = $('#mycanvas');
-        if(canvas.is(":visible") == true)
+        if (canvas.is(":visible") == true)
             drawCanvas();
     }
 
@@ -240,20 +273,20 @@ $(document).ready(function() {
     }
 
     function onDocumentMouseMove(event) {
-        if(isUserInteracting === true) {
+        if (isUserInteracting === true) {
             deltaX = onPointerDownPointerX - event.clientX,
-                deltaY = event.clientY - onPointerDownPointerY;
+            deltaY = event.clientY - onPointerDownPointerY;
 
             lon = deltaX * 0.1 + onPointerDownLon;
             lat = deltaY * 0.1 + onPointerDownLat;
         }
 
         // check is hover something, and change the color
-        if(showObj) {
+        if (showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
             var hitObj = hit[1];
-            if(isHit) {
+            if (isHit) {
                 hitObj.material.color.set('orange');
             } else {
                 objects.forEach(function(item) {
@@ -280,46 +313,63 @@ $(document).ready(function() {
 
 
         // check if hit something, and change the sphere
-        if(showObj) {
+        if (showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
             var hitObj = hit[1];
-            if(isHit) {
+            if (isHit) {
                 // change the scene
                 changeScene(hitObj.name);
             }
         }
+        updateURL();
     }
 
     function onDocumentMouseWheel(event) {
         // check FoV range
-        if(camera.fov <= fovMax && camera.fov >= fovMin) {
+        if (camera.fov <= fovMax && camera.fov >= fovMin) {
             // WebKit (Safari / Chrome)
-            if(event.wheelDeltaY) {
+            if (event.wheelDeltaY) {
                 camera.fov -= event.wheelDeltaY * 0.05;
             }
             // Opera / IE 9
-            else if(event.wheelDelta) {
+            else if (event.wheelDelta) {
                 camera.fov -= event.wheelDelta * 0.05;
             }
             // Firefox
-            else if(event.detail) {
+            else if (event.detail) {
                 camera.fov += event.detail * 1.0;
             }
         }
 
-        if(camera.fov > fovMax) camera.fov = fovMax;
-        if(camera.fov < fovMin) camera.fov = fovMin;
+        if (camera.fov > fovMax) camera.fov = fovMax;
+        if (camera.fov < fovMin) camera.fov = fovMin;
 
         camera.updateProjectionMatrix();
+
+        // update URL after scroll stops for 0.1 second
+        if (timer !== null) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+            updateURL();
+        }, 100);
     }
 
     function preventDefaultBrowser(event) {
         // Chrome / Opera / Firefox
-        if(event.preventDefault)
+        if (event.preventDefault)
             event.preventDefault();
         // IE 9
         event.returnValue = false;
+    }
+
+    function updateURL() {
+        window.location.hash = camera.fov + ',' + lat + ',' + lon
+    }
+
+    function isEmpty(str) {
+        return (!str || 0 === str.length || /^\s*$/.test(str));
     }
 
     function hitSomething(event) {
@@ -334,10 +384,10 @@ $(document).ready(function() {
         mouse3D.normalize();
         var raycaster = new THREE.Raycaster(camera.position, mouse3D);
         var intersects = raycaster.intersectObjects(objects);
-        if(intersects.length > 0) {
+        if (intersects.length > 0) {
             // return which object is hit
-            for(var i = 0; i < objects.length; i++) {
-                if(intersects[0].object.position.distanceTo(objects[i].position) < 10) {
+            for (var i = 0; i < objects.length; i++) {
+                if (intersects[0].object.position.distanceTo(objects[i].position) < 10) {
                     return [true, objects[i]];
                 }
             }
@@ -347,7 +397,7 @@ $(document).ready(function() {
 
     function addObject() {
         nowSphere = flyInfo.sphere[nowSphereID];
-        for(var i = 0; i < nowSphere.transition.length; i++) {
+        for (var i = 0; i < nowSphere.transition.length; i++) {
             var nowTransition = nowSphere.transition[i];
             var latObj = nowTransition.position.lat,
                 lonObj = nowTransition.position.lon,
@@ -381,8 +431,8 @@ $(document).ready(function() {
 
     function changeScene(_nextSceneID) {
         // remove all object in the scene (except for the last sphere)
-        if(scene.children.length > 1) {
-            for(var i = 1; i <= scene.children.length - 1; i++) {
+        if (scene.children.length > 1) {
+            for (var i = 1; i <= scene.children.length - 1; i++) {
                 scene.remove(scene.children[i]);
             }
         }
@@ -413,11 +463,15 @@ $(document).ready(function() {
 
     function sleep(milliseconds) {
         var start = new Date().getTime();
-        for(var i = 0; i < 1e7; i++) {
-            if((new Date().getTime() - start) > milliseconds) {
+        for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds) {
                 break;
             }
         }
+    }
+
+    function clamp(number, min, max) {
+        return number > max ? max : (number < min ? min : number);
     }
 
     function saveImage() {
@@ -487,7 +541,7 @@ $(document).ready(function() {
     function preLoadImages() {
         var map_init, texture_init, material_init, mesh_init;
         var geometry_init = new THREE.SphereGeometry(sphereSize, 60, 40);
-        for(var i = flyInfo.sphere.length - 1; i >= 0; i--) {
+        for (var i = flyInfo.sphere.length - 1; i >= 0; i--) {
             map_init = './image/fly/' + i + '.jpg';
             texture_init = new THREE.ImageUtils.loadTexture(map_init);
             texture_init.minFilter = THREE.LinearFilter;
@@ -503,9 +557,9 @@ $(document).ready(function() {
     }
 
     function renderScene() {
-        if(isAnimate) {
+        if (isAnimate) {
             var fadeInSpeed = 0.025; // ms
-            if(material2.opacity >= 1) {
+            if (material2.opacity >= 1) {
                 isAnimate = false;
                 scene.remove(scene.children[0]); // remove last sphere
                 requestAnimationFrame(update);

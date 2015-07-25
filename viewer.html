@@ -5,6 +5,10 @@
 	<meta charset="UTF-8">
 	<title>Panorama Viewer</title>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<meta property="og:title" content="Panorama Viewer"/>
+		<meta property="og:image" content="http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/map/smallRapeseed.jpg"/>
+		<meta property="og:site_name" content="Pano Viewer"/>
+		<meta property="og:description" content="This is the test for pano viewer."/>
 	<style>
 		body {
 			background-color: #000000;
@@ -53,6 +57,21 @@
 		a {
 			color: rgba(0, 0, 0, 0);
 		}
+		.fb-share {
+			position: absolute;
+			bottom: 15px;
+			right: 15px;
+			background-image: url("./image/share.png");
+			background-size: 60px 20px;
+			background-repeat: no-repeat;
+			margin: 0;
+			padding: 0;
+			height: 20px;
+			width: 60px;
+			}
+		.fb-share:active, .fb-share:focus, .fb-share:hover {
+			background-image: url("./image/share-hover.png");
+		}
 		/*#snapshot:hover {
 				content: url('./image/snapshot_hover.png');
 				height: 50px;
@@ -67,6 +86,14 @@
 	<script src="./js/Projector.js"></script>
 	<script src="./js/stats.js"></script>
 	<script type="text/javascript" src="./json/fly.json"></script>
+	<script language="javascript">
+	function FacebookShare() {
+	    window.open("https://www.facebook.com/sharer/sharer.php?u=" 
+	    	+ escape(window.location.href) 
+	    	+ "&t=" + document.title, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+	    return false;
+	}
+	</script>
 </head>
 
 <body>
@@ -89,6 +116,7 @@
 			<img src="./image/download.png" height="50px" width="50px">
 		</a>
 	</div>
+	<a class="fb-share" href="javascript:FacebookShare()" target="_blank" alt="Share on Facebook">Facebook</a>
 	<div id="Stats-output"></div>
 
 </body>
