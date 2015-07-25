@@ -37,8 +37,11 @@ $(document).ready(function() {
 
     // default fov and position
     var urlHash = window.location.hash;
-    console.log(isNaN(urlHash));
+    // console.log(isNaN(urlHash));
     
+    // timer for scroll stop
+    var timer = null;
+
     if (!isNaN(urlHash)) {
         lon = 0;
         lat = 0;
@@ -52,7 +55,7 @@ $(document).ready(function() {
             isNaN(urlHash2[0]) ? camFOV_dafault = 70 : camFOV_dafault = clamp(parseInt(urlHash2[0]), fovMin, fovMax);
             isNaN(urlHash2[1]) ? lat = 0 : lat = parseInt(urlHash2[1]);
             isNaN(urlHash2[2]) ? lon = 0 : lon = parseInt(urlHash2[2]);
-            window.location.hash = camFOV_dafault + ',' + lat + ',' + lon
+            window.location.hash = camFOV_dafault + ',' + lat + ',' + lon;
             console.log(parseInt(urlHash2[2]));
         }   
     }
@@ -127,7 +130,6 @@ $(document).ready(function() {
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        // add listener
         document.addEventListener('mousedown', onDocumentMouseDown, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         document.addEventListener('mouseup', onDocumentMouseUp, false);
@@ -279,7 +281,7 @@ $(document).ready(function() {
                 // changeScene(hitObj.name);
             }
         }
-        window.location.hash = camera.fov + ',' + lat + ',' + lon
+        updateURL();
     }
 
     function onDocumentMouseWheel(event) {
@@ -303,7 +305,14 @@ $(document).ready(function() {
         if(camera.fov < fovMin) camera.fov = fovMin;
 
         camera.updateProjectionMatrix();
-        window.location.hash = camera.fov + ',' + lat + ',' + lon
+        
+        // update URL after scroll stops for 0.1 second
+        if(timer !== null) {
+            clearTimeout(timer);        
+        }
+        timer = setTimeout(function() {
+            updateURL();
+        }, 100);
     }
 
     function preventDefaultBrowser(event) {
@@ -312,6 +321,10 @@ $(document).ready(function() {
             event.preventDefault();
         // IE 9
         event.returnValue = false;
+    }
+
+    function updateURL() {
+        window.location.hash = camera.fov + ',' + lat + ',' + lon
     }
 
     function hitSomething(event) {
@@ -538,4 +551,5 @@ $(document).ready(function() {
         stats.update();
         renderScene();
     }
+
 }); // end of jQuery
