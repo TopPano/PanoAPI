@@ -34,6 +34,9 @@ $(document).ready(function() {
     // if changing the scene, need some transition effects
     var isAnimate = false;
 
+    // if user uses mobile device
+    var isTouch = false;
+
     var urlHash = window.location.hash;
     // console.log(isNaN(urlHash));
 
@@ -140,6 +143,7 @@ $(document).ready(function() {
 
         addObject();
 
+        // WebGLRenderer for better quality if had webgl
         renderer = Detector.webgl ? new THREE.WebGLRenderer({
             preserveDrawingBuffer: true,
             autoClearColor: false
@@ -156,6 +160,9 @@ $(document).ready(function() {
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         document.addEventListener('mouseup', onDocumentMouseUp, false);
         document.addEventListener('mousewheel', onDocumentMouseWheel, false);
+        document.addEventListener('touchstart', onDocumentTouchStart, false);
+        document.addEventListener('touchmove', onDocumentTouchMove, false);
+        document.addEventListener('touchend', onDocumentTouchEnd, false);
         document.addEventListener('DOMMouseScroll', onDocumentMouseWheel, false);
         document.addEventListener('dragover', function(event) {
             preventDefaultBrowser(event);
@@ -311,7 +318,7 @@ $(document).ready(function() {
         // lat = deltaY * inertiaRate + event.clientY;
 
 
-
+        isTouch = false;
         // check if hit something, and change the sphere
         if (showObj) {
             var hit = hitSomething(event);
@@ -325,7 +332,44 @@ $(document).ready(function() {
         updateURL();
     }
 
+    function onDocumentTouchStart(event) {
+        preventDefaultBrowser(event);
+        isUserInteracting = true;
+
+        onTouchStartPointerX = event.touches.item(0).pageX;
+        onTouchStartPointerY = event.touches.item(0).pageY;
+
+        onTouchStartLon = lon;
+        onTouchStartLat = lat;
+    }
+
+    function onDocumentTouchMove(event) {
+        if (isUserInteracting === true) {
+            deltaX = onTouchStartPointerX - event.touches.item(0).pageX,
+            deltaY = event.touches.item(0).pageY - onTouchStartPointerY;
+
+            lon = deltaX * 0.2 + onTouchStartLon;
+            lat = deltaY * 0.2 + onTouchStartLat;
+        }   
+    }
+
+    function onDocumentTouchEnd(event) {
+        isTouch = true;
+        // alert(deltaX+" "+deltaY);  
+        if (showObj) {
+            var hit = hitSomething(event);
+            var isHit = hit[0];
+            var hitObj = hit[1];
+            if (isHit) {
+                // change the scene
+                changeScene(hitObj.name);
+            }
+        }
+        updateURL();
+    }
+
     function onDocumentMouseWheel(event) {
+        preventDefault()
         // check FoV range
         if (camera.fov <= fovMax && camera.fov >= fovMin) {
             // WebKit (Safari / Chrome)
@@ -378,7 +422,15 @@ $(document).ready(function() {
 
         var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
             -(event.clientY / window.innerHeight) * 2 + 1, //y
-            0.5); //z
+            0.5); // z
+        
+        // TODO: mobile viewport width / height
+        if (isTouch) {
+            mouse3D = THREE.Vector3((event.touches.item(0).pageX / window.innerWidth) * 2 - 1, //x
+            -(event.touches.item(0).pageY / window.innerHeight) * 2 + 1, //y
+            0.5); // z
+        }
+        
         mouse3D.unproject(camera);
         mouse3D.sub(camera.position);
         mouse3D.normalize();

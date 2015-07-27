@@ -127,6 +127,7 @@ $(document).ready(function() {
 
         // addObject();
 
+        // WebGLRenderer for better quality if had webgl
         renderer = Detector.webgl ? new THREE.WebGLRenderer({
             preserveDrawingBuffer: true,
             autoClearColor: false
