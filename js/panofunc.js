@@ -27,7 +27,7 @@ $(document).ready(function() {
 
     // setting the constrained FoV
     var fovMax = 100,
-        fovMin = 45;
+        fovMin = 60;
     var sphereSize = 100;
     var littlePlanet = false;
 
@@ -423,7 +423,7 @@ $(document).ready(function() {
     }
 
     function onDocumentMouseWheel(event) {
-        preventDefault()
+        preventDefaultBrowser(event);
         // check FoV range
         if (camera.fov <= fovMax && camera.fov >= fovMin) {
             // WebKit (Safari / Chrome)
