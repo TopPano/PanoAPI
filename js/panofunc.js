@@ -35,7 +35,8 @@ $(document).ready(function() {
     var isAnimate = false;
 
     // if user uses mobile device
-    var isTouch = false;
+    var isTouch = false,
+        TouchNumber = 0;
 
     var urlHash = window.location.hash;
     // console.log(isNaN(urlHash));
@@ -337,6 +338,7 @@ $(document).ready(function() {
         isUserInteracting = true;
         var touchNum = event.touches.length;
         if (touchNum === 1) {
+            TouchNumber = 1;
             onTouchStartPointerX = event.touches.item(0).pageX;
             onTouchStartPointerY = event.touches.item(0).pageY;
 
@@ -344,6 +346,7 @@ $(document).ready(function() {
             onTouchStartLat = lat;
         }
         if (touchNum === 2) {
+            TouchNumber = 2;
             onTouchStartPointerX0 = event.touches.item(0).pageX;
             onTouchStartPointerY0 = event.touches.item(0).pageY;
             onTouchStartPointerX1 = event.touches.item(1).pageX;
@@ -352,7 +355,7 @@ $(document).ready(function() {
             deltaStartDisX = onTouchStartPointerX1 - onTouchStartPointerX0;
             deltaStartDisY = onTouchStartPointerY1 - onTouchStartPointerY0;
             deltaStart = deltaStartDisX * deltaStartDisX + deltaStartDisY * deltaStartDisY;
-
+            TouchNumber = 2;
         }
 
     }
@@ -361,6 +364,10 @@ $(document).ready(function() {
         if (isUserInteracting === true) {
             var touchNum = event.touches.length;
             if (touchNum === 1) {
+                if (TouchNumber === 2) {
+                    sleep(200);
+                    return;
+                }
                 deltaX = onTouchStartPointerX - event.touches.item(0).pageX,
                 deltaY = event.touches.item(0).pageY - onTouchStartPointerY;
 
@@ -380,11 +387,11 @@ $(document).ready(function() {
                 deltaDis = Math.sqrt(deltaMove) - Math.sqrt(deltaStart);
                 // fingers closer (and also check FoV range)
                 if (deltaDis < 0 && camera.fov <= fovMax && camera.fov >= fovMin) {
-                    camera.fov -= deltaDis * 0.05;
+                    camera.fov -= deltaDis * 0.04;
                 }
                 // fingers further
                 if (deltaDis > 0 && camera.fov <= fovMax && camera.fov >= fovMin) {
-                    camera.fov -= deltaDis * 0.05;
+                    camera.fov -= deltaDis * 0.04;
                 }
 
                 if (camera.fov > fovMax) camera.fov = fovMax;
@@ -411,6 +418,7 @@ $(document).ready(function() {
         deltaStart = 0;
         deltaMove = 0;
 
+        // TODO: change the URL with hash in mobile devices 
         updateURL();
     }
 
@@ -455,7 +463,7 @@ $(document).ready(function() {
     }
 
     function updateURL() {
-        window.location.hash = camera.fov + ',' + lat + ',' + lon
+        window.location.hash = camera.fov + ',' + lat + ',' + lon;
     }
 
     function isEmpty(str) {
