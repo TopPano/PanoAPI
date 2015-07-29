@@ -335,22 +335,82 @@ $(document).ready(function() {
     function onDocumentTouchStart(event) {
         preventDefaultBrowser(event);
         isUserInteracting = true;
+        var touchNum = event.touches.length;
+        if (touchNum === 1) {
+            onTouchStartPointerX = event.touches.item(0).pageX;
+            onTouchStartPointerY = event.touches.item(0).pageY;
 
-        onTouchStartPointerX = event.touches.item(0).pageX;
-        onTouchStartPointerY = event.touches.item(0).pageY;
+            onTouchStartLon = lon;
+            onTouchStartLat = lat;
+        }
+        if (touchNum === 2) {
+            onTouchStartPointerX0 = event.touches.item(0).pageX;
+            onTouchStartPointerY0 = event.touches.item(0).pageY;
+            onTouchStartPointerX1 = event.touches.item(1).pageX;
+            onTouchStartPointerY1 = event.touches.item(1).pageY;
 
-        onTouchStartLon = lon;
-        onTouchStartLat = lat;
+            deltaStartDisX = onTouchStartPointerX1 - onTouchStartPointerX0;
+            deltaStartDisY = onTouchStartPointerY1 - onTouchStartPointerY0;
+            deltaStart = deltaStartDisX*deltaStartDisX + deltaStartDisY*deltaStartDisY;
+        }
+
     }
 
     function onDocumentTouchMove(event) {
         if (isUserInteracting === true) {
-            deltaX = onTouchStartPointerX - event.touches.item(0).pageX,
-            deltaY = event.touches.item(0).pageY - onTouchStartPointerY;
+            var touchNum = event.touches.length;
+            if (touchNum === 1) {
+                deltaX = onTouchStartPointerX - event.touches.item(0).pageX,
+                deltaY = event.touches.item(0).pageY - onTouchStartPointerY;
 
-            lon = deltaX * 0.2 + onTouchStartLon;
-            lat = deltaY * 0.2 + onTouchStartLat;
-        }   
+                lon = deltaX * 0.2 + onTouchStartLon;
+                lat = deltaY * 0.2 + onTouchStartLat;
+            }
+            if (touchNum === 2) {
+                onTouchMovePointerX0 = event.touches.item(0).pageX;
+                onTouchMovePointerY0 = event.touches.item(0).pageY;
+                onTouchMovePointerX1 = event.touches.item(1).pageX;
+                onTouchMovePointerY1 = event.touches.item(1).pageY;
+
+                deltaMoveDisX = onTouchMovePointerX1 - onTouchMovePointerX0;
+                deltaMoveDisY = onTouchMovePointerY1 - onTouchMovePointerY0;
+                deltaMove = deltaMoveDisX*deltaMoveDisX + deltaMoveDisY*deltaMoveDisY;
+                
+                deltaDis = Math.sqrt(deltaMove) - Math.sqrt(deltaStart);
+                // fingers closer
+                if (deltaDis < 0) {
+                    camera.fov -= deltaDis * 0.05; 
+                    // alert("closer");
+                }
+                // fingers further
+                if (deltaDis > 0) {
+                    camera.fov -= deltaDis * 0.05;
+                    // alert("further");
+                }
+                // console.log("kerker");
+
+                // // check FoV range
+                // if (camera.fov <= fovMax && camera.fov >= fovMin) {
+                //     // WebKit (Safari / Chrome)
+                //     if (event.wheelDeltaY) {
+                //         camera.fov -= event.wheelDeltaY * 0.05;
+                //     }
+                //     // Opera / IE 9
+                //     else if (event.wheelDelta) {
+                //         camera.fov -= event.wheelDelta * 0.05;
+                //     }
+                //     // Firefox
+                //     else if (event.detail) {
+                //         camera.fov += event.detail * 1.0;
+                //     }
+                // }
+
+                // if (camera.fov > fovMax) camera.fov = fovMax;
+                // if (camera.fov < fovMin) camera.fov = fovMin;
+
+                camera.updateProjectionMatrix();
+            }
+        }
     }
 
     function onDocumentTouchEnd(event) {
@@ -364,6 +424,10 @@ $(document).ready(function() {
                 // change the scene
                 changeScene(hitObj.name);
             }
+        }
+        if (touchNum === 2) {
+            deltaStart = 0;
+            deltaMove = 0;
         }
         updateURL();
     }
@@ -423,14 +487,14 @@ $(document).ready(function() {
         var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
             -(event.clientY / window.innerHeight) * 2 + 1, //y
             0.5); // z
-        
+
         // TODO: mobile viewport width / height
         if (isTouch) {
             mouse3D = THREE.Vector3((event.touches.item(0).pageX / window.innerWidth) * 2 - 1, //x
-            -(event.touches.item(0).pageY / window.innerHeight) * 2 + 1, //y
-            0.5); // z
+                -(event.touches.item(0).pageY / window.innerHeight) * 2 + 1, //y
+                0.5); // z
         }
-        
+
         mouse3D.unproject(camera);
         mouse3D.sub(camera.position);
         mouse3D.normalize();
