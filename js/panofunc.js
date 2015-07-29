@@ -351,7 +351,8 @@ $(document).ready(function() {
 
             deltaStartDisX = onTouchStartPointerX1 - onTouchStartPointerX0;
             deltaStartDisY = onTouchStartPointerY1 - onTouchStartPointerY0;
-            deltaStart = deltaStartDisX*deltaStartDisX + deltaStartDisY*deltaStartDisY;
+            deltaStart = deltaStartDisX * deltaStartDisX + deltaStartDisY * deltaStartDisY;
+
         }
 
     }
@@ -374,48 +375,29 @@ $(document).ready(function() {
 
                 deltaMoveDisX = onTouchMovePointerX1 - onTouchMovePointerX0;
                 deltaMoveDisY = onTouchMovePointerY1 - onTouchMovePointerY0;
-                deltaMove = deltaMoveDisX*deltaMoveDisX + deltaMoveDisY*deltaMoveDisY;
-                
+                deltaMove = deltaMoveDisX * deltaMoveDisX + deltaMoveDisY * deltaMoveDisY;
+
                 deltaDis = Math.sqrt(deltaMove) - Math.sqrt(deltaStart);
-                // fingers closer
-                if (deltaDis < 0) {
-                    camera.fov -= deltaDis * 0.05; 
-                    // alert("closer");
+                // fingers closer (and also check FoV range)
+                if (deltaDis < 0 && camera.fov <= fovMax && camera.fov >= fovMin) {
+                    camera.fov -= deltaDis * 0.05;
                 }
                 // fingers further
-                if (deltaDis > 0) {
+                if (deltaDis > 0 && camera.fov <= fovMax && camera.fov >= fovMin) {
                     camera.fov -= deltaDis * 0.05;
-                    // alert("further");
                 }
-                // console.log("kerker");
 
-                // // check FoV range
-                // if (camera.fov <= fovMax && camera.fov >= fovMin) {
-                //     // WebKit (Safari / Chrome)
-                //     if (event.wheelDeltaY) {
-                //         camera.fov -= event.wheelDeltaY * 0.05;
-                //     }
-                //     // Opera / IE 9
-                //     else if (event.wheelDelta) {
-                //         camera.fov -= event.wheelDelta * 0.05;
-                //     }
-                //     // Firefox
-                //     else if (event.detail) {
-                //         camera.fov += event.detail * 1.0;
-                //     }
-                // }
-
-                // if (camera.fov > fovMax) camera.fov = fovMax;
-                // if (camera.fov < fovMin) camera.fov = fovMin;
+                if (camera.fov > fovMax) camera.fov = fovMax;
+                if (camera.fov < fovMin) camera.fov = fovMin;
 
                 camera.updateProjectionMatrix();
+
             }
         }
     }
 
     function onDocumentTouchEnd(event) {
         isTouch = true;
-        // alert(deltaX+" "+deltaY);  
         if (showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
@@ -425,10 +407,10 @@ $(document).ready(function() {
                 changeScene(hitObj.name);
             }
         }
-        if (touchNum === 2) {
-            deltaStart = 0;
-            deltaMove = 0;
-        }
+
+        deltaStart = 0;
+        deltaMove = 0;
+
         updateURL();
     }
 
