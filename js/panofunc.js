@@ -364,6 +364,7 @@ $(document).ready(function() {
         if (isUserInteracting === true) {
             var touchNum = event.touches.length;
             if (touchNum === 1) {
+                // remove abnormal behaviors caused from one-finger-touch after pinching
                 if (TouchNumber === 2) {
                     sleep(200);
                     return;
@@ -383,8 +384,8 @@ $(document).ready(function() {
                 deltaMoveDisX = onTouchMovePointerX1 - onTouchMovePointerX0;
                 deltaMoveDisY = onTouchMovePointerY1 - onTouchMovePointerY0;
                 deltaMove = deltaMoveDisX * deltaMoveDisX + deltaMoveDisY * deltaMoveDisY;
-
                 deltaDis = Math.sqrt(deltaMove) - Math.sqrt(deltaStart);
+
                 // fingers closer (and also check FoV range)
                 if (deltaDis < 0 && camera.fov <= fovMax && camera.fov >= fovMin) {
                     camera.fov -= deltaDis * 0.04;
@@ -516,10 +517,12 @@ $(document).ready(function() {
 
             var geometryObj = new THREE.BoxGeometry(objBoxSize, objBoxSize, 0);
             var materialObj = new THREE.MeshBasicMaterial({
-                color: 'white',
-                opacity: 0.35
+                // color: 'white',
+                map: THREE.ImageUtils.loadTexture("./image/arrow1.png"),
+                opacity: 0.6,
+                transparent: true
             });
-            materialObj.transparent = true;
+            // materialObj.transparent = true;
             var sphereObj = new THREE.Mesh(geometryObj, materialObj);
 
             var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
