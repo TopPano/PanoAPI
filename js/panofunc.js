@@ -15,7 +15,7 @@ $(document).ready(function() {
         isUserInteracting = false,
         lon = 0, // default: 0
         lat = 0, // default: 0
-        camFOV_dafault = 70,
+        camFOV_dafault = 75,
         onMouseDownMouseX = 0,
         onMouseDownMouseY = 0,
         onMouseDownLon = 0,
@@ -34,7 +34,8 @@ $(document).ready(function() {
 
     // if user uses mobile device
     var isTouch = false,
-        TouchNumber = 0;
+        TouchNumber = 0,
+        deltaMove_last = 0;
 
     var urlHash = window.location.hash;
     // console.log(isNaN(urlHash));
@@ -43,7 +44,7 @@ $(document).ready(function() {
     var timer = null;
 
     if (!isNaN(urlHash)) {
-        lon = 0;
+        lon = -30;
         lat = 0;
     } else {
         urlHash = urlHash.slice(1, urlHash.length)
@@ -51,12 +52,12 @@ $(document).ready(function() {
         var urlHash2 = urlHash.split(',');
         console.log(urlHash2);
         if (urlHash2.length === 4) {
-            isNaN(urlHash2[0]) ? camFOV_dafault = 70 : camFOV_dafault = clamp(parseInt(urlHash2[0]), fovMin, fovMax);
+            isNaN(urlHash2[0]) ? camFOV_dafault = 75 : camFOV_dafault = clamp(parseInt(urlHash2[0]), fovMin, fovMax);
             isNaN(urlHash2[1]) ? lat = 0 : lat = parseInt(urlHash2[1]);
             isNaN(urlHash2[2]) ? lon = 0 : lon = parseInt(urlHash2[2]);
             isNaN(urlHash2[3]) ? nowSphereID = 0 : nowSphereID = parseInt(urlHash2[3]);
             if (isEmpty(urlHash2[0])) {
-                camFOV_dafault = 70;
+                camFOV_dafault = 75;
             }
             if (isEmpty(urlHash2[1])) {
                 lat = 0;
@@ -67,8 +68,8 @@ $(document).ready(function() {
             if (isEmpty(urlHash2[3])) {
                 nowSphereID = 0;
             }
-            window.location.hash = camFOV_dafault + ',' + lat + ',' + lon+ ',' + nowSphereID;
-            console.log(parseInt(urlHash2[2]));
+            window.location.hash = camFOV_dafault + ',' + lat + ',' + lon + ',' + nowSphereID;
+            // console.log(parseInt(urlHash2[2]));
         }
     }
 
@@ -358,7 +359,9 @@ $(document).ready(function() {
             deltaStartDisX = onTouchStartPointerX1 - onTouchStartPointerX0;
             deltaStartDisY = onTouchStartPointerY1 - onTouchStartPointerY0;
             deltaStart = deltaStartDisX * deltaStartDisX + deltaStartDisY * deltaStartDisY;
+            deltaStart = Math.sqrt(deltaStart);
             TouchNumber = 2;
+            deltaMove_last = deltaStart;
         }
 
     }
@@ -387,22 +390,31 @@ $(document).ready(function() {
                 deltaMoveDisX = onTouchMovePointerX1 - onTouchMovePointerX0;
                 deltaMoveDisY = onTouchMovePointerY1 - onTouchMovePointerY0;
                 deltaMove = deltaMoveDisX * deltaMoveDisX + deltaMoveDisY * deltaMoveDisY;
-                deltaDis = Math.sqrt(deltaMove) - Math.sqrt(deltaStart);
+                deltaMove = Math.sqrt(deltaMove);
+                deltaDis = deltaMove - deltaStart;
 
                 // fingers closer (and also check FoV range)
-                if (deltaDis < 0 && camera.fov <= fovMax && camera.fov >= fovMin) {
-                    camera.fov -= deltaDis * 0.04;
+                if (deltaDis < 0 && camera.fov <= fovMax && camera.fov >= fovMin) { 
+                    // if from closer to futher
+                    if (deltaMove > deltaMove_last)
+                        deltaStart = deltaMove;
+                    else
+                        camera.fov -= deltaDis * 0.04;
                 }
                 // fingers further
                 if (deltaDis > 0 && camera.fov <= fovMax && camera.fov >= fovMin) {
-                    camera.fov -= deltaDis * 0.04;
+                    // if from futher to closer
+                    if (deltaMove < deltaMove_last)
+                        deltaStart = deltaMove;
+                    else
+                        camera.fov -= deltaDis * 0.04;
                 }
 
                 if (camera.fov > fovMax) camera.fov = fovMax;
                 if (camera.fov < fovMin) camera.fov = fovMin;
 
                 camera.updateProjectionMatrix();
-
+                deltaMove_last = deltaMove;
             }
         }
     }
@@ -421,7 +433,7 @@ $(document).ready(function() {
 
         deltaStart = 0;
         deltaMove = 0;
-
+        deltaMove_last = 0;
         // TODO: change the URL with hash in mobile devices 
         updateURL();
     }
@@ -563,7 +575,7 @@ $(document).ready(function() {
 
         mesh2 = new THREE.Mesh(geometry2, material2);
         material2.transparent = true;
-        for(var i = 1 ; i < scene.children.length ; i++)
+        for (var i = 1; i < scene.children.length; i++)
             scene.remove(scene.children[i]); // remove objects
         scene.add(mesh2);
 
