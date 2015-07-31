@@ -11,7 +11,7 @@ $(document).ready(function() {
     var objects = [],
         showObj = true;
 
-    var defaultMap = './image/fly/' + nowSphereID + '.jpg';
+    var defaultMap = './image/fly2/' + nowSphereID + '.jpg';
 
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
@@ -546,8 +546,8 @@ $(document).ready(function() {
             }
         }
 
-        var nowMap = './image/fly/' + nowSphereID + '.jpg';
-        var nextMap = './image/fly/' + _nextSceneID + '.jpg';
+        var nowMap = './image/fly2/' + nowSphereID + '.jpg';
+        var nextMap = './image/fly2/' + _nextSceneID + '.jpg';
 
         texture2 = new THREE.ImageUtils.loadTexture(nextMap);
         texture2.minFilter = THREE.LinearFilter;
@@ -559,7 +559,8 @@ $(document).ready(function() {
 
         mesh2 = new THREE.Mesh(geometry2, material2);
         material2.transparent = true;
-
+        for(var i = 1 ; i < scene.children.length ; i++)
+            scene.remove(scene.children[i]); // remove objects
         scene.add(mesh2);
 
         // remove all elements in objects array
@@ -667,10 +668,11 @@ $(document).ready(function() {
 
     function renderScene() {
         if (isAnimate) {
-            var fadeInSpeed = 0.025; // ms
+            var fadeInSpeed = 0.02; // ms
             if (material2.opacity >= 1) {
                 isAnimate = false;
                 scene.remove(scene.children[0]); // remove last sphere
+                // console.log(scene.children.length);
                 requestAnimationFrame(update);
                 addObject();
                 return 0;
