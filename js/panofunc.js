@@ -11,8 +11,6 @@ $(document).ready(function() {
     var objects = [],
         showObj = true;
 
-    var defaultMap = './image/fly2/' + nowSphereID + '.jpg';
-
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
         lon = 0, // default: 0
@@ -52,10 +50,11 @@ $(document).ready(function() {
         // console.log(urlHash);
         var urlHash2 = urlHash.split(',');
         console.log(urlHash2);
-        if (urlHash2.length === 3) {
+        if (urlHash2.length === 4) {
             isNaN(urlHash2[0]) ? camFOV_dafault = 70 : camFOV_dafault = clamp(parseInt(urlHash2[0]), fovMin, fovMax);
             isNaN(urlHash2[1]) ? lat = 0 : lat = parseInt(urlHash2[1]);
             isNaN(urlHash2[2]) ? lon = 0 : lon = parseInt(urlHash2[2]);
+            isNaN(urlHash2[3]) ? nowSphereID = 0 : nowSphereID = parseInt(urlHash2[3]);
             if (isEmpty(urlHash2[0])) {
                 camFOV_dafault = 70;
             }
@@ -65,11 +64,15 @@ $(document).ready(function() {
             if (isEmpty(urlHash2[2])) {
                 lon = 0;
             }
-            window.location.hash = camFOV_dafault + ',' + lat + ',' + lon;
+            if (isEmpty(urlHash2[3])) {
+                nowSphereID = 0;
+            }
+            window.location.hash = camFOV_dafault + ',' + lat + ',' + lon+ ',' + nowSphereID;
             console.log(parseInt(urlHash2[2]));
         }
     }
 
+    var defaultMap = './image/fly3/' + nowSphereID + '.JPG';
     // initialization
     var stats = initStats();
     init();
@@ -464,7 +467,7 @@ $(document).ready(function() {
     }
 
     function updateURL() {
-        window.location.hash = camera.fov + ',' + lat + ',' + lon;
+        window.location.hash = camera.fov + ',' + lat + ',' + lon + ',' + nowSphereID;
     }
 
     function isEmpty(str) {
@@ -530,7 +533,8 @@ $(document).ready(function() {
                 zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
             sphereObj.position.set(xObj, yObj, zObj);
 
-            sphereObj.rotation.set(0, (Math.sin(thetaObj) - 1) * Math.PI / 2, 0);
+            // sphereObj.rotation.set(0, (Math.sin(thetaObj) - 1) * Math.PI / 2, 0);
+            // sphereObj.rotation.set(0, camera.target.y+90, 0);
             // record obj's position for checking whether hitting objs
             sphereObj.name = nowTransition.nextSceneID;
             scene.add(sphereObj);
@@ -546,8 +550,8 @@ $(document).ready(function() {
             }
         }
 
-        var nowMap = './image/fly2/' + nowSphereID + '.jpg';
-        var nextMap = './image/fly2/' + _nextSceneID + '.jpg';
+        var nowMap = './image/fly3/' + nowSphereID + '.JPG';
+        var nextMap = './image/fly3/' + _nextSceneID + '.JPG';
 
         texture2 = new THREE.ImageUtils.loadTexture(nextMap);
         texture2.minFilter = THREE.LinearFilter;
@@ -652,7 +656,7 @@ $(document).ready(function() {
         var map_init, texture_init, material_init, mesh_init;
         var geometry_init = new THREE.SphereGeometry(sphereSize, 60, 40);
         for (var i = flyInfo.sphere.length - 1; i >= 0; i--) {
-            map_init = './image/fly/' + i + '.jpg';
+            map_init = './image/fly3/' + i + '.JPG';
             texture_init = new THREE.ImageUtils.loadTexture(map_init);
             texture_init.minFilter = THREE.LinearFilter;
             material_init = new THREE.MeshBasicMaterial({
