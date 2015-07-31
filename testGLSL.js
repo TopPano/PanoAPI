@@ -94,10 +94,10 @@ $(document).ready(function() {
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
-
         document.addEventListener('mousedown', onDocumentMouseDown, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         document.addEventListener('mouseup', onDocumentMouseUp, false);
+        document.addEventListener('DOMMouseScroll', onDocumentMouseWheel, false);
     }
 
     function onDocumentMouseDown(event) {
@@ -124,6 +124,30 @@ $(document).ready(function() {
 
     function onDocumentMouseUp(event) {
         isUserInteracting = false;
+    }
+
+    function onDocumentMouseWheel(event) {
+        preventDefaultBrowser(event);
+        // check FoV range
+        if (camera.fov <= fovMax && camera.fov >= fovMin) {
+            // WebKit (Safari / Chrome)
+            if (event.wheelDeltaY) {
+                camera.fov -= event.wheelDeltaY * 0.05;
+            }
+            // Opera / IE 9
+            else if (event.wheelDelta) {
+                camera.fov -= event.wheelDelta * 0.05;
+            }
+            // Firefox
+            else if (event.detail) {
+                camera.fov += event.detail * 1.0;
+            }
+        }
+
+        if (camera.fov > fovMax) camera.fov = fovMax;
+        if (camera.fov < fovMin) camera.fov = fovMin;
+
+        camera.updateProjectionMatrix();
     }
 
     function preventDefaultBrowser(event) {
