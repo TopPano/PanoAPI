@@ -11,11 +11,12 @@ $(document).ready(function() {
     var objects = [],
         showObj = true;
 
+    var defaultMap = './image/fly/' + nowSphereID + '.jpg';
+
     var camPos = new THREE.Vector3(0, 0, 0),
         isUserInteracting = false,
         lon = 0, // default: 0
         lat = 0, // default: 0
-        camFOV_dafault = 75,
         onMouseDownMouseX = 0,
         onMouseDownMouseY = 0,
         onMouseDownLon = 0,
@@ -25,55 +26,13 @@ $(document).ready(function() {
 
     // setting the constrained FoV
     var fovMax = 100,
-        fovMin = 60;
+        fovMin = 45;
     var sphereSize = 100;
     var littlePlanet = false;
 
     // if changing the scene, need some transition effects
     var isAnimate = false;
 
-    // if user uses mobile device
-    var isTouch = false,
-        TouchNumber = 0,
-        deltaMove_last = 0;
-
-    var urlHash = window.location.hash;
-    // console.log(isNaN(urlHash));
-
-    // timer for scroll stop
-    var timer = null;
-
-    if (!isNaN(urlHash)) {
-        lon = -30;
-        lat = 0;
-    } else {
-        urlHash = urlHash.slice(1, urlHash.length)
-        // console.log(urlHash);
-        var urlHash2 = urlHash.split(',');
-        console.log(urlHash2);
-        if (urlHash2.length === 4) {
-            isNaN(urlHash2[0]) ? camFOV_dafault = 75 : camFOV_dafault = clamp(parseInt(urlHash2[0]), fovMin, fovMax);
-            isNaN(urlHash2[1]) ? lat = 0 : lat = parseInt(urlHash2[1]);
-            isNaN(urlHash2[2]) ? lon = 0 : lon = parseInt(urlHash2[2]);
-            isNaN(urlHash2[3]) ? nowSphereID = 0 : nowSphereID = parseInt(urlHash2[3]);
-            if (isEmpty(urlHash2[0])) {
-                camFOV_dafault = 75;
-            }
-            if (isEmpty(urlHash2[1])) {
-                lat = 0;
-            }
-            if (isEmpty(urlHash2[2])) {
-                lon = 0;
-            }
-            if (isEmpty(urlHash2[3])) {
-                nowSphereID = 0;
-            }
-            window.location.hash = camFOV_dafault + ',' + lat + ',' + lon + ',' + nowSphereID;
-            // console.log(parseInt(urlHash2[2]));
-        }
-    }
-
-    var defaultMap = './image/fly3/' + nowSphereID + '.JPG';
     // initialization
     var stats = initStats();
     init();
@@ -94,7 +53,7 @@ $(document).ready(function() {
         var container, mesh;
         container = document.getElementById('container');
         camera = new THREE.PerspectiveCamera(
-            camFOV_dafault, // Field of View
+            70, // Field of View
             window.innerWidth / window.innerHeight, // Aspect Ratio
             1, // Near Plane
             1100 // Far Plane
@@ -148,7 +107,6 @@ $(document).ready(function() {
 
         addObject();
 
-        // WebGLRenderer for better quality if had webgl
         renderer = Detector.webgl ? new THREE.WebGLRenderer({
             preserveDrawingBuffer: true,
             autoClearColor: false
@@ -165,9 +123,6 @@ $(document).ready(function() {
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         document.addEventListener('mouseup', onDocumentMouseUp, false);
         document.addEventListener('mousewheel', onDocumentMouseWheel, false);
-        document.addEventListener('touchstart', onDocumentTouchStart, false);
-        document.addEventListener('touchmove', onDocumentTouchMove, false);
-        document.addEventListener('touchend', onDocumentTouchEnd, false);
         document.addEventListener('DOMMouseScroll', onDocumentMouseWheel, false);
         document.addEventListener('dragover', function(event) {
             preventDefaultBrowser(event);
@@ -189,7 +144,7 @@ $(document).ready(function() {
                 var fileType = event.target.result.slice(5, 10);
                 // console.log(fileType);  // for 'image' or 'video'
 
-                if (fileType === 'image') {
+                if(fileType === 'image') {
                     material.map.image.src = event.target.result;
                     material.map.needsUpdate = true;
 
@@ -223,19 +178,19 @@ $(document).ready(function() {
         }, false);
         window.addEventListener('resize', onWindowResize, false);
         document.addEventListener('keyup', function(key) {
-            if (downloadLink.is(":visible") == true) {
-                if (key.which === 83) {
+            if(downloadLink.is(":visible") == true) {
+                if(key.which === 83) {
                     downloadLink.fadeOut(600);
                     canvas.fadeOut(600);
                 }
             } else
             // press 's'
-            if (key.which === 83) {
+            if(key.which === 83) {
                 saveImage();
             }
             // press 'p'
-            if (key.which === 80) {
-                if (showObj) {
+            if(key.which === 80) {
+                if(showObj) {
                     objects.forEach(function(item) {
                         item.visible = false;
                     });
@@ -250,10 +205,11 @@ $(document).ready(function() {
         });
 
         var snapshot = $('#snapshot');
-        if (canvas.is(":visible") == false)
+        if(canvas.is(":visible") == false)
             snapshot.click(function(event) {
+                // snapshot.prop('src', '../image/snapshot.png')
                 var downloadLink = $('#downLink');
-                if (downloadLink.is(":visible") == false)
+                if(downloadLink.is(":visible") == false)
                     saveImage();
             });
         $('#loading').hide();
@@ -264,7 +220,7 @@ $(document).ready(function() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         var canvas = $('#mycanvas');
-        if (canvas.is(":visible") == true)
+        if(canvas.is(":visible") == true)
             drawCanvas();
     }
 
@@ -284,20 +240,20 @@ $(document).ready(function() {
     }
 
     function onDocumentMouseMove(event) {
-        if (isUserInteracting === true) {
+        if(isUserInteracting === true) {
             deltaX = onPointerDownPointerX - event.clientX,
-            deltaY = event.clientY - onPointerDownPointerY;
+                deltaY = event.clientY - onPointerDownPointerY;
 
             lon = deltaX * 0.1 + onPointerDownLon;
             lat = deltaY * 0.1 + onPointerDownLat;
         }
 
         // check is hover something, and change the color
-        if (showObj) {
+        if(showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
             var hitObj = hit[1];
-            if (isHit) {
+            if(isHit) {
                 hitObj.material.color.set('orange');
             } else {
                 objects.forEach(function(item) {
@@ -322,167 +278,48 @@ $(document).ready(function() {
         // lat = deltaY * inertiaRate + event.clientY;
 
 
-        isTouch = false;
+
         // check if hit something, and change the sphere
-        if (showObj) {
+        if(showObj) {
             var hit = hitSomething(event);
             var isHit = hit[0];
             var hitObj = hit[1];
-            if (isHit) {
+            if(isHit) {
                 // change the scene
                 changeScene(hitObj.name);
             }
         }
-        updateURL();
-    }
-
-    function onDocumentTouchStart(event) {
-        preventDefaultBrowser(event);
-        isUserInteracting = true;
-        var touchNum = event.touches.length;
-        if (touchNum === 1) {
-            TouchNumber = 1;
-            onTouchStartPointerX = event.touches.item(0).pageX;
-            onTouchStartPointerY = event.touches.item(0).pageY;
-
-            onTouchStartLon = lon;
-            onTouchStartLat = lat;
-        }
-        if (touchNum === 2) {
-            TouchNumber = 2;
-            onTouchStartPointerX0 = event.touches.item(0).pageX;
-            onTouchStartPointerY0 = event.touches.item(0).pageY;
-            onTouchStartPointerX1 = event.touches.item(1).pageX;
-            onTouchStartPointerY1 = event.touches.item(1).pageY;
-
-            deltaStartDisX = onTouchStartPointerX1 - onTouchStartPointerX0;
-            deltaStartDisY = onTouchStartPointerY1 - onTouchStartPointerY0;
-            deltaStart = deltaStartDisX * deltaStartDisX + deltaStartDisY * deltaStartDisY;
-            deltaStart = Math.sqrt(deltaStart);
-            TouchNumber = 2;
-            deltaMove_last = deltaStart;
-        }
-
-    }
-
-    function onDocumentTouchMove(event) {
-        if (isUserInteracting === true) {
-            var touchNum = event.touches.length;
-            if (touchNum === 1) {
-                // remove abnormal behaviors caused from one-finger-touch after pinching
-                if (TouchNumber === 2) {
-                    sleep(200);
-                    return;
-                }
-                deltaX = onTouchStartPointerX - event.touches.item(0).pageX,
-                deltaY = event.touches.item(0).pageY - onTouchStartPointerY;
-
-                lon = deltaX * 0.2 + onTouchStartLon;
-                lat = deltaY * 0.2 + onTouchStartLat;
-            }
-            if (touchNum === 2) {
-                onTouchMovePointerX0 = event.touches.item(0).pageX;
-                onTouchMovePointerY0 = event.touches.item(0).pageY;
-                onTouchMovePointerX1 = event.touches.item(1).pageX;
-                onTouchMovePointerY1 = event.touches.item(1).pageY;
-
-                deltaMoveDisX = onTouchMovePointerX1 - onTouchMovePointerX0;
-                deltaMoveDisY = onTouchMovePointerY1 - onTouchMovePointerY0;
-                deltaMove = deltaMoveDisX * deltaMoveDisX + deltaMoveDisY * deltaMoveDisY;
-                deltaMove = Math.sqrt(deltaMove);
-                deltaDis = deltaMove - deltaStart;
-
-                // fingers closer (and also check FoV range)
-                if (deltaDis < 0 && camera.fov <= fovMax && camera.fov >= fovMin) { 
-                    // if from closer to futher
-                    if (deltaMove > deltaMove_last)
-                        deltaStart = deltaMove;
-                    else
-                        camera.fov -= deltaDis * 0.04;
-                }
-                // fingers further
-                if (deltaDis > 0 && camera.fov <= fovMax && camera.fov >= fovMin) {
-                    // if from futher to closer
-                    if (deltaMove < deltaMove_last)
-                        deltaStart = deltaMove;
-                    else
-                        camera.fov -= deltaDis * 0.04;
-                }
-
-                if (camera.fov > fovMax) camera.fov = fovMax;
-                if (camera.fov < fovMin) camera.fov = fovMin;
-
-                camera.updateProjectionMatrix();
-                deltaMove_last = deltaMove;
-            }
-        }
-    }
-
-    function onDocumentTouchEnd(event) {
-        isTouch = true;
-        if (showObj) {
-            var hit = hitSomething(event);
-            var isHit = hit[0];
-            var hitObj = hit[1];
-            if (isHit) {
-                // change the scene
-                changeScene(hitObj.name);
-            }
-        }
-
-        deltaStart = 0;
-        deltaMove = 0;
-        deltaMove_last = 0;
-        // TODO: change the URL with hash in mobile devices 
-        updateURL();
     }
 
     function onDocumentMouseWheel(event) {
-        preventDefaultBrowser(event);
         // check FoV range
-        if (camera.fov <= fovMax && camera.fov >= fovMin) {
+        if(camera.fov <= fovMax && camera.fov >= fovMin) {
             // WebKit (Safari / Chrome)
-            if (event.wheelDeltaY) {
+            if(event.wheelDeltaY) {
                 camera.fov -= event.wheelDeltaY * 0.05;
             }
             // Opera / IE 9
-            else if (event.wheelDelta) {
+            else if(event.wheelDelta) {
                 camera.fov -= event.wheelDelta * 0.05;
             }
             // Firefox
-            else if (event.detail) {
+            else if(event.detail) {
                 camera.fov += event.detail * 1.0;
             }
         }
 
-        if (camera.fov > fovMax) camera.fov = fovMax;
-        if (camera.fov < fovMin) camera.fov = fovMin;
+        if(camera.fov > fovMax) camera.fov = fovMax;
+        if(camera.fov < fovMin) camera.fov = fovMin;
 
         camera.updateProjectionMatrix();
-
-        // update URL after scroll stops for 0.1 second
-        if (timer !== null) {
-            clearTimeout(timer);
-        }
-        timer = setTimeout(function() {
-            updateURL();
-        }, 100);
     }
 
     function preventDefaultBrowser(event) {
         // Chrome / Opera / Firefox
-        if (event.preventDefault)
+        if(event.preventDefault)
             event.preventDefault();
         // IE 9
         event.returnValue = false;
-    }
-
-    function updateURL() {
-        window.location.hash = camera.fov + ',' + lat + ',' + lon + ',' + nowSphereID;
-    }
-
-    function isEmpty(str) {
-        return (!str || 0 === str.length || /^\s*$/.test(str));
     }
 
     function hitSomething(event) {
@@ -491,24 +328,16 @@ $(document).ready(function() {
 
         var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
             -(event.clientY / window.innerHeight) * 2 + 1, //y
-            0.5); // z
-
-        // TODO: mobile viewport width / height
-        if (isTouch) {
-            mouse3D = THREE.Vector3((event.touches.item(0).pageX / window.innerWidth) * 2 - 1, //x
-                -(event.touches.item(0).pageY / window.innerHeight) * 2 + 1, //y
-                0.5); // z
-        }
-
+            0.5); //z
         mouse3D.unproject(camera);
         mouse3D.sub(camera.position);
         mouse3D.normalize();
         var raycaster = new THREE.Raycaster(camera.position, mouse3D);
         var intersects = raycaster.intersectObjects(objects);
-        if (intersects.length > 0) {
+        if(intersects.length > 0) {
             // return which object is hit
-            for (var i = 0; i < objects.length; i++) {
-                if (intersects[0].object.position.distanceTo(objects[i].position) < 10) {
+            for(var i = 0; i < objects.length; i++) {
+                if(intersects[0].object.position.distanceTo(objects[i].position) < 10) {
                     return [true, objects[i]];
                 }
             }
@@ -518,7 +347,7 @@ $(document).ready(function() {
 
     function addObject() {
         nowSphere = flyInfo.sphere[nowSphereID];
-        for (var i = 0; i < nowSphere.transition.length; i++) {
+        for(var i = 0; i < nowSphere.transition.length; i++) {
             var nowTransition = nowSphere.transition[i];
             var latObj = nowTransition.position.lat,
                 lonObj = nowTransition.position.lon,
@@ -531,12 +360,10 @@ $(document).ready(function() {
 
             var geometryObj = new THREE.BoxGeometry(objBoxSize, objBoxSize, 0);
             var materialObj = new THREE.MeshBasicMaterial({
-                // color: 'white',
-                map: THREE.ImageUtils.loadTexture("./image/arrow1.png"),
-                opacity: 0.6,
-                transparent: true
+                color: 'white',
+                opacity: 0.35
             });
-            // materialObj.transparent = true;
+            materialObj.transparent = true;
             var sphereObj = new THREE.Mesh(geometryObj, materialObj);
 
             var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
@@ -544,8 +371,7 @@ $(document).ready(function() {
                 zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
             sphereObj.position.set(xObj, yObj, zObj);
 
-            // sphereObj.rotation.set(0, (Math.sin(thetaObj) - 1) * Math.PI / 2, 0);
-            // sphereObj.rotation.set(0, camera.target.y+90, 0);
+            sphereObj.rotation.set(0, (Math.sin(thetaObj) - 1) * Math.PI / 2, 0);
             // record obj's position for checking whether hitting objs
             sphereObj.name = nowTransition.nextSceneID;
             scene.add(sphereObj);
@@ -555,14 +381,14 @@ $(document).ready(function() {
 
     function changeScene(_nextSceneID) {
         // remove all object in the scene (except for the last sphere)
-        if (scene.children.length > 1) {
-            for (var i = 1; i <= scene.children.length - 1; i++) {
+        if(scene.children.length > 1) {
+            for(var i = 1; i <= scene.children.length - 1; i++) {
                 scene.remove(scene.children[i]);
             }
         }
 
-        var nowMap = './image/fly3/' + nowSphereID + '.JPG';
-        var nextMap = './image/fly3/' + _nextSceneID + '.JPG';
+        var nowMap = './image/fly/' + nowSphereID + '.jpg';
+        var nextMap = './image/fly/' + _nextSceneID + '.jpg';
 
         texture2 = new THREE.ImageUtils.loadTexture(nextMap);
         texture2.minFilter = THREE.LinearFilter;
@@ -574,8 +400,7 @@ $(document).ready(function() {
 
         mesh2 = new THREE.Mesh(geometry2, material2);
         material2.transparent = true;
-        for (var i = 1; i < scene.children.length; i++)
-            scene.remove(scene.children[i]); // remove objects
+
         scene.add(mesh2);
 
         // remove all elements in objects array
@@ -588,15 +413,11 @@ $(document).ready(function() {
 
     function sleep(milliseconds) {
         var start = new Date().getTime();
-        for (var i = 0; i < 1e7; i++) {
-            if ((new Date().getTime() - start) > milliseconds) {
+        for(var i = 0; i < 1e7; i++) {
+            if((new Date().getTime() - start) > milliseconds) {
                 break;
             }
         }
-    }
-
-    function clamp(number, min, max) {
-        return number > max ? max : (number < min ? min : number);
     }
 
     function saveImage() {
@@ -666,8 +487,8 @@ $(document).ready(function() {
     function preLoadImages() {
         var map_init, texture_init, material_init, mesh_init;
         var geometry_init = new THREE.SphereGeometry(sphereSize, 60, 40);
-        for (var i = flyInfo.sphere.length - 1; i >= 0; i--) {
-            map_init = './image/fly3/' + i + '.JPG';
+        for(var i = flyInfo.sphere.length - 1; i >= 0; i--) {
+            map_init = './image/fly/' + i + '.jpg';
             texture_init = new THREE.ImageUtils.loadTexture(map_init);
             texture_init.minFilter = THREE.LinearFilter;
             material_init = new THREE.MeshBasicMaterial({
@@ -682,9 +503,9 @@ $(document).ready(function() {
     }
 
     function renderScene() {
-        if (isAnimate) {
-            var fadeInSpeed = 0.02; // ms
-            if (material2.opacity >= 1) {
+        if(isAnimate) {
+            var fadeInSpeed = 0.025; // ms
+            if(material2.opacity >= 1) {
                 isAnimate = false;
                 scene.remove(scene.children[0]); // remove last sphere
                 requestAnimationFrame(update);
