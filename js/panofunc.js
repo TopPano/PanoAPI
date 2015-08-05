@@ -99,8 +99,13 @@ $(document).ready(function() {
             1, // Near Plane
             1100 // Far Plane
         );
+		//@see https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_orbit.html
+		var controls;
+		// controls = new THREE.OrbitControls( camera );
+		// controls.damping = 0.2;
+		// controls.addEventListener( 'change', render );
+		
         // change the positon of the camera
-
         camera.target = new THREE.Vector3(sphereSize, sphereSize, sphereSize);
         scene = new THREE.Scene();
 
@@ -496,8 +501,10 @@ $(document).ready(function() {
 
         // TODO: mobile viewport width / height
         if (isTouch) {
-            mouse3D = THREE.Vector3((event.touches.item(0).pageX / window.innerWidth) * 2 - 1, //x
-                -(event.touches.item(0).pageY / window.innerHeight) * 2 + 1, //y
+			pageX = event.pageX || event.touches.item(0).pageX;
+			pageY = event.pageY || event.touches.item(0).pageY;
+            mouse3D = new THREE.Vector3((pageX / window.innerWidth) * 2 - 1, //x
+                -(pageY / window.innerHeight) * 2 + 1, //y
                 0.5); // z
         }
 
