@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Panorama Viewer</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<meta property="og:title" content="Panorama Viewer"/>
+		<meta property="og:image" content="http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/map/smallRapeseed.jpg"/>
+		<meta property="og:site_name" content="Pano Viewer"/>
+		<meta property="og:description" content="This is the test for pano viewer."/>
+	<style>
+		body {
+			background-color: #000000;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+		#info {
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			color: #ffffff;
+			padding: 5px;
+			font-family: Monospace;
+			font-size: 16px;
+			font-weight: bold;
+			text-align: center;
+			background-color: rgba(0, 0, 0, 0.3);
+		}
+
+		a {
+			color: rgba(0, 0, 0, 0);
+		}
+
+	</style>
+	<script src="./js/jquery-1.11.2.min.js"></script>
+	<script src="./testGLSL.js"></script>
+	<script src="./js/three.min.js"></script>
+	<script src="./js/detect.min.js"></script>
+	<script src="./js/CanvasRenderer.js"></script>
+	<script src="./js/Projector.js"></script>
+	<script src="./js/stats.js"></script>
+</head>
+
+<body>
+	<div id="loading"></div>
+	<div style="position: absolute; left: 50%; top:10%">
+		<canvas id="mycanvas" width="800" height="600"></canvas>
+	</div>
+	<div id="container"></div>
+	<div id="info">
+		<p id="fov">Calculating...</p>
+	</div>
+	<div id="Stats-output"></div>
+</body>
+
+</html>
