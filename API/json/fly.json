@@ -1,0 +1,102 @@
+var flyInfo = {
+	"sphere": [{ // id: 0
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -5,
+				"size": 10
+			},
+			"nextSceneID": 1
+		}]
+	}, { // id: 1
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -5,
+				"size": 10
+			},
+			"nextSceneID": 2
+		}]
+	}, { // id: 2
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -7,
+				"size": 10
+			},
+			"nextSceneID": 3
+		}]
+	}, { // id: 3
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -10,
+				"size": 10
+			},
+			"nextSceneID": 4
+		}]
+	}, { // id: 4
+		"transition": [{
+			"position": {
+				"lat": -10,
+				"lon": -10,
+				"size": 10
+			},
+			"nextSceneID": 5
+		}]
+	}, { // id: 5
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -90,
+				"size": 10
+			},
+			"nextSceneID": 6
+		}]
+	}, { // id: 6
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -160,
+				"size": 10
+			},
+			"nextSceneID": 7
+		}]
+	}, { // id: 7
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -180,
+				"size": 10
+			},
+			"nextSceneID": 8
+		}]
+	}, { // id: 8
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -190,
+				"size": 10
+			},
+			"nextSceneID": 9
+		}]
+	}, { // id: 9
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -190,
+				"size": 10
+			},
+			"nextSceneID": 10
+		}]
+	}, { // id: 10
+		"transition": [{
+			"position": {
+				"lat": 0,
+				"lon": -270,
+				"size": 10
+			},
+			"nextSceneID": 0
+		}]
+	}]
+}
