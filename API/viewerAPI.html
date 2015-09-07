@@ -11,23 +11,24 @@
 	<meta property="og:site_name" content="Toppano - Panorama Viewer"/>
 	<meta property="og:description" content="Panorama viewer for our office."/>
 	<link href="./css/viewer.css" rel="stylesheet" type="text/css">
+	<script src="./js/jquery-1.11.2.min.js"></script>
 	<script src="./js/three.min.js"></script>
 	<script src="./js/pano.api.js"></script>
+	<script src="./js/View.js"></script>
 	<script src="./js/detect.min.js"></script>
 	<script src="./js/CanvasRenderer.js"></script>
 	<script src="./js/Projector.js"></script>
 	<script src="./js/stats.js"></script>
 
 
-	<script src="./js/jquery-1.11.2.min.js"></script>
 	<!-- <script src="./js/panofunc.js"></script> -->
 	<script type="text/javascript" src="./json/fly2.json"></script>
-	
+
 
 	<script language="javascript">
 	function FacebookShare() {
-	    window.open("https://www.facebook.com/sharer/sharer.php?u=" 
-	    	+ escape(window.location.href) 
+	    window.open("https://www.facebook.com/sharer/sharer.php?u="
+	    	+ escape(window.location.href)
 	    	+ "&t=" + document.title, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
 	    return false;
 	}
