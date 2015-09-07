@@ -24,8 +24,7 @@ body {
 }
 
 #mycanvas {
-	position: relative;
-	left: -50%;
+	opacity: 0;
 }
 
 #flash {

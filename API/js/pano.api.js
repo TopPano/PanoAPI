@@ -5,13 +5,7 @@
  */
 var TOPPANO = TOPPANO || {};
 
-// TOPPANO.prototype = (function() {
-// 	return {
-// 		drawCanvas: function(word) {
-// 			console.log(word);
-// 		}
-// 	}
-// }());
+TOPPANO.printError = function ( errorMsg ) {
+	console.log('Error: ' + errorMsg);
+};
 
-// a.drawCanvas('hi');
-// TOPPANO.drawCanvas();
