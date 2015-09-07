@@ -1,5 +1,6 @@
 /**
  * Toppano Panorama Viewer API
+ * View Function
  */
 
 // drawing snapshot canvas
@@ -41,6 +42,7 @@ TOPPANO.drawCanvas = function() {
     		a: 0.6
     	}
     };
+
     drawRect(canvas, rectPos, rectStyle);
     drawCross(canvas, crossPos, crossStyle);
 };
@@ -73,16 +75,14 @@ function fadeIn(obj, ms) {
 
 	var opacity = 0;
 	obj.style.opacity = opacity;
-
-	function func() {
+	var fading = window.setInterval(function() {
 		opacity += opaDelta;
 	    obj.style.opacity = opacity;
 	    if(obj.style.opacity >= 1) {
 	      window.clearInterval(fading);
 	      obj.style.opacity = 1;
 	    }
-	}
-	var fading = window.setInterval(func, speed);
+	}, speed);
 }
 
 function fadeOut(obj, ms) {
@@ -92,14 +92,37 @@ function fadeOut(obj, ms) {
 
 	var opacity = 1;
 	obj.style.opacity = opacity;
-
-	function func() {
+	var fading = window.setInterval(function() {
 		opacity -= opaDelta;
 	    obj.style.opacity = opacity;
 	    if(obj.style.opacity <= 0) {
 	      window.clearInterval(fading);
 	      obj.style.opacity = 0;
 	    }
-	}
-	var fading = window.setInterval(func, speed);
+	}, speed);
+}
+
+function preventDefaultBrowser(event) {
+    // Chrome / Opera / Firefox
+    if (event.preventDefault)
+        event.preventDefault();
+    // IE 9
+    event.returnValue = false;
+}
+
+function isEmpty(str) {
+    return (!str || 0 === str.length || /^\s*$/.test(str));
+}
+
+function sleep(ms) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > ms) {
+            break;
+        }
+    }
+}
+
+function clamp(number, min, max) {
+    return number > max ? max : (number < min ? min : number);
 }
