@@ -6,7 +6,7 @@
 // drawing snapshot canvas
 TOPPANO.drawCanvas = function() {
     var canvas = document.getElementById('myCanvas');
-    fadeIn(canvas, 500);
+    fadeIn(canvas, 600);
     canvas.style.position = "fixed";
     canvas.style.left = "10%";
     canvas.style.height = window.innerHeight * 0.8;
