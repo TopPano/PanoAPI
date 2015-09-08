@@ -3,7 +3,7 @@
  * View Function
  */
 
-// update url: #
+// update url: #fov,lat,lon,panoID
 TOPPANO.URL = function() {
     // initialization
     if (!isNaN(TOPPANO.gv.urlHash)) {
@@ -37,15 +37,16 @@ TOPPANO.URL = function() {
             if (isEmpty(urlHashArray[3])) {
                 TOPPANO.gv.cam.panoID = 0;
             }
-            window.location.hash = TOPPANO.gv.cam.defaultCamFOV + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.panoID;
+            window.location.hash = TOPPANO.gv.cam.defaultCamFOV + ',' + TOPPANO.gv.cam.lat + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.panoID;
         }
     }
 };
 
 TOPPANO.URL.prototype = {
     update: function() {
-        window.location.hash = TOPPANO.gv.cam.fov + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.panoID;
+        window.location.hash = TOPPANO.gv.cam.fov + ',' + TOPPANO.gv.cam.lat + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.panoID;
     },
+
     toUrlValue: function() {
         return TOPPANO.gv.cam.fov + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.panoID;
     }
