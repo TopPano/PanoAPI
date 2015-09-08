@@ -61,7 +61,7 @@ TOPPANO.Panorama = function(info) {
 	this.position = new TOPPANO.LatLng(info.lat, info.lng);
 	this.locationInfo = info.locationInfo || "Toppano, Taipei, Taiwan.";
 	this.visible = info.visible;
-	this.fov = info.fov || 75;
+	this.fov = info.fov || TOPPANO.gv.cam.defaultCamFOV;
 };
 
 TOPPANO.Panorama.prototype = {

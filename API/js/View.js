@@ -3,9 +3,52 @@
  * View Function
  */
 
-// update url
-TOPPANO.updateURL = function() {
-    // window.location.hash = camera.fov + ',' + lat + ',' + lon + ',' + nowSphereID;
+// update url: #
+TOPPANO.URL = function() {
+    // initialization
+    if (!isNaN(TOPPANO.gv.urlHash)) {
+        TOPPANO.gv.cam.lon = -30;
+        TOPPANO.gv.cam.lat = 0;
+    } else {
+        var urlHash = TOPPANO.gv.urlHash.slice(1, TOPPANO.gv.urlHash.length)
+        var urlHashArray = urlHash.split(',');
+        if (urlHashArray.length === 4) {
+            isNaN(urlHashArray[0]) ? TOPPANO.gv.cam.defaultCamFOV = 75
+            : TOPPANO.gv.cam.defaultCamFOV = clamp(parseInt(urlHashArray[0]), TOPPANO.gv.para.fov.min, TOPPANO.gv.para.fov.max);
+
+            isNaN(urlHashArray[1]) ? TOPPANO.gv.cam.lat = 0
+            : TOPPANO.gv.cam.lat = parseInt(urlHashArray[1]);
+
+            isNaN(urlHashArray[2]) ? TOPPANO.gv.cam.lon = 0
+            : TOPPANO.gv.cam.lon = parseInt(urlHashArray[2]);
+
+            isNaN(urlHashArray[3]) ? TOPPANO.gv.cam.panoID = 0
+            : TOPPANO.gv.cam.panoID = parseInt(urlHashArray[3]);
+
+            if (isEmpty(urlHashArray[0])) {
+                TOPPANO.gv.cam.defaultCamFOV = 75;
+            }
+            if (isEmpty(urlHashArray[1])) {
+                TOPPANO.gv.cam.lat = 0;
+            }
+            if (isEmpty(urlHashArray[2])) {
+                TOPPANO.gv.cam.lon = 0;
+            }
+            if (isEmpty(urlHashArray[3])) {
+                TOPPANO.gv.cam.panoID = 0;
+            }
+            window.location.hash = TOPPANO.gv.cam.defaultCamFOV + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.panoID;
+        }
+    }
+};
+
+TOPPANO.URL.prototype = {
+    update: function() {
+        window.location.hash = TOPPANO.gv.cam.fov + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.panoID;
+    },
+    toUrlValue: function() {
+        return TOPPANO.gv.cam.fov + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.cam.panoID;
+    }
 };
 
 // drawing snapshot canvas
