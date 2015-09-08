@@ -3,6 +3,11 @@
  * View Function
  */
 
+// update url
+TOPPANO.updateURL = function() {
+    // window.location.hash = camera.fov + ',' + lat + ',' + lon + ',' + nowSphereID;
+};
+
 // drawing snapshot canvas
 TOPPANO.drawCanvas = function() {
     var canvas = document.getElementById('myCanvas');
