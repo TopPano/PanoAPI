@@ -158,28 +158,3 @@ function hide(obj) {
 function show(obj) {
     obj.style.opacity = 1;
 }
-
-function preventDefaultBrowser(event) {
-    // Chrome / Opera / Firefox
-    if (event.preventDefault)
-        event.preventDefault();
-    // IE 9
-    event.returnValue = false;
-}
-
-function isEmpty(str) {
-    return (!str || 0 === str.length || /^\s*$/.test(str));
-}
-
-function sleep(ms) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > ms) {
-            break;
-        }
-    }
-}
-
-function clamp(number, min, max) {
-    return number > max ? max : (number < min ? min : number);
-}

@@ -3,28 +3,50 @@
  * Listener Function
  */
 
-// onDocumentMouseUp
+TOPPANO.onDocumentMouseDown = function() {
+	console.log('MouseDown');
+};
 
-// onDocumentMouseMove
+TOPPANO.onDocumentMouseUp = function() {
+	console.log('MouseUp');
+};
 
-// onDocumentMouseUp
+TOPPANO.onDocumentMouseWheel = function() {
+	console.log('MouseWheel');
+};
 
-// onDocumentMouseWheel
+TOPPANO.onDocumentTouchStart = function() {
+	console.log('TouchStart');
+};
 
-// onDocumentTouchStart
+TOPPANO.onDocumentTouchMove = function() {
+	console.log('TouchMove');
+};
 
-// onDocumentTouchMove
+TOPPANO.onDocumentTouchEnd = function() {
+	console.log('TouchEnd');
+};
 
-// onDocumentTouchEnd
+TOPPANO.onDocumentDragOver = function() {
+	console.log('DragOver');
+};
 
-// onDocumentMouseWheel
+TOPPANO.onDocumentDragEnter = function() {
+	console.log('DragEnter');
+};
 
-// drag
+TOPPANO.onDocumentDragLeave = function() {
+	console.log('DragLeave');
+};
 
-// drop
+TOPPANO.onDocumentDrop = function() {
+	console.log('Drop');
+};
 
-// resize
+TOPPANO.onDocumentKeyUp = function() {
+	console.log('KeyUp');
+};
 
-// keyup (keyboard events)
-
-
+TOPPANO.onWindowResize = function() {
+	console.log('Resize');
+};

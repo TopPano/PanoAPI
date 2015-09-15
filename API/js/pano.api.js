@@ -16,24 +16,19 @@ TOPPANO.init = function() {
 	TOPPANO.menuInit();
 
 	// threejs init
-
-	// change position of the cam
-
-	// pre-load
-
-	// loading texture
-
-	// adding icon objects on scene
-
-	// renderer setting
+	TOPPANO.threeInit();
 
 	// add listener
+	TOPPANO.addListener();
 };
 
 // global variables initialization
 TOPPANO.gv = {
+	scene: null,
+	renderer: null,
 	// camera parameter
 	cam: {
+		camera: null,
 		lat: 0,
         lon: 0,
 		camPos: new THREE.Vector3(0, 0, 0),
@@ -54,19 +49,17 @@ TOPPANO.gv = {
 
 	// scene1 for showing to users
 	scene1: {
-		camera:1,
-		scene:1,
-		geometry:1,
-		material:1,
-		mesh:1,
-		renderer:1,
+		geometry: null,
+		texture: null,
+		material: null,
+		mesh: null,
 		panoID: 1
 	},
 
 	// scene2 for buffer
 	scene2: {
-		geometry:1,
-		texture:1,
+		geometry: null,
+		texture: null,
 		mesh:1,
 		panoID: 2
 	},
@@ -81,6 +74,7 @@ TOPPANO.gv = {
 		epsilon: 0.1
 	},
 	urlHash: window.location.hash,
+	defaultMap: 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/fly/0.jpg'
 };
 
 
