@@ -54,8 +54,8 @@ TOPPANO.URL.prototype = {
 
 // drawing snapshot canvas
 TOPPANO.drawCanvas = function() {
-    var canvas = document.getElementById('myCanvas');
-    fadeIn(canvas, 600);
+    TOPPANO.gv.canvas = document.getElementById('myCanvas');
+    var canvas = TOPPANO.gv.canvas;
     canvas.style.position = "fixed";
     canvas.style.left = "10%";
     canvas.style.height = window.innerHeight * 0.8;
@@ -149,6 +149,14 @@ function fadeOut(obj, ms) {
 	      obj.style.opacity = 0;
 	    }
 	}, speed);
+}
+
+function hide(obj) {
+    obj.style.opacity = 0;
+}
+
+function show(obj) {
+    obj.style.opacity = 1;
 }
 
 function preventDefaultBrowser(event) {

@@ -6,6 +6,30 @@
 
 var TOPPANO = TOPPANO || {};
 
+
+// TOPPANO Panorama Viewer Initialization
+TOPPANO.init = function() {
+	// draw snapshot canvas
+	TOPPANO.snapshotCanvasInit();
+
+	// some functions (download link, snapshot...)
+	TOPPANO.menuInit();
+
+	// threejs init
+
+	// change position of the cam
+
+	// pre-load
+
+	// loading texture
+
+	// adding icon objects on scene
+
+	// renderer setting
+
+	// add listener
+};
+
 // global variables initialization
 TOPPANO.gv = {
 	// camera parameter
@@ -56,30 +80,8 @@ TOPPANO.gv = {
 		sphereSize: 100,
 		epsilon: 0.1
 	},
-	urlHash: window.location.hash
+	urlHash: window.location.hash,
 };
 
-// TOPPANO Panorama Viewer Initialization
-TOPPANO.init = function() {
-	// draw cavas
-	// some functions (download link, snapshot...)
 
-	// threejs init
-
-	// change position of the cam
-
-	// pre-load
-
-	// loading texture
-
-	// adding icon objects on scene
-
-	// renderer setting
-
-	// add listener
-};
-
-TOPPANO.printError = function (errorMsg) {
-	console.log('Error: ' + errorMsg);
-};
 
