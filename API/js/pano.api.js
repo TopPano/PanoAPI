@@ -59,8 +59,27 @@ TOPPANO.gv = {
 	urlHash: window.location.hash
 };
 
+// TOPPANO Panorama Viewer Initialization
+TOPPANO.init = function() {
+	// draw cavas
+	// some functions (download link, snapshot...)
+
+	// threejs init
+
+	// change position of the cam
+
+	// pre-load
+
+	// loading texture
+
+	// adding icon objects on scene
+
+	// renderer setting
+
+	// add listener
+};
+
 TOPPANO.printError = function (errorMsg) {
-	console.log('Error: ' + errorMsg + "  " + TOPPANO.gv.scene1.camera);
-	console.log(TOPPANO.gv);
+	console.log('Error: ' + errorMsg);
 };
 
