@@ -27,11 +27,11 @@ TOPPANO.LatLng.prototype = {
 	},
 
 	toString: function() {
-		return "lat: " + this._lat.toString() + ", lng: " + this._lng.toString();
+		return 'lat: ' + this._lat.toString() + ', lng: ' + this._lng.toString();
 	},
 
 	toUrlValue: function() {
-		return this._lat.toString() + "," + this._lng.toString();
+		return this._lat.toString() + ',' + this._lng.toString();
 	}
 };
 
@@ -51,7 +51,7 @@ TOPPANO.Size.prototype = {
 	},
 
 	toString: function() {
-		return "width: " + this.width.toString() + ", height: " + this.height.toString();
+		return 'width: ' + this.width.toString() + ', height: ' + this.height.toString();
 	}
 };
 
@@ -59,7 +59,7 @@ TOPPANO.Size.prototype = {
 TOPPANO.Panorama = function(info) {
 	this.panoID = Math.floor( Math.random() * 1000000 ); // NOW: randomly generate a 6-digi ID
 	this.position = new TOPPANO.LatLng(info.lat, info.lng);
-	this.locationInfo = info.locationInfo || "Toppano, Taipei, Taiwan.";
+	this.locationInfo = info.locationInfo || 'Toppano, Taipei, Taiwan.';
 	this.visible = info.visible;
 	this.fov = info.fov || TOPPANO.gv.cam.defaultCamFOV;
 };

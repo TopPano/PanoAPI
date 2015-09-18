@@ -73,6 +73,15 @@ TOPPANO.gv = {
 		sphereSize: 100,
 		epsilon: 0.1
 	},
+
+	// interaction variables
+	interact: {
+		isUserInteracting: false,
+		onPointerDownPointerX: 0,
+		onPointerDownPointerY: 0,
+		onPointerDownLon: 0,
+		onPointerDownLat:0
+	},
 	urlHash: window.location.hash,
 	defaultMap: 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/fly/0.jpg'
 };

@@ -4,6 +4,9 @@ var test = TOPPANO;
 // test.drawCanvas();
 test.init();
 
+var calc = document.getElementById('fov');
+hide(calc);
+
 // var la = new TOPPANO.LatLng(123, 11);
 // console.log(la.toUrlValue());
 
