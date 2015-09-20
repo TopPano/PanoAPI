@@ -26,13 +26,13 @@ TOPPANO.init = function() {
 TOPPANO.gv = {
 	scene: null,
 	renderer: null,
+	stats: null,
 	// camera parameter
 	cam: {
 		camera: null,
 		lat: 0,
         lon: 0,
 		camPos: new THREE.Vector3(0, 0, 0),
-        isUserInteracting: false,
         defaultCamFOV: 75,
         phi: 0,
         theta: 0,
@@ -82,6 +82,7 @@ TOPPANO.gv = {
 	// interaction variables
 	interact: {
 		isUserInteracting: false,
+		isAnimate: false,
 		onPointerDownPointerX: 0,
 		onPointerDownPointerY: 0,
 		onPointerDownLon: 0,
@@ -90,6 +91,7 @@ TOPPANO.gv = {
 	},
 	urlHash: window.location.hash,
 	defaultMap: 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/fly/0.jpg'
+	// defaultMap: './image/fly/0.JPG'
 };
 
 

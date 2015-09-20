@@ -22,6 +22,7 @@ TOPPANO.menuInit = function() {
 
 // threejs initialization
 TOPPANO.threeInit = function() {
+	TOPPANO.gv.stats = initStats();
 	// virtual cam init
 	TOPPANO.gv.cam.camera = new THREE.PerspectiveCamera(
 		TOPPANO.gv.cam.defaultCamFOV, // field of view
@@ -91,13 +92,13 @@ TOPPANO.addListener = function() {
 
 // pre-load all scene images
 TOPPANO.preLoadImages = function() {
-	console.log('Pre-loading...');
+	// console.log('Pre-loading...');
 	// ref: threejs LoadingManager
 };
 
 // add transition objects
 TOPPANO.addTransition = function() {
-	console.log('Add transition objects here.');
+	// console.log('Add transition objects here.');
 };
 
 // renderer setting
@@ -117,9 +118,8 @@ TOPPANO.rendererSetting = function() {
 	container.appendChild(TOPPANO.gv.renderer.domElement);
 };
 
-// if hit the objects(and the objects are visible)
+// if hit the objects(and the objects are visible), return: (isHit, hitObj)
 TOPPANO.hitSomething = function(event) {
-
     var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
         -(event.clientY / window.innerHeight) * 2 + 1, //y
         0.5); // z
@@ -151,6 +151,37 @@ TOPPANO.updateURL = function() {
     TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.scene1.panoID;
 };
 
+// render scene
+TOPPANO.renderScene = function() {
+	if (TOPPANO.gv.interact.isAnimate) {
+
+    } else {
+        requestAnimationFrame(TOPPANO.update);
+        TOPPANO.gv.renderer.render(TOPPANO.gv.scene, TOPPANO.gv.cam.camera);
+    }
+};
+
+// threejs update
+TOPPANO.update = function() {
+    TOPPANO.gv.cam.lat = Math.max(-85, Math.min(85, TOPPANO.gv.cam.lat));
+    TOPPANO.gv.cam.lon = (TOPPANO.gv.cam.lon + 360) % 360;
+    TOPPANO.gv.cam.phi = THREE.Math.degToRad(90 - TOPPANO.gv.cam.lat);
+    TOPPANO.gv.cam.theta = THREE.Math.degToRad(TOPPANO.gv.cam.lon);
+
+    // console.log('FoV: ' + Math.round(TOPPANO.gv.cam.camera.fov * 100) / 100 +
+    //     ' Lat:' + Math.round(TOPPANO.gv.cam.lat * 100) / 100 +
+    //     ' Lon:' + Math.round(TOPPANO.gv.cam.lon * 100) / 100);
+
+    // y: up
+    TOPPANO.gv.cam.camera.target.x = 500 * Math.sin(TOPPANO.gv.cam.phi) * Math.cos(TOPPANO.gv.cam.theta);
+    TOPPANO.gv.cam.camera.target.y = 500 * Math.cos(TOPPANO.gv.cam.phi);
+    TOPPANO.gv.cam.camera.target.z = 500 * Math.sin(TOPPANO.gv.cam.phi) * Math.sin(TOPPANO.gv.cam.theta);
+    TOPPANO.gv.cam.camera.lookAt(TOPPANO.gv.cam.camera.target);
+
+    TOPPANO.gv.stats.update();
+    TOPPANO.renderScene();
+};
+
 // print out ERROR messages
 TOPPANO.printError = function (errorMsg) {
 	console.log('Error: ' + errorMsg);
@@ -162,6 +193,17 @@ function preventDefaultBrowser(event) {
         event.preventDefault();
     // IE 9
     event.returnValue = false;
+}
+
+// js performance monitor
+function initStats() {
+    var stats = new Stats();
+    stats.setMode(0);
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
+    document.body.appendChild(stats.domElement);
+    return stats;
 }
 
 function isEmpty(str) {

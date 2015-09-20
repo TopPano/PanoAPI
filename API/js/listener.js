@@ -35,6 +35,7 @@ TOPPANO.onDocumentMouseUp = function() {
 	TOPPANO.gv.interact.isUserInteracting = false;
 
 	// check if hit something, and change the sphere
+	TOPPANO.updateURL();
 };
 
 TOPPANO.onDocumentMouseWheel = function(event) {
@@ -73,7 +74,7 @@ TOPPANO.onDocumentMouseWheel = function(event) {
         clearTimeout(TOPPANO.gv.interact.timer);
     }
     TOPPANO.gv.interact.timer = setTimeout(function() {
-        updateURL();
+        TOPPANO.updateURL();
     }, 100);
 };
 
@@ -137,6 +138,8 @@ TOPPANO.onDocumentKeyUp = function(key) {
     } else
     // press 's': snapshot function
     if (key.which === 83) {
+    	fadeIn(downloadLink, 600);
+    	fadeIn(canvas, 600);
         TOPPANO.saveImage();
     }
 
@@ -158,4 +161,11 @@ TOPPANO.onDocumentKeyUp = function(key) {
 
 TOPPANO.onWindowResize = function() {
 	console.log('Resize');
+
+	TOPPANO.gv.cam.camera.aspect = window.innerWidth / window.innerHeight;
+    TOPPANO.gv.cam.camera.updateProjectionMatrix();
+    TOPPANO.gv.renderer.setSize(window.innerWidth, window.innerHeight);
+    var canvas = document.getElementById('myCanvas');
+    if (canvas.style.opacity > 0)
+        TOPPANO.drawCanvas();
 };
