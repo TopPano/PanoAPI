@@ -66,16 +66,26 @@ TOPPANO.addListener = function() {
 	document.addEventListener('mousedown', TOPPANO.onDocumentMouseDown, false);
 	document.addEventListener('mousemove', TOPPANO.onDocumentMouseMove, false);
 	document.addEventListener('mouseup', TOPPANO.onDocumentMouseUp, false);
-	document.addEventListener('mousewheel', TOPPANO.onDocumentMouseWheel, false);
+	document.addEventListener('mousewheel', function(event) {
+		TOPPANO.onDocumentMouseWheel(event);
+	}, false);
 	document.addEventListener('touchstart', TOPPANO.onDocumentTouchStart, false);
 	document.addEventListener('touchmove', TOPPANO.onDocumentTouchMove, false);
 	document.addEventListener('touchend', TOPPANO.onDocumentTouchEnd, false);
-	document.addEventListener('DOMMouseScroll', TOPPANO.onDocumentMouseWheel, false);
-	document.addEventListener('dragover', TOPPANO.onDocumentDragOver, false);
+	document.addEventListener('DOMMouseScroll', function(event) {
+		TOPPANO.onDocumentMouseWheel(event);
+	}, false);
+	document.addEventListener('dragover', function(event) {
+		TOPPANO.onDocumentDragOver(event);
+	}, false);
 	document.addEventListener('dragenter', TOPPANO.onDocumentDragEnter, false);
 	document.addEventListener('dragleave', TOPPANO.onDocumentDragLeave, false);
-	document.addEventListener('drop', TOPPANO.onDocumentDrop, false);
-	document.addEventListener('keyup', TOPPANO.onDocumentKeyUp, false);
+	document.addEventListener('drop', function(event) {
+		TOPPANO.onDocumentDrop(event);
+	}, false);
+	document.addEventListener('keyup', function(key) {
+		TOPPANO.onDocumentKeyUp(key);
+	}, false);
 	window.addEventListener('resize', TOPPANO.onWindowResize, false);
 };
 
@@ -105,6 +115,40 @@ TOPPANO.rendererSetting = function() {
 
 	var container = document.getElementById('container');
 	container.appendChild(TOPPANO.gv.renderer.domElement);
+};
+
+// if hit the objects(and the objects are visible)
+TOPPANO.hitSomething = function(event) {
+
+    var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
+        -(event.clientY / window.innerHeight) * 2 + 1, //y
+        0.5); // z
+
+    mouse3D.unproject(TOPPANO.gv.cam.camera);
+    mouse3D.sub(TOPPANO.gv.cam.camera.position);
+    mouse3D.normalize();
+    var raycaster = new THREE.Raycaster(TOPPANO.gv.cam.camera.position, mouse3D);
+    var intersects = raycaster.intersectObjects(TOPPANO.gv.objects.transitionObj);
+    if (intersects.length > 0) {
+        // return which object is hit
+        for (var i = 0; i < TOPPANO.gv.objects.transitionObj.length; i++) {
+            if (intersects[0].object.position.distanceTo(TOPPANO.gv.objects.transitionObj[i].position) < 10) {
+                return [true, TOPPANO.gv.objects.transitionObj[i]];
+            }
+        }
+    } else
+        return [false, null];
+};
+
+// snapshot function
+TOPPANO.saveImage = function() {
+
+};
+
+// update the URL query
+TOPPANO.updateURL = function() {
+    window.location.hash = TOPPANO.gv.cam.fov + ',' + TOPPANO.gv.cam.lat + ',' +
+    TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.scene1.panoID;
 };
 
 // print out ERROR messages

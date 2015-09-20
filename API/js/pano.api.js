@@ -64,6 +64,11 @@ TOPPANO.gv = {
 		panoID: 2
 	},
 
+	// objects in the scene
+	objects: {
+		transitionObj: []
+	},
+
 	// Const parameters
 	para: {
 		fov: {
@@ -80,7 +85,8 @@ TOPPANO.gv = {
 		onPointerDownPointerX: 0,
 		onPointerDownPointerY: 0,
 		onPointerDownLon: 0,
-		onPointerDownLat:0
+		onPointerDownLat:0,
+		timer: null
 	},
 	urlHash: window.location.hash,
 	defaultMap: 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/fly/0.jpg'
