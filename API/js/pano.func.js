@@ -111,7 +111,7 @@ TOPPANO.rendererSetting = function() {
 	TOPPANO.gv.renderer = Detector.webgl ? new THREE.WebGLRenderer(webglRendererPara)
 							: new THREE.CanvasRenderer(); // with no WebGL supported
 	TOPPANO.gv.renderer.sortObjects = false;
-	TOPPANO.gv.renderer.setPixelRatio(window.devicePixelRation);
+	TOPPANO.gv.renderer.setPixelRatio(window.devicePixelRatio);
 	TOPPANO.gv.renderer.setSize(window.innerWidth, window.innerHeight);
 
 	var container = document.getElementById('container');
