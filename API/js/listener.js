@@ -39,32 +39,32 @@ TOPPANO.onDocumentMouseUp = function() {
 };
 
 TOPPANO.onDocumentMouseWheel = function(event) {
-	console.log('MouseWheel');
+	// console.log('MouseWheel');
 
-	preventDefaultBrowser(event);
+	// preventDefaultBrowser(event);
 
 	// check FoV range
-	if (TOPPANO.gv.cam.fov <= TOPPANO.gv.para.fov.max
-		&& TOPPANO.gv.cam.fov >= TOPPANO.gv.para.fov.min) {
+	if (TOPPANO.gv.cam.camera.fov <= TOPPANO.gv.para.fov.max
+		&& TOPPANO.gv.cam.camera.fov >= TOPPANO.gv.para.fov.min) {
         // WebKit (Safari / Chrome)
         if (event.wheelDeltaY) {
-            TOPPANO.gv.cam.fov -= event.wheelDeltaY * 0.05;
+            TOPPANO.gv.cam.camera.fov -= event.wheelDeltaY * 0.05;
         }
         // Opera / IE 9
         else if (event.wheelDelta) {
-            TOPPANO.gv.cam.fov -= event.wheelDelta * 0.05;
+            TOPPANO.gv.cam.camera.fov -= event.wheelDelta * 0.05;
         }
         // Firefox
         else if (event.detail) {
-            TOPPANO.gv.cam.fov += event.detail * 1.0;
+            TOPPANO.gv.cam.camera.fov += event.detail * 1.0;
         }
     }
 
-    if (TOPPANO.gv.cam.fov > TOPPANO.gv.para.fov.max) {
-    	TOPPANO.gv.cam.fov = TOPPANO.gv.para.fov.max;
+    if (TOPPANO.gv.cam.camera.fov > TOPPANO.gv.para.fov.max) {
+    	TOPPANO.gv.cam.camera.fov = TOPPANO.gv.para.fov.max;
     }
-    if (TOPPANO.gv.cam.fov < TOPPANO.gv.para.fov.min) {
-    	TOPPANO.gv.cam.fov = TOPPANO.gv.para.fov.min;
+    if (TOPPANO.gv.cam.camera.fov < TOPPANO.gv.para.fov.min) {
+    	TOPPANO.gv.cam.camera.fov = TOPPANO.gv.para.fov.min;
     }
 
     TOPPANO.gv.cam.camera.updateProjectionMatrix();
@@ -75,7 +75,7 @@ TOPPANO.onDocumentMouseWheel = function(event) {
     }
     TOPPANO.gv.interact.timer = setTimeout(function() {
         TOPPANO.updateURL();
-    }, 100);
+    }, 50);
 };
 
 TOPPANO.onDocumentTouchStart = function() {
@@ -160,7 +160,7 @@ TOPPANO.onDocumentKeyUp = function(key) {
 };
 
 TOPPANO.onWindowResize = function() {
-	console.log('Resize');
+	// console.log('Resize');
 
 	TOPPANO.gv.cam.camera.aspect = window.innerWidth / window.innerHeight;
     TOPPANO.gv.cam.camera.updateProjectionMatrix();

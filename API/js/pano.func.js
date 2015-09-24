@@ -24,6 +24,7 @@ TOPPANO.menuInit = function() {
 TOPPANO.threeInit = function() {
 	TOPPANO.gv.stats = initStats();
 	// virtual cam init
+	TOPPANO.readURL();
 	TOPPANO.gv.cam.camera = new THREE.PerspectiveCamera(
 		TOPPANO.gv.cam.defaultCamFOV, // field of view
 		window.innerWidth / window.innerHeight, // aspect ratio
@@ -90,6 +91,30 @@ TOPPANO.addListener = function() {
 	window.addEventListener('resize', TOPPANO.onWindowResize, false);
 };
 
+// reading URL info
+TOPPANO.readURL = function() {
+	var url = TOPPANO.gv.urlHash;
+	if (url) {
+		var urlSlice = url.slice(1, url.length).split(',');
+		// console.log(urlSlice);
+		if (urlSlice.length === 4) {
+			if (urlSlice[0]) {
+				TOPPANO.gv.cam.defaultCamFOV = clamp(parseInt(urlSlice[0]), TOPPANO.gv.para.fov.min, TOPPANO.gv.para.fov.max);
+			}
+			if (urlSlice[1]) {
+				TOPPANO.gv.cam.lat = parseInt(urlSlice[1]);
+			}
+			if (urlSlice[2]) {
+				TOPPANO.gv.cam.lon = parseInt(urlSlice[2]);
+			}
+			if (urlSlice[3]) {
+				TOPPANO.gv.scene1.panoID = parseInt(urlSlice[3]);
+			}
+			// TOPPANO.updateURL();
+		}
+	}
+};
+
 // pre-load all scene images
 TOPPANO.preLoadImages = function() {
 	// console.log('Pre-loading...');
@@ -147,7 +172,7 @@ TOPPANO.saveImage = function() {
 
 // update the URL query
 TOPPANO.updateURL = function() {
-    window.location.hash = TOPPANO.gv.cam.fov + ',' + TOPPANO.gv.cam.lat + ',' +
+    window.location.hash = TOPPANO.gv.cam.camera.fov + ',' + TOPPANO.gv.cam.lat + ',' +
     TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.scene1.panoID;
 };
 
