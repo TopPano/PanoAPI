@@ -21,7 +21,6 @@ TOPPANO.onDocumentMouseMove = function() {
 	if (TOPPANO.gv.interact.isUserInteracting) {
 		var deltaX = TOPPANO.gv.interact.onPointerDownPointerX - event.clientX,
 		deltaY = event.clientY - TOPPANO.gv.interact.onPointerDownPointerY;
-        console.log(deltaX, deltaY);
 
 		TOPPANO.gv.cam.lon = deltaX * 0.1 + TOPPANO.gv.interact.onPointerDownLon;
 		TOPPANO.gv.cam.lat = deltaY * 0.1 + TOPPANO.gv.interact.onPointerDownLat;

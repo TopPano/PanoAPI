@@ -90,8 +90,8 @@ TOPPANO.gv = {
 		timer: null
 	},
 	urlHash: window.location.hash,
-	defaultMap: 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/fly/0.jpg'
-	// defaultMap: './image/fly/0.JPG'
+	// defaultMap: 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/fly/0.jpg'
+	defaultMap: './image/tile/0-0.jpeg'
 };
 
 
