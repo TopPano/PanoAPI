@@ -124,6 +124,7 @@ TOPPANO.preLoadImages = function() {
 // add transition objects
 TOPPANO.addTransition = function() {
 	// console.log('Add transition objects here.');
+
 };
 
 // renderer setting
@@ -167,7 +168,19 @@ TOPPANO.hitSomething = function(event) {
 
 // snapshot function
 TOPPANO.saveImage = function() {
+	var fov_now = TOPPANO.gv.cam.camera.fov,
+	theta = THREE.Math.degToRad(fov_now / 2),
+	img_width = 0.8 * Math.tan(theta);
 
+	TOPPANO.gv.cam.camera.fov = Math.atan(img_width) * 180 / Math.PI * 2;
+	TOPPANO.gv.cam.camera.updateProjectionMatrix();
+	TOPPANO.gv.renderer.render(TOPPANO.gv.scene, TOPPANO.gv.cam.camera);
+
+	// TODO: download link
+	var cap_img = TOPPANO.gv.renderer.domElement.toDataURL('image/jpeg'),
+	new_win = window.open(cap_img, '_blank');
+	TOPPANO.gv.cam.camera.fov = fov_now;
+	TOPPANO.gv.cam.camera.updateProjectionMatrix();
 };
 
 // update the URL query

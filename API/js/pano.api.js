@@ -86,7 +86,7 @@ TOPPANO.gv = {
 		onPointerDownPointerX: 0,
 		onPointerDownPointerY: 0,
 		onPointerDownLon: 0,
-		onPointerDownLat:0,
+		onPointerDownLat: 0,
 		timer: null
 	},
 	urlHash: window.location.hash,

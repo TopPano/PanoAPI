@@ -4,7 +4,7 @@
  */
 
 TOPPANO.onDocumentMouseDown = function() {
-	console.log('MouseDown');
+	// console.log('MouseDown');
 
 	TOPPANO.gv.interact.isUserInteracting = true;
 
@@ -16,11 +16,12 @@ TOPPANO.onDocumentMouseDown = function() {
 };
 
 TOPPANO.onDocumentMouseMove = function() {
-	console.log('MouseMove');
+	// console.log('MouseMove');
 
 	if (TOPPANO.gv.interact.isUserInteracting) {
 		var deltaX = TOPPANO.gv.interact.onPointerDownPointerX - event.clientX,
 		deltaY = event.clientY - TOPPANO.gv.interact.onPointerDownPointerY;
+        console.log(deltaX, deltaY);
 
 		TOPPANO.gv.cam.lon = deltaX * 0.1 + TOPPANO.gv.interact.onPointerDownLon;
 		TOPPANO.gv.cam.lat = deltaY * 0.1 + TOPPANO.gv.interact.onPointerDownLat;
@@ -30,8 +31,6 @@ TOPPANO.onDocumentMouseMove = function() {
 };
 
 TOPPANO.onDocumentMouseUp = function() {
-	console.log('MouseUp');
-
 	TOPPANO.gv.interact.isUserInteracting = false;
 
 	// check if hit something, and change the sphere
@@ -39,10 +38,6 @@ TOPPANO.onDocumentMouseUp = function() {
 };
 
 TOPPANO.onDocumentMouseWheel = function(event) {
-	// console.log('MouseWheel');
-
-	// preventDefaultBrowser(event);
-
 	// check FoV range
 	if (TOPPANO.gv.cam.camera.fov <= TOPPANO.gv.para.fov.max
 		&& TOPPANO.gv.cam.camera.fov >= TOPPANO.gv.para.fov.min) {
@@ -79,35 +74,31 @@ TOPPANO.onDocumentMouseWheel = function(event) {
 };
 
 TOPPANO.onDocumentTouchStart = function() {
-	console.log('TouchStart');
+	// console.log('TouchStart');
 };
 
 TOPPANO.onDocumentTouchMove = function() {
-	console.log('TouchMove');
+	// console.log('TouchMove');
 };
 
 TOPPANO.onDocumentTouchEnd = function() {
-	console.log('TouchEnd');
+	// console.log('TouchEnd');
 };
 
 TOPPANO.onDocumentDragOver = function(event) {
-	console.log('DragOver');
 	preventDefaultBrowser(event);
 	event.dataTransfer.dropEffect = 'copy';
 };
 
 TOPPANO.onDocumentDragEnter = function() {
-	console.log('DragEnter');
 	document.body.style.opacity = 0.5;
 };
 
 TOPPANO.onDocumentDragLeave = function() {
-	console.log('DragLeave');
 	document.body.style.opacity = 1;
 };
 
 TOPPANO.onDocumentDrop = function(event) {
-	console.log('Drop');
 	preventDefaultBrowser(event);
 
 	var reader = new FileReader();
@@ -125,8 +116,6 @@ TOPPANO.onDocumentDrop = function(event) {
 };
 
 TOPPANO.onDocumentKeyUp = function(key) {
-	console.log('KeyUp');
-
 	var downloadLink = document.getElementById('downLink');
 	var canvas = document.getElementById('myCanvas');
 
@@ -140,11 +129,11 @@ TOPPANO.onDocumentKeyUp = function(key) {
     if (key.which === 83) {
     	fadeIn(downloadLink, 600);
     	fadeIn(canvas, 600);
-        TOPPANO.saveImage();
     }
 
     // press 'p': show transition icons
     if (key.which === 80) {
+        TOPPANO.saveImage();
         // if (showObj) {
         //     objects.forEach(function(item) {
         //         item.visible = false;
@@ -160,8 +149,6 @@ TOPPANO.onDocumentKeyUp = function(key) {
 };
 
 TOPPANO.onWindowResize = function() {
-	// console.log('Resize');
-
 	TOPPANO.gv.cam.camera.aspect = window.innerWidth / window.innerHeight;
     TOPPANO.gv.cam.camera.updateProjectionMatrix();
     TOPPANO.gv.renderer.setSize(window.innerWidth, window.innerHeight);
