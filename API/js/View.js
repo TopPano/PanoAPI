@@ -55,7 +55,10 @@ TOPPANO.URL.prototype = {
 // drawing snapshot canvas
 TOPPANO.drawCanvas = function() {
     TOPPANO.gv.canvas = document.getElementById('myCanvas');
-    var canvas = TOPPANO.gv.canvas;
+    var canvas = TOPPANO.gv.canvas,
+    context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
     canvas.style.position = "fixed";
     canvas.style.left = "10%";
     canvas.style.height = window.innerHeight * 0.8;

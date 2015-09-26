@@ -31,7 +31,6 @@ TOPPANO.threeInit = function() {
 		1, // near plane
 		1100 // far plane
 	);
-	console.log(window.innerWidth / window.innerHeight);
 	// change position of the cam
 	var sphereSize = TOPPANO.gv.para.sphereSize;
 	TOPPANO.gv.cam.camera.target = new THREE.Vector3(sphereSize, sphereSize, sphereSize);
@@ -43,24 +42,6 @@ TOPPANO.threeInit = function() {
 	// load tile images
 	TOPPANO.loadTiles();
 
-/*
-	// TOPPANO.gv.scene1.geometry = new THREE.SphereGeometry(sphereSize, 60, 60);
-	TOPPANO.gv.scene1.geometry = new THREE.SphereGeometry(sphereSize, 60, 60, 0, Math.PI/8, 0, Math.PI/4);
-	TOPPANO.gv.scene1.geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1)); // inside-out
-	// scene2 for changing scene
-	TOPPANO.gv.scene2.geometry = new THREE.SphereGeometry(sphereSize, 60, 60);
-	TOPPANO.gv.scene2.geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1)); // inside-out
-
-	// loading texture
-	TOPPANO.gv.scene1.texture = new THREE.ImageUtils.loadTexture(TOPPANO.gv.defaultMap);
-	TOPPANO.gv.scene1.texture.minFilter = THREE.LinearFilter;
-	TOPPANO.gv.scene1.material = new THREE.MeshBasicMaterial({
-		map: TOPPANO.gv.scene1.texture,
-		overdraw: true
-	});
-	TOPPANO.gv.scene1.mesh = new THREE.Mesh(TOPPANO.gv.scene1.geometry, TOPPANO.gv.scene1.material);
-	TOPPANO.gv.scene.add(TOPPANO.gv.scene1.mesh);
-*/
 	// adding icon objects on scene
 	TOPPANO.addTransition();
 
@@ -142,22 +123,6 @@ TOPPANO.loadTiles = function() {
 			TOPPANO.gv.scene.add(mesh);
 		}
 	}
-
-	// TOPPANO.gv.scene1.geometry = new THREE.SphereGeometry(sphereSize, 60, 60, 0, Math.PI/8, 0, Math.PI/4);
-	// TOPPANO.gv.scene1.geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1)); // inside-out
-	// // scene2 for changing scene
-	// TOPPANO.gv.scene2.geometry = new THREE.SphereGeometry(sphereSize, 60, 60);
-	// TOPPANO.gv.scene2.geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1)); // inside-out
-
-	// // loading texture
-	// TOPPANO.gv.scene1.texture = new THREE.ImageUtils.loadTexture(TOPPANO.gv.defaultMap);
-	// TOPPANO.gv.scene1.texture.minFilter = THREE.LinearFilter;
-	// TOPPANO.gv.scene1.material = new THREE.MeshBasicMaterial({
-	// 	map: TOPPANO.gv.scene1.texture,
-	// 	overdraw: true
-	// });
-	// TOPPANO.gv.scene1.mesh = new THREE.Mesh(TOPPANO.gv.scene1.geometry, TOPPANO.gv.scene1.material);
-	// TOPPANO.gv.scene.add(TOPPANO.gv.scene1.mesh);
 };
 
 // pre-load all scene images
