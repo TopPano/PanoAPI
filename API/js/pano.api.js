@@ -25,6 +25,7 @@ TOPPANO.init = function() {
 // global variables initialization
 TOPPANO.gv = {
 	scene: null,
+	objScene: null,
 	renderer: null,
 	stats: null,
 	// camera parameter

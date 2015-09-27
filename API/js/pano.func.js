@@ -25,6 +25,7 @@ TOPPANO.threeInit = function() {
 	TOPPANO.gv.stats = initStats();
 	// virtual cam init
 	TOPPANO.readURL();
+
 	TOPPANO.gv.cam.camera = new THREE.PerspectiveCamera(
 		TOPPANO.gv.cam.defaultCamFOV, // field of view
 		window.innerWidth / window.innerHeight, // aspect ratio
@@ -34,7 +35,10 @@ TOPPANO.threeInit = function() {
 	// change position of the cam
 	var sphereSize = TOPPANO.gv.para.sphereSize;
 	TOPPANO.gv.cam.camera.target = new THREE.Vector3(sphereSize, sphereSize, sphereSize);
+
+	// scene for bg, objScene for transition objects
 	TOPPANO.gv.scene = new THREE.Scene();
+	TOPPANO.gv.objScene = new THREE.Scene();
 
 	// pre-load
 	TOPPANO.preLoadImages();
@@ -123,6 +127,7 @@ TOPPANO.loadTiles = function() {
 			TOPPANO.gv.scene.add(mesh);
 		}
 	}
+	// console.log(TOPPANO.gv.scene.children.length);  // 32
 };
 
 // pre-load all scene images
@@ -134,7 +139,23 @@ TOPPANO.preLoadImages = function() {
 // add transition objects
 TOPPANO.addTransition = function() {
 	// console.log('Add transition objects here.');
+	var radiusObj = 30,
+	phiObj = THREE.Math.degToRad(50),
+	thetaObj = THREE.Math.degToRad(120);
 
+	var geometryObj = new THREE.BoxGeometry(10, 10, 0),
+	materialObj = new THREE.MeshBasicMaterial({
+		map: THREE.ImageUtils.loadTexture('./image/arrow1.png'),
+		opacity: 0.5,
+		transparent: true
+	}),
+	sphereObj = new THREE.Mesh(geometryObj, materialObj);
+
+	var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
+    yObj = radiusObj * Math.cos(phiObj),
+    zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
+    sphereObj.position.set(xObj, yObj, zObj);
+    TOPPANO.gv.objScene.add(sphereObj);
 };
 
 // renderer setting
@@ -147,6 +168,7 @@ TOPPANO.rendererSetting = function() {
 	TOPPANO.gv.renderer = Detector.webgl ? new THREE.WebGLRenderer(webglRendererPara)
 							: new THREE.CanvasRenderer(); // with no WebGL supported
 	TOPPANO.gv.renderer.sortObjects = false;
+	TOPPANO.gv.renderer.autoClear = false;
 	TOPPANO.gv.renderer.setPixelRatio(window.devicePixelRatio);
 	TOPPANO.gv.renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -205,7 +227,10 @@ TOPPANO.renderScene = function() {
 
     } else {
         requestAnimationFrame(TOPPANO.update);
+        TOPPANO.gv.renderer.clear();
         TOPPANO.gv.renderer.render(TOPPANO.gv.scene, TOPPANO.gv.cam.camera);
+        TOPPANO.gv.renderer.clearDepth();
+        TOPPANO.gv.renderer.render(TOPPANO.gv.objScene, TOPPANO.gv.cam.camera);
     }
 };
 
