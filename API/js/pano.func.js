@@ -212,15 +212,18 @@ TOPPANO.hitPosition = function() {
     cameraAspect = TOPPANO.gv.cam.camera.aspect;
     var hFOV = 2 * Math.atan( Math.tan( cameraFov * Math.PI / 180 / 2 ) * cameraAspect ) * 180 / Math.PI; // horizonal
 
-	var offsetLonRatio = (event.clientX - 0.5 * window.innerWidth) / window.innerWidth,
-	offsetLon = offsetLonRatio * hFOV,
-	returnLon = TOPPANO.gv.cam.lon + offsetLon;
-
+    var width = TOPPANO.gv.para.sphereSize * Math.tan(hFOV / 2 * Math.PI / 180);
+	var offsetLonRatio = (event.clientX - 0.5 * window.innerWidth) / (0.5 * window.innerWidth),
+	offsetWidth = offsetLonRatio * width,
+	offsetLon = Math.atan(offsetWidth / TOPPANO.gv.para.sphereSize), // rad
+	returnLon = TOPPANO.gv.cam.lon + (offsetLon / Math.PI * 180);
 	// console.log(returnLon);
 
-	var offsetLatRatio = (0.5 * window.innerHeight - event.clientY) / window.innerHeight,
-	offsetLat = offsetLatRatio * TOPPANO.gv.cam.camera.fov,
-	returnLat = TOPPANO.gv.cam.lat + offsetLat;
+	var height = TOPPANO.gv.para.sphereSize * Math.tan(cameraFov / 2 * Math.PI / 180);;
+	var offsetLatRatio = (0.5 * window.innerHeight - event.clientY) / (0.5 * window.innerHeight),
+	offsetHeight = offsetLatRatio * height,
+	offsetLat = Math.atan(offsetHeight / TOPPANO.gv.para.sphereSize),
+	returnLat = TOPPANO.gv.cam.lat + (offsetLat / Math.PI * 180);
 	if (returnLat > 85)
 		returnLat = 170 - returnLat;
 	if (returnLat < -85)
