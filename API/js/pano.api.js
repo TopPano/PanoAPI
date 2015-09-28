@@ -77,6 +77,7 @@ TOPPANO.gv = {
 			max: 100
 		},
 		sphereSize: 100,
+		objSize: 90,
 		epsilon: 0.1
 	},
 

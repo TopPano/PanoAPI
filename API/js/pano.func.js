@@ -40,17 +40,18 @@ TOPPANO.threeInit = function() {
 	TOPPANO.gv.scene = new THREE.Scene();
 	TOPPANO.gv.objScene = new THREE.Scene();
 
-	// pre-load
-	TOPPANO.preLoadImages();
+	// renderer setting
+	TOPPANO.rendererSetting();
 
 	// load tile images
 	TOPPANO.loadTiles();
 
-	// adding icon objects on scene
-	TOPPANO.addTransition();
+	// pre-load
+	TOPPANO.preLoadImages();
 
-	// renderer setting
-	TOPPANO.rendererSetting();
+	// adding icon objects on scene
+	var objLatLng = new TOPPANO.LatLng(50, 120);
+	TOPPANO.addTransition(objLatLng, 20);
 };
 
 // add listeners
@@ -125,6 +126,7 @@ TOPPANO.loadTiles = function() {
 
 			var mesh = new THREE.Mesh(geometry, material);
 			TOPPANO.gv.scene.add(mesh);
+			TOPPANO.gv.renderer.render(TOPPANO.gv.scene, TOPPANO.gv.cam.camera);
 		}
 	}
 	// console.log(TOPPANO.gv.scene.children.length);  // 32
@@ -137,13 +139,13 @@ TOPPANO.preLoadImages = function() {
 };
 
 // add transition objects
-TOPPANO.addTransition = function() {
+TOPPANO.addTransition = function(LatLng, size) {
 	// console.log('Add transition objects here.');
-	var radiusObj = 30,
-	phiObj = THREE.Math.degToRad(50),
-	thetaObj = THREE.Math.degToRad(120);
+	var radiusObj = TOPPANO.gv.para.objSize,
+	phiObj = THREE.Math.degToRad(90 - LatLng.lat()),
+	thetaObj = THREE.Math.degToRad(LatLng.lng());
 
-	var geometryObj = new THREE.BoxGeometry(10, 10, 0),
+	var geometryObj = new THREE.BoxGeometry(size, size, 0),
 	materialObj = new THREE.MeshBasicMaterial({
 		map: THREE.ImageUtils.loadTexture('./image/arrow1.png'),
 		opacity: 0.5,
@@ -155,6 +157,7 @@ TOPPANO.addTransition = function() {
     yObj = radiusObj * Math.cos(phiObj),
     zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
     sphereObj.position.set(xObj, yObj, zObj);
+    console.log(xObj, yObj, zObj);
     TOPPANO.gv.objScene.add(sphereObj);
 };
 
@@ -196,6 +199,26 @@ TOPPANO.hitSomething = function(event) {
         }
     } else
         return [false, null];
+};
+
+// return the LatLng position of the mouse hit on the sphere
+TOPPANO.hitPosition = function() {
+	var offsetLonRatio = (event.clientX - 0.5 * window.innerWidth) / window.innerWidth,
+	offsetLon = offsetLonRatio * TOPPANO.gv.cam.camera.fov,
+	returnLon = TOPPANO.gv.cam.lon + offsetLon;
+
+	// console.log(returnLon);
+
+	var offsetLatRatio = (0.5 * window.innerHeight - event.clientY) / window.innerHeight,
+	totalLatDegree = TOPPANO.gv.cam.camera.fov * window.innerHeight / window.innerWidth,
+	offsetLat = offsetLatRatio * totalLatDegree,
+	returnLat = TOPPANO.gv.cam.lat + offsetLat;
+	if (returnLat > 85)
+		returnLat = 170 - returnLat;
+	if (returnLat < -85)
+		returnLat = -170 + returnLat;
+	// console.log(returnLat);
+	return [returnLat, returnLon];
 };
 
 // snapshot function
