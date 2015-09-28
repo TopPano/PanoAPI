@@ -27,7 +27,7 @@ TOPPANO.threeInit = function() {
 	TOPPANO.readURL();
 
 	TOPPANO.gv.cam.camera = new THREE.PerspectiveCamera(
-		TOPPANO.gv.cam.defaultCamFOV, // field of view
+		60, // field of view (vertical)
 		window.innerWidth / window.innerHeight, // aspect ratio
 		1, // near plane
 		1100 // far plane
@@ -50,8 +50,12 @@ TOPPANO.threeInit = function() {
 	TOPPANO.preLoadImages();
 
 	// adding icon objects on scene
-	var objLatLng = new TOPPANO.LatLng(50, 120);
-	TOPPANO.addTransition(objLatLng, 20);
+	// var objLatLng = new TOPPANO.LatLng(0, 50);
+	// TOPPANO.addTransition(objLatLng, 20);
+	for (var i = 0 ; i < 100 ; i += 10) {
+		var objLatLng = new TOPPANO.LatLng(0, i);
+		TOPPANO.addTransition(objLatLng, 20);
+	}
 };
 
 // add listeners
@@ -145,20 +149,21 @@ TOPPANO.addTransition = function(LatLng, size) {
 	phiObj = THREE.Math.degToRad(90 - LatLng.lat()),
 	thetaObj = THREE.Math.degToRad(LatLng.lng());
 
-	var geometryObj = new THREE.BoxGeometry(size, size, 0),
+	var geometryObj = new THREE.PlaneBufferGeometry(size, size, 32),
 	materialObj = new THREE.MeshBasicMaterial({
 		map: THREE.ImageUtils.loadTexture('./image/arrow1.png'),
+		side: THREE.DoubleSide,
 		opacity: 0.5,
 		transparent: true
 	}),
-	sphereObj = new THREE.Mesh(geometryObj, materialObj);
+	transitionObj = new THREE.Mesh(geometryObj, materialObj);
 
 	var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
     yObj = radiusObj * Math.cos(phiObj),
     zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
-    sphereObj.position.set(xObj, yObj, zObj);
-    console.log(xObj, yObj, zObj);
-    TOPPANO.gv.objScene.add(sphereObj);
+    transitionObj.position.set(xObj, yObj, zObj);
+    transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+    TOPPANO.gv.objScene.add(transitionObj);
 };
 
 // renderer setting
@@ -203,15 +208,18 @@ TOPPANO.hitSomething = function(event) {
 
 // return the LatLng position of the mouse hit on the sphere
 TOPPANO.hitPosition = function() {
+	var cameraFov = TOPPANO.gv.cam.camera.fov,
+    cameraAspect = TOPPANO.gv.cam.camera.aspect;
+    var hFOV = 2 * Math.atan( Math.tan( cameraFov * Math.PI / 180 / 2 ) * cameraAspect ) * 180 / Math.PI; // horizonal
+
 	var offsetLonRatio = (event.clientX - 0.5 * window.innerWidth) / window.innerWidth,
-	offsetLon = offsetLonRatio * TOPPANO.gv.cam.camera.fov,
+	offsetLon = offsetLonRatio * hFOV,
 	returnLon = TOPPANO.gv.cam.lon + offsetLon;
 
 	// console.log(returnLon);
 
 	var offsetLatRatio = (0.5 * window.innerHeight - event.clientY) / window.innerHeight,
-	totalLatDegree = TOPPANO.gv.cam.camera.fov * window.innerHeight / window.innerWidth,
-	offsetLat = offsetLatRatio * totalLatDegree,
+	offsetLat = offsetLatRatio * TOPPANO.gv.cam.camera.fov,
 	returnLat = TOPPANO.gv.cam.lat + offsetLat;
 	if (returnLat > 85)
 		returnLat = 170 - returnLat;

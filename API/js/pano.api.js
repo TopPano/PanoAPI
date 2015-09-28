@@ -34,10 +34,10 @@ TOPPANO.gv = {
 		lat: 0,
         lon: 0,
 		camPos: new THREE.Vector3(0, 0, 0),
-        defaultCamFOV: 75,
+        defaultCamFOV: 60,
         phi: 0,
         theta: 0,
-        fov: 75
+        fov: 60
 	},
 
 	// interative controls
@@ -73,8 +73,8 @@ TOPPANO.gv = {
 	// Const parameters
 	para: {
 		fov: {
-			min: 60,
-			max: 100
+			min: 50,
+			max: 85
 		},
 		sphereSize: 100,
 		objSize: 90,

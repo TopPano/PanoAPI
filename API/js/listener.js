@@ -33,8 +33,9 @@ TOPPANO.onDocumentMouseUp = function() {
 	TOPPANO.gv.interact.isUserInteracting = false;
     var pos = TOPPANO.hitPosition();
     var latlon = new TOPPANO.LatLng(pos[0], pos[1]);
-    console.log(pos, latlon);
+    console.log(pos[0], pos[1]);
     TOPPANO.addTransition(latlon, 10);
+
 	// check if hit something, and change the sphere
 	TOPPANO.updateURL();
 };
@@ -63,6 +64,11 @@ TOPPANO.onDocumentMouseWheel = function(event) {
     if (TOPPANO.gv.cam.camera.fov < TOPPANO.gv.para.fov.min) {
     	TOPPANO.gv.cam.camera.fov = TOPPANO.gv.para.fov.min;
     }
+
+    // var cameraFov = TOPPANO.gv.cam.camera.fov,
+    // cameraAspect = TOPPANO.gv.cam.camera.aspect;
+    // var hFOV = 2 * Math.atan( Math.tan( cameraFov * Math.PI / 180 / 2 ) * cameraAspect ) * 180 / Math.PI; // degrees
+    // console.log(hFOV);
 
     TOPPANO.gv.cam.camera.updateProjectionMatrix();
 
