@@ -18,6 +18,7 @@
 	<script src="./js/Projector.js"></script>
 	<script src="./js/stats.js"></script>
 	<script src="./js/pano.api.js"></script>
+	<script src="./js/glsl.js"></script>
 	<script src="./js/class.js"></script>
 	<script src="./js/pano.func.js"></script>
 	<script src="./js/View.js"></script>
@@ -37,6 +38,29 @@
 </head>
 
 <body>
+	 <script id="vertexShader" type="x-shader/x-vertex">
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+}
+  </script>
+
+  <script id="fragmentShader" type="x-shader/x-fragment">
+uniform vec3 color1;
+uniform vec3 color2;
+uniform float radius1;
+uniform float radius2;
+uniform float amount;
+varying vec2 vUv;
+void main() {
+  //float p = abs(fract(amount*vUv.x)*2.0-1.0);
+  float p = smoothstep(radius1, radius2, length(fract(amount*vUv)-0.5));
+  vec3 col = mix(color1, color2, vec3(p));
+  gl_FragColor = vec4(col, 1.0);
+}
+  </script>
+
 	<div id="loading"></div>
 	<div style="position: absolute; left: 50%; top:10%">
 		<canvas id="myCanvas" width="1500" height="1500"></canvas>

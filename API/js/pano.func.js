@@ -50,12 +50,9 @@ TOPPANO.threeInit = function() {
 	TOPPANO.preLoadImages();
 
 	// adding icon objects on scene
-	// var objLatLng = new TOPPANO.LatLng(0, 50);
-	// TOPPANO.addTransition(objLatLng, 20);
-	for (var i = 0 ; i < 100 ; i += 10) {
-		var objLatLng = new TOPPANO.LatLng(0, i);
-		TOPPANO.addTransition(objLatLng, 20);
-	}
+	var objLatLng = new TOPPANO.LatLng(0, 50);
+	TOPPANO.addTransition(objLatLng, 20);
+	// TOPPANO.addPlane();
 };
 
 // add listeners
@@ -112,7 +109,9 @@ TOPPANO.readURL = function() {
 // loading tiles images
 TOPPANO.loadTiles = function() {
 	var sphereSize = TOPPANO.gv.para.sphereSize,
-	path = './image/tile/';
+	// path = './image/tile/';
+	path = 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/tile/';
+	THREE.ImageUtils.crossOrigin = '';
 
 	for (var i = 0 ; i < 4 ; i++) {
 		for (var j = 0 ; j < 8 ; j++) {
@@ -120,7 +119,7 @@ TOPPANO.loadTiles = function() {
 			geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
 			var imagePath = path + i + '-' + j + '.jpeg',
-			texture = new THREE.ImageUtils.loadTexture(imagePath);
+			texture = THREE.ImageUtils.loadTexture(imagePath);
 			texture.minFilter = THREE.LinearFilter;
 
 			var material = new THREE.MeshBasicMaterial({
@@ -146,8 +145,8 @@ TOPPANO.preLoadImages = function() {
 TOPPANO.addTransition = function(LatLng, size) {
 	// console.log('Add transition objects here.');
 	var radiusObj = TOPPANO.gv.para.objSize,
-	phiObj = THREE.Math.degToRad(90 - LatLng.lat()),
-	thetaObj = THREE.Math.degToRad(LatLng.lng());
+	phiObj = THREE.Math.degToRad(90 - LatLng.lat),
+	thetaObj = THREE.Math.degToRad(LatLng.lng);
 
 	var geometryObj = new THREE.PlaneBufferGeometry(size, size, 32),
 	materialObj = new THREE.MeshBasicMaterial({
@@ -156,6 +155,67 @@ TOPPANO.addTransition = function(LatLng, size) {
 		opacity: 0.5,
 		transparent: true
 	}),
+	transitionObj = new THREE.Mesh(geometryObj, materialObj);
+
+	var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
+    yObj = radiusObj * Math.cos(phiObj),
+    zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
+    transitionObj.position.set(xObj, yObj, zObj);
+    transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+    TOPPANO.gv.objScene.add(transitionObj);
+};
+
+// add plane for testing GLSL
+TOPPANO.addPlane = function() {
+	// console.log('Add transition objects here.');
+	var radiusObj = TOPPANO.gv.para.objSize,
+	phiObj = THREE.Math.degToRad(90),
+	thetaObj = THREE.Math.degToRad(0);
+
+	   var uniforms = {
+      "color1" : {
+        type : "c",
+        value : new THREE.Color(0xffffff)
+      },
+      "color2" : {
+        type : "c",
+        value : new THREE.Color(0x7CC5D7)
+      },
+      "radius1" : {
+        type : "f",
+        value : 0.3,
+        min : 0, // only used for dat.gui, not needed for production
+        max : 1 // only used for dat.gui, not needed for production
+      },
+      "radius2" : {
+        type : "f",
+        value : 0.32,
+        min : 0, // only used for dat.gui, not needed for production
+        max : 1 // only used for dat.gui, not needed for production
+      },
+      "amount" : {
+        type : "f",
+        value : 80,
+        min : 1, // only used for dat.gui, not needed for production
+        max : 100 // only used for dat.gui, not needed for production
+      },
+    }
+    var vertexShader = document.getElementById('vertexShader').text;
+    var fragmentShader = document.getElementById('fragmentShader').text;
+
+    var materialObj = new THREE.ShaderMaterial({
+		uniforms : uniforms,
+		vertexShader : vertexShader,
+		fragmentShader : fragmentShader
+    });
+
+	var geometryObj = new THREE.PlaneBufferGeometry(200, 140, 32),
+	// materialObj = new THREE.MeshBasicMaterial({
+	// 	color: 0x000000,
+	// 	side: THREE.DoubleSide,
+	// 	opacity: 0.7,
+	// 	transparent: true
+	// }),
 	transitionObj = new THREE.Mesh(geometryObj, materialObj);
 
 	var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),

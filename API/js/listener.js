@@ -34,7 +34,7 @@ TOPPANO.onDocumentMouseUp = function() {
     var pos = TOPPANO.hitPosition();
     var latlon = new TOPPANO.LatLng(pos[0], pos[1]);
     console.log(pos[0], pos[1]);
-    TOPPANO.addTransition(latlon, 10);
+    // TOPPANO.addTransition(latlon, 10);
 
 	// check if hit something, and change the sphere
 	TOPPANO.updateURL();

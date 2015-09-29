@@ -5,33 +5,25 @@
 
 // LatLng
 TOPPANO.LatLng = function(latitude, longitude) {
-	this._lat = latitude;
-	this._lng = longitude;
+	this.lat = latitude;
+	this.lng = longitude;
 };
 
 TOPPANO.LatLng.prototype = {
 	constructor: TOPPANO.LatLng,
 
 	equals: function(lat2, lng2) {
-		if ( Math.abs(this._lat - lat2) + Math.abs(this._lng - lng2) < TOPPANO.gv.para.epsilon )
+		if ( Math.abs(this.lat - lat2) + Math.abs(this.lng - lng2) < TOPPANO.gv.para.epsilon )
 			return true;
 		return false;
 	},
 
-	lat: function() {
-		return this._lat;
-	},
-
-	lng: function() {
-		return this._lng;
-	},
-
 	toString: function() {
-		return 'lat: ' + this._lat.toString() + ', lng: ' + this._lng.toString();
+		return 'lat: ' + this.lat.toString() + ', lng: ' + this.lng.toString();
 	},
 
 	toUrlValue: function() {
-		return this._lat.toString() + ',' + this._lng.toString();
+		return this.lat.toString() + ',' + this.lng.toString();
 	}
 };
 
