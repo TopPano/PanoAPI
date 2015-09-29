@@ -46,16 +46,17 @@ TOPPANO.threeInit = function() {
 
 	// load tile images
 	var isTrans = false;
-	TOPPANO.loadTiles(isTrans, '00000000');
+	TOPPANO.gv.scene1.panoID = transInfo['00000000'].PanoID;
+	TOPPANO.loadTiles(isTrans, TOPPANO.gv.scene1.panoID);
 
 	// pre-load
 	TOPPANO.preLoadImages();
 
 	// adding icon objects on scene
-	var objLatLng = new TOPPANO.LatLng(0, 50);
-	TOPPANO.addTransition(objLatLng, 20);
+	TOPPANO.addTransition(TOPPANO.gv.scene1.panoID);
+
 	// TOPPANO.addPlane();
-	console.log(transInfo['00000001'].transition[0].nextID);
+	// console.log(transInfo['00000001'].transition[0].nextID);
 };
 
 // add listeners
@@ -146,16 +147,13 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 
 // transfer to another scene
 TOPPANO.changeScene = function(nextInfo) {
-	// console.log(nextInfo.name);
+	TOPPANO.gv.scene1.nextInfo = nextInfo.name;
 
-	for (var i = 0 ; i < TOPPANO.gv.objScene.children.length ; i++) {
+	for (var i = TOPPANO.gv.objScene.children.length - 1 ; i >= 0 ; i--) {
 		TOPPANO.gv.objScene.remove(TOPPANO.gv.objScene.children[i]);
 	}
 
 	TOPPANO.loadTiles(true, nextInfo.name.nextID);
-	// for (var i = 63 ; i >= 32 ; i--) {
-	// 	TOPPANO.gv.scene.children[i].material.opacity = 0;
-	// }
 	TOPPANO.gv.interact.isAnimate = true;
 };
 
@@ -165,8 +163,17 @@ TOPPANO.preLoadImages = function() {
 	// ref: threejs LoadingManager
 };
 
-// add transition objects
-TOPPANO.addTransition = function(LatLng, size) {
+// add all transition objects
+TOPPANO.addTransition = function(panoID) {
+	var transLength = transInfo[panoID].transition.length;
+	for (var i = 0 ; i < transLength ; i++) {
+		var objLatLng = new TOPPANO.LatLng(transInfo[panoID].transition[i].lat, transInfo[panoID].transition[i].lng);
+		TOPPANO.addObject(objLatLng, transInfo[panoID].transition[i].size, i);
+	}
+};
+
+// add an objects
+TOPPANO.addObject = function(LatLng, size, transID) {
 	// console.log('Add transition objects here.');
 	var radiusObj = TOPPANO.gv.para.objSize,
 	phiObj = THREE.Math.degToRad(90 - LatLng.lat),
@@ -187,9 +194,9 @@ TOPPANO.addTransition = function(LatLng, size) {
     transitionObj.position.set(xObj, yObj, zObj);
     transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
     transitionObj.name = {
-    	nextID: '00000002',
-    	nextLat: 0,
-    	nextLng: 40
+    	nextID: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextID,
+    	nextLat: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextLat,
+    	nextLng: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextLng
     };
     TOPPANO.gv.objScene.add(transitionObj);
     TOPPANO.gv.objects.transitionObj.push(transitionObj);
@@ -379,6 +386,11 @@ TOPPANO.renderScene = function() {
 			for (var i = 31 ; i >= 0 ; i--) {
 				TOPPANO.gv.scene.remove(TOPPANO.gv.scene.children[i]);
 			}
+			var nextID = TOPPANO.gv.scene1.nextInfo.nextID;
+			TOPPANO.gv.scene1.panoID = nextID;
+			TOPPANO.gv.objects.transitionObj = [];
+			TOPPANO.addTransition(nextID);
+
 			requestAnimationFrame(TOPPANO.update);
 			return 0;
 		}

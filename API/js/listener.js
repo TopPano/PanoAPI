@@ -36,14 +36,15 @@ TOPPANO.onDocumentMouseUp = function(event) {
     isHit = hit[0],
     hitObj = hit[1];
     if (isHit) {
+        TOPPANO.gv.scene1.nextInfo = hit[1].name;
         TOPPANO.changeScene(hitObj);
     }
 
     // TOPPANO.hitSphere();
 
-    // var pos = TOPPANO.hitPosition();
-    // var latlon = new TOPPANO.LatLng(pos[0], pos[1]);
-    // console.log(pos[0], pos[1]);
+    var pos = TOPPANO.hitPosition();
+    var latlon = new TOPPANO.LatLng(pos[0], pos[1]);
+    console.log(pos[0], pos[1]);
     // TOPPANO.addTransition(latlon, 10);
 
 	// check if hit something, and change the sphere

@@ -54,7 +54,8 @@ TOPPANO.gv = {
 		texture: null,
 		material: null,
 		mesh: null,
-		panoID: 1
+		panoID: '1',
+		nextInfo: null
 	},
 
 	// scene2 for buffer
@@ -63,7 +64,7 @@ TOPPANO.gv = {
 		texture: null,
 		material: null,
 		mesh:1,
-		panoID: 2
+		panoID: '2'
 	},
 
 	// objects in the scene
