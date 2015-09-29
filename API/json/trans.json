@@ -1,0 +1,18 @@
+var transInfo = {
+	"00000001":
+	{
+		"PanoID": "00000001",
+		"heading": 0,
+		"transition":
+		[
+			{
+				"lat": 0,
+				"lng": 50,
+				"size": 10,
+				"nextID": "00000002",
+				"nextLat": 0,
+				"nextLng": 40
+			}
+		]
+	}
+};

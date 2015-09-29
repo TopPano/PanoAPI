@@ -61,6 +61,7 @@ TOPPANO.gv = {
 	scene2: {
 		geometry: null,
 		texture: null,
+		material: null,
 		mesh:1,
 		panoID: 2
 	},

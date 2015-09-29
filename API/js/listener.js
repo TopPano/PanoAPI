@@ -29,11 +29,21 @@ TOPPANO.onDocumentMouseMove = function() {
 	// check if hover something, change the icon color
 };
 
-TOPPANO.onDocumentMouseUp = function() {
+TOPPANO.onDocumentMouseUp = function(event) {
 	TOPPANO.gv.interact.isUserInteracting = false;
-    var pos = TOPPANO.hitPosition();
-    var latlon = new TOPPANO.LatLng(pos[0], pos[1]);
-    console.log(pos[0], pos[1]);
+
+    var hit = TOPPANO.hitSomething(event),
+    isHit = hit[0],
+    hitObj = hit[1];
+    if (isHit) {
+        TOPPANO.changeScene(hitObj);
+    }
+
+    // TOPPANO.hitSphere();
+
+    // var pos = TOPPANO.hitPosition();
+    // var latlon = new TOPPANO.LatLng(pos[0], pos[1]);
+    // console.log(pos[0], pos[1]);
     // TOPPANO.addTransition(latlon, 10);
 
 	// check if hit something, and change the sphere

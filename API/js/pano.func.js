@@ -27,7 +27,8 @@ TOPPANO.threeInit = function() {
 	TOPPANO.readURL();
 
 	TOPPANO.gv.cam.camera = new THREE.PerspectiveCamera(
-		60, // field of view (vertical)
+		TOPPANO.gv.cam.defaultCamFOV, // field of view (vertical)
+		// 80,
 		window.innerWidth / window.innerHeight, // aspect ratio
 		1, // near plane
 		1100 // far plane
@@ -44,7 +45,8 @@ TOPPANO.threeInit = function() {
 	TOPPANO.rendererSetting();
 
 	// load tile images
-	TOPPANO.loadTiles();
+	var isTrans = false;
+	TOPPANO.loadTiles(isTrans, '00000000');
 
 	// pre-load
 	TOPPANO.preLoadImages();
@@ -53,13 +55,16 @@ TOPPANO.threeInit = function() {
 	var objLatLng = new TOPPANO.LatLng(0, 50);
 	TOPPANO.addTransition(objLatLng, 20);
 	// TOPPANO.addPlane();
+	console.log(transInfo['00000001'].transition[0].nextID);
 };
 
 // add listeners
 TOPPANO.addListener = function() {
 	document.addEventListener('mousedown', TOPPANO.onDocumentMouseDown, false);
 	document.addEventListener('mousemove', TOPPANO.onDocumentMouseMove, false);
-	document.addEventListener('mouseup', TOPPANO.onDocumentMouseUp, false);
+	document.addEventListener('mouseup', function(event) {
+		TOPPANO.onDocumentMouseUp(event);
+	}, false);
 	document.addEventListener('mousewheel', function(event) {
 		TOPPANO.onDocumentMouseWheel(event);
 	}, false);
@@ -107,10 +112,10 @@ TOPPANO.readURL = function() {
 	}
 };
 // loading tiles images
-TOPPANO.loadTiles = function() {
+TOPPANO.loadTiles = function(isTrans, ID) {
 	var sphereSize = TOPPANO.gv.para.sphereSize,
-	// path = './image/tile/';
-	path = 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/tile/';
+	path = './image/' + ID +'/';
+	// path = 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/tile/';
 	THREE.ImageUtils.crossOrigin = '';
 
 	for (var i = 0 ; i < 4 ; i++) {
@@ -124,8 +129,12 @@ TOPPANO.loadTiles = function() {
 
 			var material = new THREE.MeshBasicMaterial({
 				map: texture,
-				overdraw: true
+				overdraw: true,
+				transparent: true
 			});
+			if (isTrans) {
+				material.opacity = 0;
+			}
 
 			var mesh = new THREE.Mesh(geometry, material);
 			TOPPANO.gv.scene.add(mesh);
@@ -133,6 +142,21 @@ TOPPANO.loadTiles = function() {
 		}
 	}
 	// console.log(TOPPANO.gv.scene.children.length);  // 32
+};
+
+// transfer to another scene
+TOPPANO.changeScene = function(nextInfo) {
+	// console.log(nextInfo.name);
+
+	for (var i = 0 ; i < TOPPANO.gv.objScene.children.length ; i++) {
+		TOPPANO.gv.objScene.remove(TOPPANO.gv.objScene.children[i]);
+	}
+
+	TOPPANO.loadTiles(true, nextInfo.name.nextID);
+	// for (var i = 63 ; i >= 32 ; i--) {
+	// 	TOPPANO.gv.scene.children[i].material.opacity = 0;
+	// }
+	TOPPANO.gv.interact.isAnimate = true;
 };
 
 // pre-load all scene images
@@ -162,7 +186,13 @@ TOPPANO.addTransition = function(LatLng, size) {
     zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
     transitionObj.position.set(xObj, yObj, zObj);
     transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+    transitionObj.name = {
+    	nextID: '00000002',
+    	nextLat: 0,
+    	nextLng: 40
+    };
     TOPPANO.gv.objScene.add(transitionObj);
+    TOPPANO.gv.objects.transitionObj.push(transitionObj);
 };
 
 // add plane for testing GLSL
@@ -266,6 +296,31 @@ TOPPANO.hitSomething = function(event) {
         return [false, null];
 };
 
+// if hit the objects(and the objects are visible), return: (isHit, hitObj)
+TOPPANO.hitSphere = function() {
+    var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
+        -(event.clientY / window.innerHeight) * 2 + 1, //y
+        0.5); // z
+
+    mouse3D.unproject(TOPPANO.gv.cam.camera);
+    mouse3D.sub(TOPPANO.gv.cam.camera.position);
+    mouse3D.normalize();
+    var raycaster = new THREE.Raycaster(TOPPANO.gv.cam.camera.position, mouse3D);
+    // var intersects = raycaster.intersectObjects(TOPPANO.gv.objects.transitionObj);
+    // if (intersects.length > 0) {
+    // 	console.log('here');
+    //     // return which object is hit
+    var intersects = raycaster.intersectObjects(TOPPANO.gv.scene.children);;
+    // for (var i = 0; i < TOPPANO.gv.scene.children.length; i++) {
+        // if (intersects[0].object.position.distanceTo(TOPPANO.gv.scene.children[i].position) < 10) {
+        //     console.log(TOPPANO.gv.scene.children[i].position);
+        // }
+        // intersects = raycaster.intersectObjects(TOPPANO.gv.scene.children);
+        console.log(intersects);
+    // }
+    // }
+};
+
 // return the LatLng position of the mouse hit on the sphere
 TOPPANO.hitPosition = function() {
 	var cameraFov = TOPPANO.gv.cam.camera.fov,
@@ -318,7 +373,23 @@ TOPPANO.updateURL = function() {
 // render scene
 TOPPANO.renderScene = function() {
 	if (TOPPANO.gv.interact.isAnimate) {
-
+		var fadeInSpeed = 0.02;
+		if (TOPPANO.gv.scene.children[60].material.opacity >= 1) {
+			TOPPANO.gv.interact.isAnimate = false;
+			for (var i = 31 ; i >= 0 ; i--) {
+				TOPPANO.gv.scene.remove(TOPPANO.gv.scene.children[i]);
+			}
+			requestAnimationFrame(TOPPANO.update);
+			return 0;
+		}
+		for (var i = 63 ; i >= 32 ; i--) {
+			TOPPANO.gv.scene.children[i].material.opacity += fadeInSpeed;
+		}
+		requestAnimationFrame(TOPPANO.renderScene);
+		TOPPANO.gv.renderer.clear();
+        TOPPANO.gv.renderer.render(TOPPANO.gv.scene, TOPPANO.gv.cam.camera);
+        TOPPANO.gv.renderer.clearDepth();
+        TOPPANO.gv.renderer.render(TOPPANO.gv.objScene, TOPPANO.gv.cam.camera);
     } else {
         requestAnimationFrame(TOPPANO.update);
         TOPPANO.gv.renderer.clear();
