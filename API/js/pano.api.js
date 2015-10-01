@@ -76,7 +76,8 @@ TOPPANO.gv = {
 	para: {
 		fov: {
 			min: 50,
-			max: 85
+			// max: 85
+			max: 100
 		},
 		sphereSize: 100,
 		objSize: 90,

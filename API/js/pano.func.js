@@ -62,7 +62,9 @@ TOPPANO.threeInit = function() {
 // add listeners
 TOPPANO.addListener = function() {
 	document.addEventListener('mousedown', TOPPANO.onDocumentMouseDown, false);
-	document.addEventListener('mousemove', TOPPANO.onDocumentMouseMove, false);
+	document.addEventListener('mousemove', function(event) {
+		TOPPANO.onDocumentMouseMove(event);
+	}, false);
 	document.addEventListener('mouseup', function(event) {
 		TOPPANO.onDocumentMouseUp(event);
 	}, false);
@@ -108,7 +110,6 @@ TOPPANO.readURL = function() {
 			if (urlSlice[3]) {
 				TOPPANO.gv.scene1.panoID = parseInt(urlSlice[3]);
 			}
-			// TOPPANO.updateURL();
 		}
 	}
 };
