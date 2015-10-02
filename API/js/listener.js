@@ -50,12 +50,9 @@ TOPPANO.onDocumentMouseUp = function(event) {
         TOPPANO.changeScene(hitObj);
     }
 
-    // TOPPANO.hitSphere();
-
-    // var pos = TOPPANO.hitPosition();
-    // var latlon = new TOPPANO.LatLng(pos[0], pos[1]);
-    // console.log(pos[0], pos[1]);
-    // TOPPANO.addTransition(latlon, 10);
+    // add objects if user wants
+    var hitPos = TOPPANO.hitSphere(event);
+    TOPPANO.addRandObj(hitPos.x, hitPos.y, hitPos.z, 10);
 
 	// check if hit something, and change the sphere
 	TOPPANO.updateURL();

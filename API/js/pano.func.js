@@ -203,6 +203,22 @@ TOPPANO.addObject = function(LatLng, size, transID) {
     TOPPANO.gv.objects.transitionObj.push(transitionObj);
 };
 
+// add a random object
+TOPPANO.addRandObj = function(x, y, z, size) {
+	var geometryObj = new THREE.PlaneBufferGeometry(size, size, 32),
+	materialObj = new THREE.MeshBasicMaterial({
+		map: THREE.ImageUtils.loadTexture('./image/pin.png'),
+		side: THREE.DoubleSide,
+		opacity: 0.5,
+		transparent: true
+	}),
+	transitionObj = new THREE.Mesh(geometryObj, materialObj);
+
+    transitionObj.position.set(x, y ,z);
+    transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+    TOPPANO.gv.objScene.add(transitionObj);
+};
+
 // add plane for testing GLSL
 TOPPANO.addPlane = function() {
 	// console.log('Add transition objects here.');
@@ -305,28 +321,33 @@ TOPPANO.hitSomething = function(event) {
 };
 
 // if hit the objects(and the objects are visible), return: (isHit, hitObj)
-TOPPANO.hitSphere = function() {
-    var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
-        -(event.clientY / window.innerHeight) * 2 + 1, //y
-        0.5); // z
+TOPPANO.hitSphere = function(event) {
+	// event.clientY
+    var mouse2D = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1, //x
+        -(event.clientY / window.innerHeight) * 2 + 1); // y
 
-    mouse3D.unproject(TOPPANO.gv.cam.camera);
-    mouse3D.sub(TOPPANO.gv.cam.camera.position);
-    mouse3D.normalize();
-    var raycaster = new THREE.Raycaster(TOPPANO.gv.cam.camera.position, mouse3D);
-    // var intersects = raycaster.intersectObjects(TOPPANO.gv.objects.transitionObj);
-    // if (intersects.length > 0) {
-    // 	console.log('here');
-    //     // return which object is hit
-    var intersects = raycaster.intersectObjects(TOPPANO.gv.scene.children);;
-    // for (var i = 0; i < TOPPANO.gv.scene.children.length; i++) {
-        // if (intersects[0].object.position.distanceTo(TOPPANO.gv.scene.children[i].position) < 10) {
-        //     console.log(TOPPANO.gv.scene.children[i].position);
-        // }
-        // intersects = raycaster.intersectObjects(TOPPANO.gv.scene.children);
-        console.log(intersects);
-    // }
-    // }
+    // mouse3D.unproject(TOPPANO.gv.cam.camera);
+    // mouse3D.sub(TOPPANO.gv.cam.camera.position);
+    // mouse3D.normalize();
+    // var raycaster = new THREE.Raycaster(TOPPANO.gv.cam.camera.position, mouse3D);
+    var raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse2D, TOPPANO.gv.cam.camera);
+    var intersects = raycaster.intersectObjects(TOPPANO.gv.scene.children);
+    // intersects[0].object.material.color.set( 0xff0000 );
+    console.log(intersects[0].point);
+    return intersects[0].point;
+};
+
+// change the mesh color which is hit by user
+TOPPANO.hitWhichSphere = function(event) {
+    var mouse2D = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1, //x
+        -(event.clientY / window.innerHeight) * 2 + 1); // y
+
+    var raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse2D, TOPPANO.gv.cam.camera);
+    var intersects = raycaster.intersectObjects(TOPPANO.gv.scene.children);
+    intersects[0].object.material.color.set( 0xff0000 ); // change to red
+    console.log(intersects[0].object.position);
 };
 
 // return the LatLng position of the mouse hit on the sphere
