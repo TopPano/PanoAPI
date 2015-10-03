@@ -203,7 +203,7 @@ TOPPANO.addObject = function(LatLng, size, transID) {
     TOPPANO.gv.objects.transitionObj.push(transitionObj);
 };
 
-// add a random object
+// add a random object for test!
 TOPPANO.addRandObj = function(x, y, z, size) {
 	var geometryObj = new THREE.PlaneBufferGeometry(size, size, 32),
 	materialObj = new THREE.MeshBasicMaterial({
@@ -326,15 +326,10 @@ TOPPANO.hitSphere = function(event) {
     var mouse2D = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1, //x
         -(event.clientY / window.innerHeight) * 2 + 1); // y
 
-    // mouse3D.unproject(TOPPANO.gv.cam.camera);
-    // mouse3D.sub(TOPPANO.gv.cam.camera.position);
-    // mouse3D.normalize();
-    // var raycaster = new THREE.Raycaster(TOPPANO.gv.cam.camera.position, mouse3D);
     var raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse2D, TOPPANO.gv.cam.camera);
     var intersects = raycaster.intersectObjects(TOPPANO.gv.scene.children);
-    // intersects[0].object.material.color.set( 0xff0000 );
-    console.log(intersects[0].point);
+    // console.log(intersects[0].point);
     return intersects[0].point;
 };
 
@@ -347,33 +342,7 @@ TOPPANO.hitWhichSphere = function(event) {
     raycaster.setFromCamera(mouse2D, TOPPANO.gv.cam.camera);
     var intersects = raycaster.intersectObjects(TOPPANO.gv.scene.children);
     intersects[0].object.material.color.set( 0xff0000 ); // change to red
-    console.log(intersects[0].object.position);
-};
-
-// return the LatLng position of the mouse hit on the sphere
-TOPPANO.hitPosition = function() {
-	var cameraFov = TOPPANO.gv.cam.camera.fov,
-    cameraAspect = TOPPANO.gv.cam.camera.aspect;
-    var hFOV = 2 * Math.atan( Math.tan( cameraFov * Math.PI / 180 / 2 ) * cameraAspect ) * 180 / Math.PI; // horizonal
-
-    var width = TOPPANO.gv.para.sphereSize * Math.tan(hFOV / 2 * Math.PI / 180);
-	var offsetLonRatio = (event.clientX - 0.5 * window.innerWidth) / (0.5 * window.innerWidth),
-	offsetWidth = offsetLonRatio * width,
-	offsetLon = Math.atan(offsetWidth / TOPPANO.gv.para.sphereSize), // rad
-	returnLon = TOPPANO.gv.cam.lon + (offsetLon / Math.PI * 180);
-	// console.log(returnLon);
-
-	var height = TOPPANO.gv.para.sphereSize * Math.tan(cameraFov / 2 * Math.PI / 180);;
-	var offsetLatRatio = (0.5 * window.innerHeight - event.clientY) / (0.5 * window.innerHeight),
-	offsetHeight = offsetLatRatio * height,
-	offsetLat = Math.atan(offsetHeight / TOPPANO.gv.para.sphereSize),
-	returnLat = TOPPANO.gv.cam.lat + (offsetLat / Math.PI * 180);
-	if (returnLat > 85)
-		returnLat = 170 - returnLat;
-	if (returnLat < -85)
-		returnLat = -170 + returnLat;
-	// console.log(returnLat);
-	return [returnLat, returnLon];
+    // console.log(intersects[0].object.position);
 };
 
 // snapshot function
