@@ -1,0 +1,82 @@
+var transInfo = {
+	"00000000":
+	{
+		"PanoID": "00000000",
+		"heading": 0,
+		"transition":
+		[
+			{
+				"lat": -5,
+				"lng": -55,
+				"size": 20,
+				"nextID": "00000001",
+				"nextLat": 0,
+				"nextLng": 306
+			}
+		]
+	},
+	"00000001":
+	{
+		"PanoID": "00000001",
+		"heading": 280,
+		"transition":
+		[
+			{
+				"lat": -8,
+				"lng": 32.7,
+				"size": 10,
+				"nextID": "00000000",
+				"nextLat": 0.9,
+				"nextLng": 106.1
+			},
+			{
+				"lat": 0,
+				"lng": 274.5,
+				"size": 30,
+				"nextID": "00000002",
+				"nextLat": 0,
+				"nextLng": 279.2
+			}
+		]
+	},
+	"00000002":
+	{
+		"PanoID": "00000002",
+		"heading": 275.8,
+		"transition":
+		[
+			{
+				"lat": -4,
+				"lng": 78,
+				"size": 30,
+				"nextID": "00000001",
+				"nextLat": -3,
+				"nextLng": 93.5
+			},
+			{
+				"lat": 0,
+				"lng": 268.9,
+				"size": 24,
+				"nextID": "00000003",
+				"nextLat": 0,
+				"nextLng": 268.9
+			}
+		]
+	},
+	"00000003":
+	{
+		"PanoID": "00000003",
+		"heading": 270.3,
+		"transition":
+		[
+			{
+				"lat": -2,
+				"lng": 85.7,
+				"size": 30,
+				"nextID": "00000002",
+				"nextLat": -4,
+				"nextLng": 78
+			}
+		]
+	}
+};
