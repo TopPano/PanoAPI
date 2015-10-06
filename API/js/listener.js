@@ -52,7 +52,10 @@ TOPPANO.onDocumentMouseUp = function(event) {
 
     // add objects if user wants
     var hitPos = TOPPANO.hitSphere(event);
-    TOPPANO.addRandObj(hitPos.x, hitPos.y, hitPos.z, 10);
+    var ObjLatLng = xyz2LatLng(hitPos.x, hitPos.y, hitPos.z);
+    console.log(ObjLatLng.lat, ObjLatLng.lng);
+    TOPPANO.addRandObj2(ObjLatLng, 10);
+    // TOPPANO.addRandObj(hitPos.x, hitPos.y, hitPos.z, 10);
 
 	// check if hit something, and change the sphere
 	TOPPANO.updateURL();

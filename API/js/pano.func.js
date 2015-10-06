@@ -217,6 +217,32 @@ TOPPANO.addRandObj = function(x, y, z, size) {
     transitionObj.position.set(x, y ,z);
     transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
     TOPPANO.gv.objScene.add(transitionObj);
+
+    var ObjLatLng = xyz2LatLng(x, y, z, TOPPANO.gv.para.objSize);
+};
+
+// add a random object for test!
+TOPPANO.addRandObj2 = function(LatLng, size) {
+	var radiusObj = TOPPANO.gv.para.objSize,
+	phiObj = THREE.Math.degToRad(90 - LatLng.lat),
+	thetaObj = THREE.Math.degToRad(LatLng.lng);
+
+	var geometryObj = new THREE.PlaneBufferGeometry(size, size, 32),
+	materialObj = new THREE.MeshBasicMaterial({
+		map: THREE.ImageUtils.loadTexture('./image/pin.png'),
+		side: THREE.DoubleSide,
+		opacity: 0.5,
+		transparent: true
+	}),
+	transitionObj = new THREE.Mesh(geometryObj, materialObj);
+
+	var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
+    yObj = radiusObj * Math.cos(phiObj),
+    zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
+
+    transitionObj.position.set(xObj, yObj ,zObj);
+    transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+    TOPPANO.gv.objScene.add(transitionObj);
 };
 
 // add plane for testing GLSL
@@ -445,6 +471,22 @@ function initStats() {
     stats.domElement.style.top = '0px';
     document.body.appendChild(stats.domElement);
     return stats;
+}
+
+function xyz2LatLng(x, y ,z) {
+	// y: up, phi: the angle between y axis, theta: the angle between x asix on x-z plane
+	var r = Math.sqrt(x*x + y*y + z*z),
+	theta = Math.atan(z / x),
+	phi = Math.acos(y / r);
+	var cosTheta = x / r / Math.sin(phi);
+	if (cosTheta < 0)
+		theta += Math.PI;
+	var thetaDegree = theta * 180 / Math.PI,
+	phiDegree = phi * 180 / Math.PI
+
+	// return: phi(lat:the angle between x-z plane, have to subtract 90) and theta(lng)
+	var objLatLng = new TOPPANO.LatLng(90 - phiDegree, thetaDegree);
+	return objLatLng;
 }
 
 function isEmpty(str) {
