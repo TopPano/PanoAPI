@@ -166,6 +166,9 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 			TOPPANO.gv.scene.add(mesh);
 		}
 	}
+	if (isTrans) {
+		sleep(500);
+	}
 	// console.log(TOPPANO.gv.scene.children.length);  // 32
 };
 
@@ -417,7 +420,7 @@ TOPPANO.saveImage = function() {
 // update the URL query
 TOPPANO.updateURL = function() {
     window.location.hash = TOPPANO.gv.cam.camera.fov + ',' + TOPPANO.gv.cam.lat + ',' +
-    TOPPANO.gv.cam.lng + ',' + TOPPANO.gv.scene1.panoID;
+    (TOPPANO.gv.cam.lng + TOPPANO.gv.headingOffset) + ',' + TOPPANO.gv.scene1.panoID;
 };
 
 // render scene
