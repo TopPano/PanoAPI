@@ -11,7 +11,7 @@ TOPPANO.onDocumentMouseDown = function() {
 	TOPPANO.gv.interact.onPointerDownPointerX = event.clientX;
 	TOPPANO.gv.interact.onPointerDownPointerY = event.clientY;
 
-	TOPPANO.gv.interact.onPointerDownLon = TOPPANO.gv.cam.lon;
+	TOPPANO.gv.interact.onPointerDownLon = TOPPANO.gv.cam.lng;
 	TOPPANO.gv.interact.onPointerDownLat = TOPPANO.gv.cam.lat;
 };
 
@@ -22,7 +22,7 @@ TOPPANO.onDocumentMouseMove = function(event) {
 		var deltaX = TOPPANO.gv.interact.onPointerDownPointerX - event.clientX,
 		deltaY = event.clientY - TOPPANO.gv.interact.onPointerDownPointerY;
 
-		TOPPANO.gv.cam.lon = deltaX * 0.1 + TOPPANO.gv.interact.onPointerDownLon;
+		TOPPANO.gv.cam.lng = deltaX * 0.1 + TOPPANO.gv.interact.onPointerDownLon;
 		TOPPANO.gv.cam.lat = deltaY * 0.1 + TOPPANO.gv.interact.onPointerDownLat;
 	}
 
@@ -53,7 +53,7 @@ TOPPANO.onDocumentMouseUp = function(event) {
     // add objects if user wants
     var hitPos = TOPPANO.hitSphere(event);
     var ObjLatLng = xyz2LatLng(hitPos.x, hitPos.y, hitPos.z);
-    console.log(ObjLatLng.lat, ObjLatLng.lng);
+    // console.log(ObjLatLng.lat, ObjLatLng.lng);
     // TOPPANO.addRandObj2(ObjLatLng, 10);
     // TOPPANO.addRandObj(hitPos.x, hitPos.y, hitPos.z, 10);
 

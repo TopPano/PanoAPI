@@ -6,8 +6,8 @@ var transInfo = {
 		"transition":
 		[
 			{
-				"lat": -5,
-				"lng": -55,
+				"lat": 0,
+				"lng": 0,
 				"size": 20,
 				"nextID": "00000001",
 				"nextLat": 0,

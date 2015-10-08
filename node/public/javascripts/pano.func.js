@@ -21,10 +21,19 @@ TOPPANO.menuInit = function() {
 };
 
 // threejs initialization
-TOPPANO.threeInit = function() {
+TOPPANO.threeInit = function(map) {
 	TOPPANO.gv.stats = initStats();
-	// virtual cam init
-	TOPPANO.readURL();
+
+	if (map) {
+		TOPPANO.initGV(map);
+	} else {
+		// virtual cam init
+		var url = TOPPANO.readURL();
+		if (url) {
+			TOPPANO.initGV(url);
+		}
+	}
+
 
 	TOPPANO.gv.cam.camera = new THREE.PerspectiveCamera(
 		TOPPANO.gv.cam.defaultCamFOV, // field of view (vertical)
@@ -98,21 +107,34 @@ TOPPANO.readURL = function() {
 		var urlSlice = url.slice(1, url.length).split(',');
 		// console.log(urlSlice);
 		if (urlSlice.length === 4) {
-			if (urlSlice[0]) {
-				TOPPANO.gv.cam.defaultCamFOV = clamp(parseInt(urlSlice[0]), TOPPANO.gv.para.fov.min, TOPPANO.gv.para.fov.max);
-			}
-			if (urlSlice[1]) {
-				TOPPANO.gv.cam.lat = parseInt(urlSlice[1]);
-			}
-			if (urlSlice[2]) {
-				TOPPANO.gv.cam.lon = parseInt(urlSlice[2]);
-			}
-			if (urlSlice[3]) {
-				TOPPANO.gv.scene1.panoID = parseInt(urlSlice[3]);
+			return {
+				zoom: clamp(parseInt(urlSlice[0]), TOPPANO.gv.para.fov.min, TOPPANO.gv.para.fov.max),
+				center: {
+					lat: parseInt(urlSlice[1]),
+					lng: parseInt(urlSlice[2])
+				},
+				PanoID: parseInt(urlSlice[3])
 			}
 		}
 	}
 };
+
+// setting global variables for initialization
+TOPPANO.initGV = function(para) {
+	if (para.zoom) {
+		TOPPANO.gv.cam.defaultCamFOV = clamp(para.zoom, TOPPANO.gv.para.fov.min, TOPPANO.gv.para.fov.max);
+	}
+	if (para.center.lat) {
+		TOPPANO.gv.cam.lat = para.center.lat;
+	}
+	if (para.center.lng) {
+		TOPPANO.gv.cam.lng = para.center.lng;
+	}
+	if (para.PanoID) {
+		TOPPANO.gv.scene1.panoID = para.PanoID;
+	}
+};
+
 // loading tiles images
 TOPPANO.loadTiles = function(isTrans, ID) {
 	var sphereSize = TOPPANO.gv.para.sphereSize,
@@ -192,8 +214,13 @@ TOPPANO.addObject = function(LatLng, size, transID) {
 	var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
     yObj = radiusObj * Math.cos(phiObj),
     zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
+
+	// var vector = new THREE.Vector3(1, 0, 0);
+	// vector.applyQuaternion(quaternion);
+
     transitionObj.position.set(xObj, yObj, zObj);
-    transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+    // transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+
     transitionObj.name = {
     	nextID: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextID,
     	nextLat: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextLat,
@@ -391,7 +418,7 @@ TOPPANO.saveImage = function() {
 // update the URL query
 TOPPANO.updateURL = function() {
     window.location.hash = TOPPANO.gv.cam.camera.fov + ',' + TOPPANO.gv.cam.lat + ',' +
-    TOPPANO.gv.cam.lon + ',' + TOPPANO.gv.scene1.panoID;
+    TOPPANO.gv.cam.lng + ',' + TOPPANO.gv.scene1.panoID;
 };
 
 // render scene
@@ -431,13 +458,13 @@ TOPPANO.renderScene = function() {
 // threejs update
 TOPPANO.update = function() {
     TOPPANO.gv.cam.lat = Math.max(-85, Math.min(85, TOPPANO.gv.cam.lat));
-    TOPPANO.gv.cam.lon = (TOPPANO.gv.cam.lon + 360) % 360;
+    TOPPANO.gv.cam.lng = (TOPPANO.gv.cam.lng + 360) % 360;
     TOPPANO.gv.cam.phi = THREE.Math.degToRad(90 - TOPPANO.gv.cam.lat);
-    TOPPANO.gv.cam.theta = THREE.Math.degToRad(TOPPANO.gv.cam.lon);
+    TOPPANO.gv.cam.theta = THREE.Math.degToRad(TOPPANO.gv.cam.lng);
 
     // console.log('FoV: ' + Math.round(TOPPANO.gv.cam.camera.fov * 100) / 100 +
     //     ' Lat:' + Math.round(TOPPANO.gv.cam.lat * 100) / 100 +
-    //     ' Lon:' + Math.round(TOPPANO.gv.cam.lon * 100) / 100);
+    //     ' Lon:' + Math.round(TOPPANO.gv.cam.lng * 100) / 100);
 
     // y: up
     TOPPANO.gv.cam.camera.target.x = 500 * Math.sin(TOPPANO.gv.cam.phi) * Math.cos(TOPPANO.gv.cam.theta);
@@ -503,5 +530,5 @@ function sleep(ms) {
 }
 
 function clamp(number, min, max) {
-    return number > max ? max : (number < min ? min : number);
+    return Math.min(Math.max(number, min), max);
 }

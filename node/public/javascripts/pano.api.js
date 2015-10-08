@@ -8,7 +8,7 @@ var TOPPANO = TOPPANO || {};
 
 
 // TOPPANO Panorama Viewer Initialization
-TOPPANO.init = function() {
+TOPPANO.initMap = function(map) {
 	// draw snapshot canvas
 	TOPPANO.snapshotCanvasInit();
 
@@ -16,10 +16,11 @@ TOPPANO.init = function() {
 	TOPPANO.menuInit();
 
 	// threejs init
-	TOPPANO.threeInit();
+	TOPPANO.threeInit(map);
 
 	// add listener
 	TOPPANO.addListener();
+	TOPPANO.update();
 };
 
 // global variables initialization
@@ -32,7 +33,7 @@ TOPPANO.gv = {
 	cam: {
 		camera: null,
 		lat: 0,
-        lon: 0,
+        lng: 0,
 		camPos: new THREE.Vector3(0, 0, 0),
         defaultCamFOV: 60,
         phi: 0,
