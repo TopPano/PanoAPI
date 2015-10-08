@@ -29,6 +29,7 @@ TOPPANO.gv = {
 	objScene: null,
 	renderer: null,
 	stats: null,
+	headingOffset: 0,
 	// camera parameter
 	cam: {
 		camera: null,
@@ -80,7 +81,7 @@ TOPPANO.gv = {
 			max: 85
 			// max: 100
 		},
-		sphereSize: 100,
+		sphereSize: 1000,
 		objSize: 90,
 		epsilon: 0.1
 	},

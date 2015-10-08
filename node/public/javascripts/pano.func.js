@@ -23,7 +23,6 @@ TOPPANO.menuInit = function() {
 // threejs initialization
 TOPPANO.threeInit = function(map) {
 	TOPPANO.gv.stats = initStats();
-
 	if (map) {
 		TOPPANO.initGV(map);
 	} else {
@@ -55,7 +54,7 @@ TOPPANO.threeInit = function(map) {
 
 	// load tile images
 	var isTrans = false;
-	TOPPANO.gv.scene1.panoID = transInfo['00000000'].PanoID;
+	// TOPPANO.gv.scene1.panoID = transInfo['00000000'].PanoID;
 	TOPPANO.loadTiles(isTrans, TOPPANO.gv.scene1.panoID);
 
 	// pre-load
@@ -113,7 +112,7 @@ TOPPANO.readURL = function() {
 					lat: parseInt(urlSlice[1]),
 					lng: parseInt(urlSlice[2])
 				},
-				PanoID: parseInt(urlSlice[3])
+				PanoID: urlSlice[3]
 			}
 		}
 	}
@@ -145,6 +144,10 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 	for (var i = 0 ; i < 4 ; i++) {
 		for (var j = 0 ; j < 8 ; j++) {
 			var geometry = new THREE.SphereGeometry(sphereSize, 4, 8, Math.PI/4 * j, Math.PI/4, Math.PI/4 * i, Math.PI/4);
+			if (isTrans) {
+				TOPPANO.gv.para.sphereSize -= 1;
+				geometry = new THREE.SphereGeometry(TOPPANO.gv.para.sphereSize, 4, 8, Math.PI/4 * j - TOPPANO.gv.headingOffset * Math.PI / 180, Math.PI/4, Math.PI/4 * i, Math.PI/4);
+			}
 			geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
 			var imagePath = path + i + '-' + j + '.jpeg',
@@ -159,10 +162,8 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 			if (isTrans) {
 				material.opacity = 0;
 			}
-
 			var mesh = new THREE.Mesh(geometry, material);
 			TOPPANO.gv.scene.add(mesh);
-			TOPPANO.gv.renderer.render(TOPPANO.gv.scene, TOPPANO.gv.cam.camera);
 		}
 	}
 	// console.log(TOPPANO.gv.scene.children.length);  // 32
@@ -170,6 +171,9 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 
 // transfer to another scene
 TOPPANO.changeScene = function(nextInfo) {
+	var rotateDegree = transInfo[nextInfo.name.nextID].heading - transInfo[TOPPANO.gv.scene1.panoID].heading;
+	TOPPANO.gv.headingOffset += rotateDegree;
+
 	TOPPANO.gv.scene1.nextInfo = nextInfo.name;
 
 	for (var i = TOPPANO.gv.objScene.children.length - 1 ; i >= 0 ; i--) {
@@ -200,7 +204,7 @@ TOPPANO.addObject = function(LatLng, size, transID) {
 	// console.log('Add transition objects here.');
 	var radiusObj = TOPPANO.gv.para.objSize,
 	phiObj = THREE.Math.degToRad(90 - LatLng.lat),
-	thetaObj = THREE.Math.degToRad(LatLng.lng);
+	thetaObj = THREE.Math.degToRad(LatLng.lng - TOPPANO.gv.headingOffset);
 
 	var geometryObj = new THREE.PlaneBufferGeometry(size, size, 32),
 	materialObj = new THREE.MeshBasicMaterial({
@@ -215,16 +219,11 @@ TOPPANO.addObject = function(LatLng, size, transID) {
     yObj = radiusObj * Math.cos(phiObj),
     zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
 
-	// var vector = new THREE.Vector3(1, 0, 0);
-	// vector.applyQuaternion(quaternion);
-
     transitionObj.position.set(xObj, yObj, zObj);
-    // transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+    transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
 
     transitionObj.name = {
-    	nextID: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextID,
-    	nextLat: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextLat,
-    	nextLng: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextLng
+    	nextID: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextID
     };
     TOPPANO.gv.objScene.add(transitionObj);
     TOPPANO.gv.objects.transitionObj.push(transitionObj);
@@ -425,6 +424,8 @@ TOPPANO.updateURL = function() {
 TOPPANO.renderScene = function() {
 	if (TOPPANO.gv.interact.isAnimate) {
 		var fadeInSpeed = 0.02;
+
+		// if second scene fully shows up
 		if (TOPPANO.gv.scene.children[60].material.opacity >= 1) {
 			TOPPANO.gv.interact.isAnimate = false;
 			for (var i = 31 ; i >= 0 ; i--) {
@@ -434,10 +435,12 @@ TOPPANO.renderScene = function() {
 			TOPPANO.gv.scene1.panoID = nextID;
 			TOPPANO.gv.objects.transitionObj = [];
 			TOPPANO.addTransition(nextID);
-
+			TOPPANO.updateURL();
 			requestAnimationFrame(TOPPANO.update);
 			return 0;
 		}
+
+		// fade in animation
 		for (var i = 63 ; i >= 32 ; i--) {
 			TOPPANO.gv.scene.children[i].material.opacity += fadeInSpeed;
 		}
