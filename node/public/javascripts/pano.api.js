@@ -56,7 +56,7 @@ TOPPANO.gv = {
 		texture: null,
 		material: null,
 		mesh: null,
-		panoID: '1',
+		panoID: '00000000',
 		nextInfo: null
 	},
 
@@ -66,7 +66,7 @@ TOPPANO.gv = {
 		texture: null,
 		material: null,
 		mesh:1,
-		panoID: '2'
+		panoID: '00000001'
 	},
 
 	// objects in the scene
