@@ -135,8 +135,8 @@ TOPPANO.initGV = function(para) {
 
 // loading tiles images
 TOPPANO.loadTiles = function(isTrans, ID) {
-	var sphereSize = TOPPANO.gv.para.sphereSize,
-	path = './images/' + ID +'/';
+	var sphereSize = TOPPANO.gv.para.sphereSize;
+	// path = './images/' + ID +'/';
 	// path = 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/tile/';
 	THREE.ImageUtils.crossOrigin = '';
 
