@@ -33,7 +33,7 @@ TOPPANO.threeInit = function(map) {
 		}
 	}
 
-
+	TOPPANO.requestMeta(map.PanoID);
 	TOPPANO.gv.cam.camera = new THREE.PerspectiveCamera(
 		TOPPANO.gv.cam.defaultCamFOV, // field of view (vertical)
 		// 80,
@@ -429,6 +429,23 @@ TOPPANO.saveImage = function() {
 TOPPANO.updateURL = function() {
     window.location.hash = TOPPANO.gv.cam.camera.fov + ',' + TOPPANO.gv.cam.lat + ',' +
     (TOPPANO.gv.cam.lng + TOPPANO.gv.headingOffset) + ',' + TOPPANO.gv.scene1.panoID;
+};
+
+// request for metadata
+TOPPANO.requestMeta = function(ID) {
+	var xhr = new XMLHttpRequest();
+    xhr.open('PUT', 'http://127.0.0.1:1337/hi');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var userInfo = JSON.parse(xhr.responseText);
+            console.log(userInfo);
+            TOPPANO.gv.transInfo = userInfo;
+        }
+    };
+    xhr.send(JSON.stringify({
+        PanoID: ID
+    }));
 };
 
 // render scene

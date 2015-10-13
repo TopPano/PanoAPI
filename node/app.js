@@ -13,9 +13,25 @@ app.get('/', function(req, res) {
   res.render('index.ejs',{"viewCount":viewCount})
 });
 
-app.post('/hi', function (req, res) {
+app.put('/hi', function (req, res) {
   console.log("Request method :" + req.method);
   console.log("Request body :" + req.body);
+  var hi = {
+    "PanoID": "00000003",
+    "heading": 270.3,
+    "transition": [
+      {
+        "lat": -20,
+        "lng": 85.7,
+        "size": 30,
+        "rotateX": 90,
+        "rotateY": 1,
+        "rotateZ": -10,
+        "nextID": "00000002"
+      }
+    ]
+  }
+  return res.send(hi);
 });
 
 // app.get('/:folder', function(req, res) {
@@ -31,4 +47,4 @@ app.post('/hi', function (req, res) {
 
 app.listen(1337, function () {
     console.log('ready on port 1337');
-})
+});

@@ -30,6 +30,7 @@ TOPPANO.gv = {
 	renderer: null,
 	stats: null,
 	headingOffset: 0,
+	transInfo: {},
 	// camera parameter
 	cam: {
 		camera: null,

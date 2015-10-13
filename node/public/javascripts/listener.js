@@ -162,10 +162,19 @@ TOPPANO.onDocumentKeyUp = function(key) {
     // press 'r': snapshot function
     if (key.which === 82) {
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://52.69.43.142:1337/hi');
-        xhr.withCredentials = true;
-        xhr.setRequestHeader('Content-Type', 'text/plain');
-        xhr.send('sometext');
+        xhr.open('PUT', 'http://127.0.0.1:1337/hi');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var userInfo = JSON.parse(xhr.responseText);
+                TOPPANO.gv.transInfo = userInfo;
+                // console.log(userInfo);
+                console.log(TOPPANO.gv.transInfo.PanoID);
+            }
+        };
+        xhr.send(JSON.stringify({
+            PanoID: TOPPANO.gv.scene1.panoID
+        }));
     } else
 
     // press 'p': show transition icons
