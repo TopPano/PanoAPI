@@ -149,7 +149,9 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 			}
 			geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
-			var imagePath = path + i + '-' + j + '.jpeg',
+			var imagePath = 'http://helios-api-0.cloudapp.net:6688/photo?panoid=' + ID + '&output=tile&x=' + i + '&y=' + j ,
+
+			// var imagePath = path + i + '-' + j + '.jpeg',
 			texture = THREE.ImageUtils.loadTexture(imagePath);
 			texture.minFilter = THREE.LinearFilter;
 
