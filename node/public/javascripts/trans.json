@@ -12,9 +12,7 @@ var transInfo = {
 				"rotateX": 95,
 				"rotateY": 0,
 				"rotateZ": -100,
-				"nextID": "00000001",
-				"nextLat": 0,
-				"nextLng": 306
+				"nextID": "00000001"
 			}
 		]
 	},
@@ -31,9 +29,7 @@ var transInfo = {
 				"rotateX": 90,
 				"rotateY": 0,
 				"rotateZ": -65,
-				"nextID": "00000000",
-				"nextLat": 0.9,
-				"nextLng": 106.1
+				"nextID": "00000000"
 			},
 			{
 				"lat": -10,
@@ -42,9 +38,7 @@ var transInfo = {
 				"rotateX": 90,
 				"rotateY": 0,
 				"rotateZ": 189,
-				"nextID": "00000002",
-				"nextLat": 0,
-				"nextLng": 279.2
+				"nextID": "00000002"
 			}
 		]
 	},
@@ -61,9 +55,7 @@ var transInfo = {
 				"rotateX": 95,
 				"rotateY": 1,
 				"rotateZ": -25,
-				"nextID": "00000001",
-				"nextLat": -3,
-				"nextLng": 93.5
+				"nextID": "00000001"
 			},
 			{
 				"lat": -20,
@@ -72,9 +64,7 @@ var transInfo = {
 				"rotateX": 90,
 				"rotateY": 0,
 				"rotateZ": 180,
-				"nextID": "00000003",
-				"nextLat": 0,
-				"nextLng": 268.9
+				"nextID": "00000003"
 			}
 		]
 	},
@@ -91,9 +81,7 @@ var transInfo = {
 				"rotateX": 90,
 				"rotateY": 1,
 				"rotateZ": -10,
-				"nextID": "00000002",
-				"nextLat": -4,
-				"nextLng": 78
+				"nextID": "00000002"
 			}
 		]
 	}

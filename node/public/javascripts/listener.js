@@ -158,7 +158,15 @@ TOPPANO.onDocumentKeyUp = function(key) {
     if (key.which === 83) {
     	fadeIn(downloadLink, 600);
     	fadeIn(canvas, 600);
-    }
+    } else
+    // press 'r': snapshot function
+    if (key.which === 82) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://52.69.43.142:1337/hi');
+        xhr.withCredentials = true;
+        xhr.setRequestHeader('Content-Type', 'text/plain');
+        xhr.send('sometext');
+    } else
 
     // press 'p': show transition icons
     if (key.which === 80) {

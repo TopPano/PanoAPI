@@ -14,7 +14,8 @@ app.get('/', function(req, res) {
 });
 
 app.post('/hi', function (req, res) {
-  res.send('POST request to homepage');
+  console.log("Request method :" + req.method);
+  console.log("Request body :" + req.body);
 });
 
 // app.get('/:folder', function(req, res) {
