@@ -33,7 +33,6 @@ TOPPANO.threeInit = function(map) {
 		}
 	}
 
-	TOPPANO.requestMeta(map.PanoID);
 	TOPPANO.gv.cam.camera = new THREE.PerspectiveCamera(
 		TOPPANO.gv.cam.defaultCamFOV, // field of view (vertical)
 		// 80,
@@ -54,7 +53,7 @@ TOPPANO.threeInit = function(map) {
 
 	// load tile images
 	var isTrans = false;
-	// TOPPANO.gv.scene1.panoID = transInfo['00000000'].PanoID;
+	// TOPPANO.gv.scene1.panoID = TOPPANO.gv.transInfo['00000000'].PanoID;
 	TOPPANO.loadTiles(isTrans, TOPPANO.gv.scene1.panoID);
 
 	// pre-load
@@ -64,7 +63,7 @@ TOPPANO.threeInit = function(map) {
 	TOPPANO.addTransition(TOPPANO.gv.scene1.panoID);
 
 	// TOPPANO.addPlane();
-	// console.log(transInfo['00000001'].transition[0].nextID);
+	// console.log(TOPPANO.gv.transInfo['00000001'].transition[0].nextID);
 };
 
 // add listeners
@@ -174,7 +173,9 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 
 // transfer to another scene
 TOPPANO.changeScene = function(nextInfo) {
-	var rotateDegree = transInfo[nextInfo.name.nextID].heading - transInfo[TOPPANO.gv.scene1.panoID].heading;
+	var nowHeading = TOPPANO.gv.transInfo.heading;
+	TOPPANO.requestMeta(nextInfo.name.nextID);
+	var rotateDegree = TOPPANO.gv.transInfo.heading - nowHeading;
 	TOPPANO.gv.headingOffset += rotateDegree;
 
 	TOPPANO.gv.scene1.nextInfo = nextInfo.name;
@@ -195,15 +196,15 @@ TOPPANO.preLoadImages = function() {
 
 // add all transition objects
 TOPPANO.addTransition = function(panoID) {
-	var transLength = transInfo[panoID].transition.length;
+	var transLength = TOPPANO.gv.transInfo.transition.length;
 	for (var i = 0 ; i < transLength ; i++) {
-		var objLatLng = new TOPPANO.LatLng(transInfo[panoID].transition[i].lat, transInfo[panoID].transition[i].lng);
+		var objLatLng = new TOPPANO.LatLng(TOPPANO.gv.transInfo.transition[i].lat, TOPPANO.gv.transInfo.transition[i].lng);
 		var rotationInfo = {
-			X: transInfo[panoID].transition[i].rotateX * Math.PI / 180,
-			Y: transInfo[panoID].transition[i].rotateY * Math.PI / 180,
-			Z: transInfo[panoID].transition[i].rotateZ * Math.PI / 180
+			X: TOPPANO.gv.transInfo.transition[i].rotateX * Math.PI / 180,
+			Y: TOPPANO.gv.transInfo.transition[i].rotateY * Math.PI / 180,
+			Z: TOPPANO.gv.transInfo.transition[i].rotateZ * Math.PI / 180
 		};
-		TOPPANO.addObject(objLatLng, rotationInfo, transInfo[panoID].transition[i].size, i);
+		TOPPANO.addObject(objLatLng, rotationInfo, TOPPANO.gv.transInfo.transition[i].size, i);
 	}
 };
 
@@ -234,7 +235,7 @@ TOPPANO.addObject = function(LatLng, rotation, size, transID) {
     // transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
 
     transitionObj.name = {
-    	nextID: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextID
+    	nextID: TOPPANO.gv.transInfo.transition[transID].nextID
     };
     TOPPANO.gv.objScene.add(transitionObj);
     TOPPANO.gv.objects.transitionObj.push(transitionObj);
@@ -434,13 +435,13 @@ TOPPANO.updateURL = function() {
 // request for metadata
 TOPPANO.requestMeta = function(ID) {
 	var xhr = new XMLHttpRequest();
-    xhr.open('PUT', 'http://127.0.0.1:1337/hi');
+    xhr.open('PUT', 'hi', false);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = function() {
         if (xhr.status === 200) {
             var userInfo = JSON.parse(xhr.responseText);
-            console.log(userInfo);
             TOPPANO.gv.transInfo = userInfo;
+            console.log(TOPPANO.gv.transInfo);
         }
     };
     xhr.send(JSON.stringify({

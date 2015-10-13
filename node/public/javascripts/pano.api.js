@@ -16,6 +16,8 @@ TOPPANO.initMap = function(map) {
 	TOPPANO.menuInit();
 
 	// threejs init
+	TOPPANO.requestMeta(map.PanoID);
+
 	TOPPANO.threeInit(map);
 
 	// add listener
