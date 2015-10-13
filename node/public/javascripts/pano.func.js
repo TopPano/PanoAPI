@@ -198,12 +198,17 @@ TOPPANO.addTransition = function(panoID) {
 	var transLength = transInfo[panoID].transition.length;
 	for (var i = 0 ; i < transLength ; i++) {
 		var objLatLng = new TOPPANO.LatLng(transInfo[panoID].transition[i].lat, transInfo[panoID].transition[i].lng);
-		TOPPANO.addObject(objLatLng, transInfo[panoID].transition[i].size, i);
+		var rotationInfo = {
+			X: transInfo[panoID].transition[i].rotateX * Math.PI / 180,
+			Y: transInfo[panoID].transition[i].rotateY * Math.PI / 180,
+			Z: transInfo[panoID].transition[i].rotateZ * Math.PI / 180
+		};
+		TOPPANO.addObject(objLatLng, rotationInfo, transInfo[panoID].transition[i].size, i);
 	}
 };
 
 // add an objects
-TOPPANO.addObject = function(LatLng, size, transID) {
+TOPPANO.addObject = function(LatLng, rotation, size, transID) {
 	// console.log('Add transition objects here.');
 	var radiusObj = TOPPANO.gv.para.objSize,
 	phiObj = THREE.Math.degToRad(90 - LatLng.lat),
@@ -223,7 +228,10 @@ TOPPANO.addObject = function(LatLng, size, transID) {
     zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
 
     transitionObj.position.set(xObj, yObj, zObj);
-    transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+
+    var headingOffsetRad = TOPPANO.gv.headingOffset * Math.PI / 180;
+    transitionObj.rotation.set(rotation.X, rotation.Y, rotation.Z - headingOffsetRad);
+    // transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
 
     transitionObj.name = {
     	nextID: transInfo[TOPPANO.gv.scene1.panoID].transition[transID].nextID

@@ -13,16 +13,20 @@ app.get('/', function(req, res) {
   res.render('index.ejs',{"viewCount":viewCount})
 });
 
-app.get('/:folder', function(req, res) {
-    res.send('hello, ike!');
-    var metaData = req.query;
-    console.log("PanoID: " + metaData.PanoID);
-    console.log("heading: " + metaData.heading);
-    console.log("PanoID: " + metaData.PanoID);
-    console.log("heading: " + metaData.heading);
-    console.log(req.params.folder);
-    console.log('connecting...');
+app.post('/hi', function (req, res) {
+  res.send('POST request to homepage');
 });
+
+// app.get('/:folder', function(req, res) {
+//     res.send('hello, ike!');
+//     var metaData = req.query;
+//     console.log("PanoID: " + metaData.PanoID);
+//     console.log("heading: " + metaData.heading);
+//     console.log("PanoID: " + metaData.PanoID);
+//     console.log("heading: " + metaData.heading);
+//     console.log(req.params.folder);
+//     console.log('connecting...');
+// });
 
 app.listen(1337, function () {
     console.log('ready on port 1337');
