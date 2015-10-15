@@ -226,12 +226,21 @@ TOPPANO.addObject = function(LatLng, rotation, size, transID) {
 	var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
     yObj = radiusObj * Math.cos(phiObj),
     zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
+    console.log(xObj, yObj, zObj);
 
     transitionObj.position.set(xObj, yObj, zObj);
 
     var headingOffsetRad = TOPPANO.gv.headingOffset * Math.PI / 180;
-    transitionObj.rotation.set(rotation.X, rotation.Y, rotation.Z - headingOffsetRad);
-    // transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
+
+    // rotate xyz axis on world coordinate
+    var q = new THREE.Quaternion();
+    q.setFromAxisAngle(new THREE.Vector3(1, 0, 0), rotation.X);
+	transitionObj.quaternion.multiplyQuaternions(q, transitionObj.quaternion);
+	// rotateY must add the offset
+	q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), rotation.Y + headingOffsetRad);
+	transitionObj.quaternion.multiplyQuaternions(q, transitionObj.quaternion);
+	q.setFromAxisAngle(new THREE.Vector3(0, 0, 1), rotation.Z);
+	transitionObj.quaternion.multiplyQuaternions(q, transitionObj.quaternion);
 
     transitionObj.name = {
     	nextID: TOPPANO.gv.transInfo.transition[transID].nextID
@@ -497,9 +506,9 @@ TOPPANO.update = function() {
     //     ' Lon:' + Math.round(TOPPANO.gv.cam.lng * 100) / 100);
 
     // y: up
-    TOPPANO.gv.cam.camera.target.x = 500 * Math.sin(TOPPANO.gv.cam.phi) * Math.cos(TOPPANO.gv.cam.theta);
-    TOPPANO.gv.cam.camera.target.y = 500 * Math.cos(TOPPANO.gv.cam.phi);
-    TOPPANO.gv.cam.camera.target.z = 500 * Math.sin(TOPPANO.gv.cam.phi) * Math.sin(TOPPANO.gv.cam.theta);
+    TOPPANO.gv.cam.camera.target.x = Math.sin(TOPPANO.gv.cam.phi) * Math.cos(TOPPANO.gv.cam.theta);
+    TOPPANO.gv.cam.camera.target.y = Math.cos(TOPPANO.gv.cam.phi);
+    TOPPANO.gv.cam.camera.target.z = Math.sin(TOPPANO.gv.cam.phi) * Math.sin(TOPPANO.gv.cam.theta);
     TOPPANO.gv.cam.camera.lookAt(TOPPANO.gv.cam.camera.target);
 
     TOPPANO.gv.stats.update();
