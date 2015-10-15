@@ -136,8 +136,6 @@ TOPPANO.initGV = function(para) {
 // loading tiles images
 TOPPANO.loadTiles = function(isTrans, ID) {
 	var sphereSize = TOPPANO.gv.para.sphereSize;
-	// path = './images/' + ID +'/';
-	// path = 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/tile/';
 	THREE.ImageUtils.crossOrigin = '';
 
 	for (var i = 0 ; i < 4 ; i++) {
@@ -149,9 +147,8 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 			}
 			geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
-			var imagePath = 'http://helios-api-0.cloudapp.net:6688/photo?panoid=' + ID + '&output=tile&x=' + i + '&y=' + j ,
-
-			// var imagePath = path + i + '-' + j + '.jpeg',
+			// var imagePath = TOPPANO.gv.tilePath + '/photo?panoid=' + ID + '&output=tile&x=' + i + '&y=' + j ,
+			var imagePath = TOPPANO.gv.tilePath + ID +'/' + i + '-' + j + '.jpeg',
 			texture = THREE.ImageUtils.loadTexture(imagePath);
 			texture.minFilter = THREE.LinearFilter;
 
@@ -213,7 +210,7 @@ TOPPANO.addTransition = function(panoID) {
 // add an objects
 TOPPANO.addObject = function(LatLng, rotation, size, transID) {
 	// console.log('Add transition objects here.');
-	var radiusObj = TOPPANO.gv.para.objSize,
+	var radiusObj = TOPPANO.gv.transInfo.transition[transID].objSphereRadius,
 	phiObj = THREE.Math.degToRad(90 - LatLng.lat),
 	thetaObj = THREE.Math.degToRad(LatLng.lng - TOPPANO.gv.headingOffset);
 
@@ -258,12 +255,12 @@ TOPPANO.addRandObj = function(x, y, z, size) {
     transitionObj.lookAt(TOPPANO.gv.cam.camera.position);
     TOPPANO.gv.objScene.add(transitionObj);
 
-    var ObjLatLng = xyz2LatLng(x, y, z, TOPPANO.gv.para.objSize);
+    var ObjLatLng = xyz2LatLng(x, y, z, TOPPANO.gv.objects.objSphereRadius);
 };
 
 // add a random object for test!
 TOPPANO.addRandObj2 = function(LatLng, size) {
-	var radiusObj = TOPPANO.gv.para.objSize,
+	var radiusObj = TOPPANO.gv.objects.objSphereRadius,
 	phiObj = THREE.Math.degToRad(90 - LatLng.lat),
 	thetaObj = THREE.Math.degToRad(LatLng.lng);
 
@@ -288,7 +285,7 @@ TOPPANO.addRandObj2 = function(LatLng, size) {
 // add plane for testing GLSL
 TOPPANO.addPlane = function() {
 	// console.log('Add transition objects here.');
-	var radiusObj = TOPPANO.gv.para.objSize,
+	var radiusObj = TOPPANO.gv.objects.objSphereRadius,
 	phiObj = THREE.Math.degToRad(90),
 	thetaObj = THREE.Math.degToRad(0);
 
@@ -443,7 +440,6 @@ TOPPANO.requestMeta = function(ID) {
         if (xhr.status === 200) {
             var userInfo = JSON.parse(xhr.responseText);
             TOPPANO.gv.transInfo = userInfo;
-            console.log(TOPPANO.gv.transInfo);
         }
     };
     xhr.send(JSON.stringify({
@@ -534,6 +530,7 @@ function initStats() {
     return stats;
 }
 
+// return: phi(lat:the angle between x-z plane, have to subtract 90) and theta(lng)
 function xyz2LatLng(x, y ,z) {
 	// y: up, phi: the angle between y axis, theta: the angle between x asix on x-z plane
 	var r = Math.sqrt(x*x + y*y + z*z),
@@ -545,7 +542,6 @@ function xyz2LatLng(x, y ,z) {
 	var thetaDegree = theta * 180 / Math.PI,
 	phiDegree = phi * 180 / Math.PI
 
-	// return: phi(lat:the angle between x-z plane, have to subtract 90) and theta(lng)
 	var objLatLng = new TOPPANO.LatLng(90 - phiDegree, thetaDegree);
 	return objLatLng;
 }

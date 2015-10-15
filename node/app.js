@@ -22,6 +22,7 @@ app.put('/hi', function (req, res) {
     "00000000":
     {
       "PanoID": "00000000",
+      "imageServer": [],
       "heading": 0,
       "transition":
       [
@@ -32,6 +33,7 @@ app.put('/hi', function (req, res) {
           "rotateX": 95,
           "rotateY": 0,
           "rotateZ": -100,
+          "objSphereRadius": 90,
           "nextID": "00000001"
         }
       ]
@@ -39,6 +41,7 @@ app.put('/hi', function (req, res) {
     "00000001":
     {
       "PanoID": "00000001",
+      "imageServer": [],
       "heading": 280,
       "transition":
       [
@@ -49,6 +52,7 @@ app.put('/hi', function (req, res) {
           "rotateX": 90,
           "rotateY": 0,
           "rotateZ": -65,
+          "objSphereRadius": 90,
           "nextID": "00000000"
         },
         {
@@ -58,6 +62,7 @@ app.put('/hi', function (req, res) {
           "rotateX": 90,
           "rotateY": 0,
           "rotateZ": 189,
+          "objSphereRadius": 90,
           "nextID": "00000002"
         }
       ]
@@ -65,6 +70,7 @@ app.put('/hi', function (req, res) {
     "00000002":
     {
       "PanoID": "00000002",
+      "imageServer": [],
       "heading": 275.8,
       "transition":
       [
@@ -75,6 +81,7 @@ app.put('/hi', function (req, res) {
           "rotateX": 95,
           "rotateY": 1,
           "rotateZ": -25,
+          "objSphereRadius": 90,
           "nextID": "00000001"
         },
         {
@@ -84,6 +91,7 @@ app.put('/hi', function (req, res) {
           "rotateX": 90,
           "rotateY": 0,
           "rotateZ": 180,
+          "objSphereRadius": 90,
           "nextID": "00000003"
         }
       ]
@@ -91,6 +99,7 @@ app.put('/hi', function (req, res) {
     "00000003":
     {
       "PanoID": "00000003",
+      "imageServer": [],
       "heading": 270.3,
       "transition":
       [
@@ -101,6 +110,7 @@ app.put('/hi', function (req, res) {
           "rotateX": 90,
           "rotateY": 1,
           "rotateZ": -10,
+          "objSphereRadius": 90,
           "nextID": "00000002"
         }
       ]

@@ -74,7 +74,8 @@ TOPPANO.gv = {
 
 	// objects in the scene
 	objects: {
-		transitionObj: []
+		transitionObj: [],
+		objSphereRadius: 90
 	},
 
 	// Const parameters
@@ -85,7 +86,6 @@ TOPPANO.gv = {
 			// max: 100
 		},
 		sphereSize: 1000,
-		objSize: 90,
 		epsilon: 0.1
 	},
 
@@ -100,7 +100,8 @@ TOPPANO.gv = {
 		timer: null
 	},
 	urlHash: window.location.hash,
-	// defaultMap: 'http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/fly/0.jpg'
+	// tilePath: 'http://helios-api-0.cloudapp.net:6688',
+	tilePath: './images/',
 	defaultMap: './image/tile/0-0.jpeg'
 };
 
