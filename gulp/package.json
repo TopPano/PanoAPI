@@ -1,0 +1,15 @@
+{
+  "name": "gulp",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "*",
+    "gulp-concat": "*",
+    "gulp-uglify": "*",
+    "gulp-rename": "*",
+    "gulp-changed": "*"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,3 @@
+cmd: gulp
+
+concat all js files, and uglify it
