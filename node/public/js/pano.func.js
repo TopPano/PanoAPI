@@ -385,6 +385,7 @@ TOPPANO.rendererSetting = function() {
 		TOPPANO.gv.renderer.setSize(canvasWidth, canvasHeight);
 	}
 	else {
+		TOPPANO.gv.isFullScreen = true;
 		TOPPANO.gv.renderer.setSize(window.innerWidth, window.innerHeight);
 	}
 	container.appendChild(TOPPANO.gv.renderer.domElement);

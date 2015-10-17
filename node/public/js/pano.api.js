@@ -41,6 +41,7 @@ TOPPANO.gv = {
 	canvasID: 'container',
 	isFBShare: false,
 	isState: false,
+	isFullScreen: false,
 	headingOffset: 0,
 	transInfo: {},
 	// camera parameter
