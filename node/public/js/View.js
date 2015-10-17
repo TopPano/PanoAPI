@@ -78,6 +78,10 @@ TOPPANO.addFBShare = function() {
 
 // drawing snapshot canvas
 TOPPANO.drawCanvas = function() {
+    var snapshotCanvas = document.createElement('canvas');
+    snapshotCanvas.id = 'myCanvas';
+    snapshotCanvas.setAttribute('style', 'position: absolute; left: 50%; top:10%; width:"1500px"; height:"1500px";');
+    document.body.appendChild(snapshotCanvas);
     TOPPANO.gv.canvas = document.getElementById('myCanvas');
     var canvas = TOPPANO.gv.canvas,
     context = canvas.getContext('2d');
@@ -85,14 +89,14 @@ TOPPANO.drawCanvas = function() {
 
     canvas.style.position = "fixed";
     canvas.style.left = "10%";
-    canvas.style.height = window.innerHeight * 0.8;
-    canvas.style.width = window.innerWidth * 0.8;
+    canvas.height = window.innerHeight * 0.8;
+    canvas.width = window.innerWidth * 0.8;
 
     var rectPos = {
     	x: 10,
     	y: 10,
-    	width: window.innerWidth * 0.8 + 10,
-    	height: window.innerHeight * 0.8 + 10
+    	width: window.innerWidth * 0.8 - 14,
+    	height: window.innerHeight * 0.8 - 14
     },
     rectStyle = {
     	lineWidth: 7,
@@ -182,6 +186,7 @@ function fadeOut(obj, ms) {
 
 function hide(obj) {
     obj.style.visibility = 'hidden';
+    obj.style.opacity = 0;
 }
 
 function show(obj) {

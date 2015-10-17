@@ -145,18 +145,19 @@ TOPPANO.onDocumentDrop = function(event) {
 };
 
 TOPPANO.onDocumentKeyUp = function(key) {
-	var downloadLink = document.getElementById('downLink');
+	// var downloadLink = document.getElementById('downLink');
 	var canvas = document.getElementById('myCanvas');
 
-	if (downloadLink.style.opacity > 0) {
+	if (canvas.style.opacity > 0) {
+        // press 's': snapshot function
         if (key.which === 83) {
-        	fadeOut(downloadLink, 600);
+        	// fadeOut(downloadLink, 600);
         	fadeOut(canvas, 600);
         }
     } else
     // press 's': snapshot function
     if (key.which === 83) {
-    	fadeIn(downloadLink, 600);
+    	// fadeIn(downloadLink, 600);
     	fadeIn(canvas, 600);
     } else
     // press 'r': snapshot function
@@ -177,7 +178,7 @@ TOPPANO.onDocumentKeyUp = function(key) {
         }));
     } else
 
-    // press 'p': show transition icons
+    // press 'p': snapshot save image
     if (key.which === 80) {
         TOPPANO.saveImage();
         // if (showObj) {

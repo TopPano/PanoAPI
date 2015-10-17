@@ -9,26 +9,27 @@ var TOPPANO = TOPPANO || {};
 
 // TOPPANO Panorama Viewer Initialization
 TOPPANO.initMap = function(map) {
-	// draw snapshot canvas
-	// TOPPANO.snapshotCanvasInit();
-
-	// some functions (download link, snapshot...)
-	// TOPPANO.menuInit();
-
 	// threejs init
 	TOPPANO.requestMeta(map.PanoID);
 
-	TOPPANO.threeInit(map);
+	window.onload = function(){
+		TOPPANO.threeInit(map);
 
-	// add listener
-	TOPPANO.addListener();
+		// add listener
+		TOPPANO.addListener();
 
-	// add fb-share
-	if (TOPPANO.gv.isFBShare) {
-		TOPPANO.addFBShare();
-	}
+		// some functions (download link, snapshot...)
+		// TOPPANO.menuInit();
 
-	TOPPANO.update();
+		TOPPANO.update();
+		// add fb-share
+		if (TOPPANO.gv.isFBShare) {
+			TOPPANO.addFBShare();
+		}
+
+		// draw snapshot canvas
+		TOPPANO.snapshotCanvasInit();
+	};
 };
 
 // global variables initialization
@@ -37,7 +38,9 @@ TOPPANO.gv = {
 	objScene: null,
 	renderer: null,
 	stats: null,
+	canvasID: 'container',
 	isFBShare: false,
+	isState: false,
 	headingOffset: 0,
 	transInfo: {},
 	// camera parameter
