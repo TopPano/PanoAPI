@@ -53,7 +53,6 @@ TOPPANO.URL.prototype = {
 };
 
 TOPPANO.addFBShare = function() {
-    // <a class="fb-share" href="javascript:FacebookShare()" target="_blank" alt="Share on Facebook">Facebook</a>
     var fbShare = document.createElement('a');
     fbShare.id = 'fb-share';
     fbShare.href = '#';

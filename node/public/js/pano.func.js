@@ -374,9 +374,19 @@ TOPPANO.rendererSetting = function() {
 	TOPPANO.gv.renderer.sortObjects = false;
 	TOPPANO.gv.renderer.autoClear = false;
 	TOPPANO.gv.renderer.setPixelRatio(window.devicePixelRatio);
-	TOPPANO.gv.renderer.setSize(window.innerWidth, window.innerHeight);
-	console.log(TOPPANO.gv.canvasID);
 	var container = document.getElementById(TOPPANO.gv.canvasID);
+	var canvasHeight = window.getComputedStyle(document.getElementById(TOPPANO.gv.canvasID), null).getPropertyValue('height'),
+	canvasWidth = window.getComputedStyle(document.getElementById(TOPPANO.gv.canvasID), null).getPropertyValue('width');
+	canvasHeight = parseInt(canvasHeight, 10),
+	canvasWidth = parseInt(canvasWidth, 10);
+
+	console.log(canvasWidth, canvasHeight);
+	if (canvasWidth * canvasHeight > 0) {
+		TOPPANO.gv.renderer.setSize(canvasWidth, canvasHeight);
+	}
+	else {
+		TOPPANO.gv.renderer.setSize(window.innerWidth, window.innerHeight);
+	}
 	container.appendChild(TOPPANO.gv.renderer.domElement);
 };
 
