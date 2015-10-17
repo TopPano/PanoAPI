@@ -10,10 +10,10 @@ var TOPPANO = TOPPANO || {};
 // TOPPANO Panorama Viewer Initialization
 TOPPANO.initMap = function(map) {
 	// draw snapshot canvas
-	TOPPANO.snapshotCanvasInit();
+	// TOPPANO.snapshotCanvasInit();
 
 	// some functions (download link, snapshot...)
-	TOPPANO.menuInit();
+	// TOPPANO.menuInit();
 
 	// threejs init
 	TOPPANO.requestMeta(map.PanoID);
@@ -22,6 +22,12 @@ TOPPANO.initMap = function(map) {
 
 	// add listener
 	TOPPANO.addListener();
+
+	// add fb-share
+	if (TOPPANO.gv.isFBShare) {
+		TOPPANO.addFBShare();
+	}
+
 	TOPPANO.update();
 };
 
@@ -31,6 +37,7 @@ TOPPANO.gv = {
 	objScene: null,
 	renderer: null,
 	stats: null,
+	isFBShare: false,
 	headingOffset: 0,
 	transInfo: {},
 	// camera parameter

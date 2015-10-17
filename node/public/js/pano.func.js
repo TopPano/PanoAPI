@@ -131,6 +131,9 @@ TOPPANO.initGV = function(para) {
 	if (para.PanoID) {
 		TOPPANO.gv.scene1.panoID = para.PanoID;
 	}
+	if (para.fbShare) {
+		TOPPANO.gv.isFBShare = true;
+	}
 };
 
 // loading tiles images
@@ -226,7 +229,6 @@ TOPPANO.addObject = function(LatLng, rotation, size, transID) {
 	var xObj = radiusObj * Math.sin(phiObj) * Math.cos(thetaObj),
     yObj = radiusObj * Math.cos(phiObj),
     zObj = radiusObj * Math.sin(phiObj) * Math.sin(thetaObj);
-    console.log(xObj, yObj, zObj);
 
     transitionObj.position.set(xObj, yObj, zObj);
 

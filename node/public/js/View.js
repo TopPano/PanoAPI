@@ -52,6 +52,30 @@ TOPPANO.URL.prototype = {
     }
 };
 
+TOPPANO.addFBShare = function() {
+    // <a class="fb-share" href="javascript:FacebookShare()" target="_blank" alt="Share on Facebook">Facebook</a>
+    var fbShare = document.createElement('a');
+    fbShare.id = 'fb-share';
+    fbShare.href = '#';
+    fbShare.onclick = function() {
+        window.open("https://www.facebook.com/sharer/sharer.php?u="
+            + escape(window.location.href)
+            + "&t=" + document.title, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+        return false;
+    };
+    fbShare.setAttribute('style','position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-image: url("../images/share.png");
+    background-size: 60px 20px;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    height: 20px;
+    width: 60px;');
+    document.body.appendChild(fbShare);
+};
+
 // drawing snapshot canvas
 TOPPANO.drawCanvas = function() {
     TOPPANO.gv.canvas = document.getElementById('myCanvas');
@@ -121,6 +145,7 @@ function drawCross(canvas, pos, style) {
 }
 
 function fadeIn(obj, ms) {
+    show(obj);
 	var speed = 20,
 	delay = ms / speed,
 	opaDelta = speed / ms;
@@ -150,14 +175,15 @@ function fadeOut(obj, ms) {
 	    if(obj.style.opacity <= 0) {
 	      window.clearInterval(fading);
 	      obj.style.opacity = 0;
+          hide(obj);
 	    }
 	}, speed);
 }
 
 function hide(obj) {
-    obj.style.opacity = 0;
+    obj.style.visibility = 'hidden';
 }
 
 function show(obj) {
-    obj.style.opacity = 1;
+    obj.style.visibility = 'visible';
 }
