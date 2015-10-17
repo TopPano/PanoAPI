@@ -375,12 +375,12 @@ TOPPANO.rendererSetting = function() {
 	TOPPANO.gv.renderer.autoClear = false;
 	TOPPANO.gv.renderer.setPixelRatio(window.devicePixelRatio);
 	var container = document.getElementById(TOPPANO.gv.canvasID);
+
 	var canvasHeight = window.getComputedStyle(document.getElementById(TOPPANO.gv.canvasID), null).getPropertyValue('height'),
 	canvasWidth = window.getComputedStyle(document.getElementById(TOPPANO.gv.canvasID), null).getPropertyValue('width');
 	canvasHeight = parseInt(canvasHeight, 10),
 	canvasWidth = parseInt(canvasWidth, 10);
 
-	console.log(canvasWidth, canvasHeight);
 	if (canvasWidth * canvasHeight > 0) {
 		TOPPANO.gv.renderer.setSize(canvasWidth, canvasHeight);
 	}
@@ -389,13 +389,30 @@ TOPPANO.rendererSetting = function() {
 		TOPPANO.gv.renderer.setSize(window.innerWidth, window.innerHeight);
 	}
 	container.appendChild(TOPPANO.gv.renderer.domElement);
+
+	var bodyRect = document.body.getBoundingClientRect(),
+		containerRect = container.getBoundingClientRect();
+	TOPPANO.gv.offsetTop = containerRect.top - bodyRect.top,
+	TOPPANO.gv.offsetLeft = containerRect.left - bodyRect.left;
+	console.log(TOPPANO.gv.offsetTop, TOPPANO.gv.offsetLeft);
 };
 
 // if hit the objects(and the objects are visible), return: (isHit, hitObj)
 TOPPANO.hitSomething = function(event) {
-    var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
-        -(event.clientY / window.innerHeight) * 2 + 1, //y
+	if (TOPPANO.gv.isFullScreen) {
+		var mouse3D = new THREE.Vector3(((event.clientX - TOPPANO.gv.offsetLeft) / window.innerWidth) * 2 - 1, //x
+        -((event.clientY - TOPPANO.gv.offsetTop) / window.innerHeight) * 2 + 1, //y
         0.5); // z
+	}
+    else {
+    	var canvasHeight = window.getComputedStyle(document.getElementById(TOPPANO.gv.canvasID), null).getPropertyValue('height'),
+		canvasWidth = window.getComputedStyle(document.getElementById(TOPPANO.gv.canvasID), null).getPropertyValue('width');
+		canvasHeight = parseInt(canvasHeight, 10),
+		canvasWidth = parseInt(canvasWidth, 10);
+    	var mouse3D = new THREE.Vector3(((event.clientX - TOPPANO.gv.offsetLeft) / canvasWidth) * 2 - 1, //x
+        -((event.clientY - TOPPANO.gv.offsetTop) / canvasHeight) * 2 + 1, //y
+        0.5); // z
+    }
 
     mouse3D.unproject(TOPPANO.gv.cam.camera);
     mouse3D.sub(TOPPANO.gv.cam.camera.position);

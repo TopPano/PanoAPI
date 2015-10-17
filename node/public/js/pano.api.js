@@ -43,6 +43,9 @@ TOPPANO.gv = {
 	isState: false,
 	isFullScreen: false,
 	headingOffset: 0,
+	// window and container
+	offsetTop: 0,
+	offsetLeft: 0,
 	transInfo: {},
 	// camera parameter
 	cam: {
