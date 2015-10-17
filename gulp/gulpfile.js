@@ -4,8 +4,11 @@ var gulp       = require('gulp'),
     rename     = require('gulp-rename'),
     changed    = require('gulp-changed');
 
-var path = './js/',
-    desPath = './build/';
+// var path = './js/',
+//     desPath = './build/';
+
+var path = '/Users/ike/PanoAPI/node/public/js/',
+    desPath = '/Users/ike/PanoAPI/node/public/javascripts/';
 
 // process js scripts
 gulp.task('script', function() {
