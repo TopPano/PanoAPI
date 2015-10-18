@@ -1,6 +1,12 @@
 // require Express
 var express = require('express');
 var bodyParser = require('body-parser')
+require( "console-stamp" )( console, {
+    colors: {
+        stamp: "yellow",
+        label: "white"
+    }
+} );
 
 var app = express();
 app.set ('views', __dirname + '/views');
@@ -43,7 +49,7 @@ app.get('/metadata', function (req, res) {
     "00000000":
     {
       "PanoID": "00000000",
-      "imageServer": [],
+      "imageServer": ['./images/'],
       "heading": 0,
       "transition":
       [

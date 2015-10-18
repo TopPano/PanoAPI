@@ -132,6 +132,11 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 	var sphereSize = TOPPANO.gv.para.sphereSize;
 	THREE.ImageUtils.crossOrigin = '';
 
+	// loading image server (TODO: multiple image severs case)
+	if (TOPPANO.gv.transInfo.imageServer.length) {
+		TOPPANO.gv.tilePath = TOPPANO.gv.transInfo.imageServer[0];
+	}
+
 	for (var i = 0 ; i < 4 ; i++) {
 		for (var j = 0 ; j < 8 ; j++) {
 			var geometry = new THREE.SphereGeometry(sphereSize, 4, 8, Math.PI/4 * j, Math.PI/4, Math.PI/4 * i, Math.PI/4);
@@ -141,7 +146,6 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 			}
 			geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
-			// var imagePath = TOPPANO.gv.tilePath + '/photo?panoid=' + ID + '&output=tile&x=' + i + '&y=' + j ,
 			var imagePath = TOPPANO.gv.tilePath + ID +'/' + i + '-' + j + '.jpeg',
 			texture = THREE.ImageUtils.loadTexture(imagePath);
 			texture.minFilter = THREE.LinearFilter;
