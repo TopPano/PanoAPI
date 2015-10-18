@@ -6,6 +6,15 @@
 
 var TOPPANO = TOPPANO || {};
 
+if ( typeof define === 'function' && define.amd ) {
+
+		define( 'three', TOPPANO );
+
+} else if ( 'undefined' !== typeof exports && 'undefined' !== typeof module ) {
+
+		module.exports = TOPPANO;
+
+}
 
 // TOPPANO Panorama Viewer Initialization
 TOPPANO.initMap = function(map) {
@@ -43,9 +52,6 @@ TOPPANO.gv = {
 	isState: false,
 	isFullScreen: false,
 	headingOffset: 0,
-	// window and container
-	offsetTop: 0,
-	offsetLeft: 0,
 	transInfo: {},
 	// camera parameter
 	cam: {
@@ -90,6 +96,20 @@ TOPPANO.gv = {
 	objects: {
 		transitionObj: [],
 		objSphereRadius: 90
+	},
+
+	// container of canvas
+	container: {
+		offsetTop: 0,
+		offsetLeft: 0,
+		Height: 0,
+		Width: 0,
+		bound: {
+			top: 0,
+			bottom: 0,
+			left: 0,
+			right: 0
+		}
 	},
 
 	// Const parameters

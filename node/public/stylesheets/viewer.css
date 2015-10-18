@@ -13,8 +13,15 @@ a {
 }
 
 #container {
-/*	height: 500px;
-	width: 500px;*/
+/*	height: 700px;
+	width: 500px;
 	position: absolute;
-	left: 100px;
+	left: 100px;*/
+}
+
+#container2 {
+	height: 500px;
+	width: 700px;
+	position: absolute;
+	right: 100px;
 }

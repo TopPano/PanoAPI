@@ -3,9 +3,22 @@
  * Listener Function
  */
 
+// check whether in the container
+TOPPANO.checkMouseInContainer = function() {
+
+    var mouseX = event.clientX,
+        mouseY = event.clientY;
+    console.log(mouseX, TOPPANO.gv.container.bound.left, TOPPANO.gv.container.bound.right);
+    console.log(mouseY, TOPPANO.gv.container.bound.top, TOPPANO.gv.container.bound.bottom);
+    // TOPPANO.gv.container.bound
+    return between(mouseX, TOPPANO.gv.container.bound.left, TOPPANO.gv.container.bound.right)
+    && between(mouseY, TOPPANO.gv.container.bound.top, TOPPANO.gv.container.bound.bottom);
+};
+
+
 TOPPANO.onDocumentMouseDown = function() {
 	// console.log('MouseDown');
-
+    console.log(TOPPANO.checkMouseInContainer());
 	TOPPANO.gv.interact.isUserInteracting = true;
 
 	TOPPANO.gv.interact.onPointerDownPointerX = event.clientX;

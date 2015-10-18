@@ -257,6 +257,8 @@ TOPPANO.addObject = function(LatLng, rotation, size, transID) {
     };
     TOPPANO.gv.objScene.add(transitionObj);
     TOPPANO.gv.objects.transitionObj.push(transitionObj);
+
+
 };
 
 // add a random object for test!
@@ -383,6 +385,7 @@ TOPPANO.rendererSetting = function() {
 
 	if (canvasWidth * canvasHeight > 0) {
 		TOPPANO.gv.renderer.setSize(canvasWidth, canvasHeight);
+
 	}
 	else {
 		TOPPANO.gv.isFullScreen = true;
@@ -390,18 +393,25 @@ TOPPANO.rendererSetting = function() {
 	}
 	container.appendChild(TOPPANO.gv.renderer.domElement);
 
+	// set some global variables about container styles
 	var bodyRect = document.body.getBoundingClientRect(),
 		containerRect = container.getBoundingClientRect();
-	TOPPANO.gv.offsetTop = containerRect.top - bodyRect.top,
-	TOPPANO.gv.offsetLeft = containerRect.left - bodyRect.left;
-	console.log(TOPPANO.gv.offsetTop, TOPPANO.gv.offsetLeft);
+	TOPPANO.gv.container.offsetTop = containerRect.top - bodyRect.top,
+	TOPPANO.gv.container.offsetLeft = containerRect.left - bodyRect.left,
+	TOPPANO.gv.container.Height = containerRect.bottom - containerRect.top,
+	TOPPANO.gv.container.Width = containerRect.right - containerRect.left;
+	TOPPANO.gv.container.bound.top = TOPPANO.gv.container.offsetTop,
+    TOPPANO.gv.container.bound.bottom = TOPPANO.gv.container.offsetTop + TOPPANO.gv.container.Height,
+    TOPPANO.gv.container.bound.left = TOPPANO.gv.container.offsetLeft,
+    TOPPANO.gv.container.bound.right = TOPPANO.gv.container.offsetLeft + TOPPANO.gv.container.Width
+    console.log(TOPPANO.gv.container.bound);
 };
 
 // if hit the objects(and the objects are visible), return: (isHit, hitObj)
 TOPPANO.hitSomething = function(event) {
 	if (TOPPANO.gv.isFullScreen) {
-		var mouse3D = new THREE.Vector3(((event.clientX - TOPPANO.gv.offsetLeft) / window.innerWidth) * 2 - 1, //x
-        -((event.clientY - TOPPANO.gv.offsetTop) / window.innerHeight) * 2 + 1, //y
+		var mouse3D = new THREE.Vector3(((event.clientX - TOPPANO.gv.container.offsetLeft) / window.innerWidth) * 2 - 1, //x
+        -((event.clientY - TOPPANO.gv.container.offsetTop) / window.innerHeight) * 2 + 1, //y
         0.5); // z
 	}
     else {
@@ -409,8 +419,8 @@ TOPPANO.hitSomething = function(event) {
 		canvasWidth = window.getComputedStyle(document.getElementById(TOPPANO.gv.canvasID), null).getPropertyValue('width');
 		canvasHeight = parseInt(canvasHeight, 10),
 		canvasWidth = parseInt(canvasWidth, 10);
-    	var mouse3D = new THREE.Vector3(((event.clientX - TOPPANO.gv.offsetLeft) / canvasWidth) * 2 - 1, //x
-        -((event.clientY - TOPPANO.gv.offsetTop) / canvasHeight) * 2 + 1, //y
+    	var mouse3D = new THREE.Vector3(((event.clientX - TOPPANO.gv.container.offsetLeft) / canvasWidth) * 2 - 1, //x
+        -((event.clientY - TOPPANO.gv.container.offsetTop) / canvasHeight) * 2 + 1, //y
         0.5); // z
     }
 
@@ -588,6 +598,10 @@ function xyz2LatLng(x, y ,z) {
 
 	var objLatLng = new TOPPANO.LatLng(90 - phiDegree, thetaDegree);
 	return objLatLng;
+}
+
+function between(num, min, max) {
+	return num >= min && num <= max;
 }
 
 function isEmpty(str) {

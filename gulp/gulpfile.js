@@ -2,6 +2,8 @@ var gulp       = require('gulp'),
     concat     = require('gulp-concat'),
     uglify     = require('gulp-uglify'),
     rename     = require('gulp-rename'),
+    plumber    = require('gulp-plumber'),
+    complexity = require('gulp-complexity'),
     changed    = require('gulp-changed');
 
 // var path = './js/',
@@ -23,10 +25,12 @@ gulp.task('script', function() {
                      path + 'pano.func.js',
                      path + 'View.js',
                      path + 'listener.js'])
+        .pipe(plumber())
+        .pipe(uglify())
         .pipe(concat('toppano.js'))
         .pipe(rename({ suffix: '.min' }))
         // .pipe(gulp.dest('./build/'))
-        .pipe(uglify())
+        // .pipe(complexity())
         // .pipe(rename({ suffix: '.ugly' }))
         .pipe(gulp.dest(desPath));
 });
