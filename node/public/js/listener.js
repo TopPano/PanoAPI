@@ -5,12 +5,8 @@
 
 // check whether in the container
 TOPPANO.checkMouseInContainer = function() {
-
     var mouseX = event.clientX,
         mouseY = event.clientY;
-    console.log(mouseX, TOPPANO.gv.container.bound.left, TOPPANO.gv.container.bound.right);
-    console.log(mouseY, TOPPANO.gv.container.bound.top, TOPPANO.gv.container.bound.bottom);
-    // TOPPANO.gv.container.bound
     return between(mouseX, TOPPANO.gv.container.bound.left, TOPPANO.gv.container.bound.right)
     && between(mouseY, TOPPANO.gv.container.bound.top, TOPPANO.gv.container.bound.bottom);
 };
@@ -18,8 +14,11 @@ TOPPANO.checkMouseInContainer = function() {
 
 TOPPANO.onDocumentMouseDown = function() {
 	// console.log('MouseDown');
-    console.log(TOPPANO.checkMouseInContainer());
-	TOPPANO.gv.interact.isUserInteracting = true;
+
+    // check mouse in the container first (if not, isUserInteracting = false by default)
+    if (TOPPANO.checkMouseInContainer()) {
+        TOPPANO.gv.interact.isUserInteracting = true;
+    }
 
 	TOPPANO.gv.interact.onPointerDownPointerX = event.clientX;
 	TOPPANO.gv.interact.onPointerDownPointerY = event.clientY;
@@ -173,22 +172,19 @@ TOPPANO.onDocumentKeyUp = function(key) {
     	// fadeIn(downloadLink, 600);
     	fadeIn(canvas, 600);
     } else
-    // press 'r': snapshot function
-    if (key.which === 82) {
+    // press 'q': snapshot function (for testing ajax func now.)
+    if (key.which === 81) {
         var xhr = new XMLHttpRequest();
-        xhr.open('PUT', 'http://127.0.0.1:1337/hi');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var userInfo = JSON.parse(xhr.responseText);
-                TOPPANO.gv.transInfo = userInfo;
-                // console.log(userInfo);
-                console.log(TOPPANO.gv.transInfo.PanoID);
-            }
-        };
-        xhr.send(JSON.stringify({
-            PanoID: TOPPANO.gv.scene1.panoID
-        }));
+        xhr.open('GET', 'get?id=456', false);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send(null);
+        if (xhr.status === 200) {
+            // console.log(xhr.responseText);
+            var userInfo = JSON.parse(xhr.responseText);
+            console.log(userInfo);
+        }
+        else
+            console.log('XMLHttpRequest failed. Status: ' + xhr.status);
     } else
 
     // press 'p': snapshot save image

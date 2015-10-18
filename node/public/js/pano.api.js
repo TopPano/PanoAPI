@@ -6,16 +6,6 @@
 
 var TOPPANO = TOPPANO || {};
 
-if ( typeof define === 'function' && define.amd ) {
-
-		define( 'three', TOPPANO );
-
-} else if ( 'undefined' !== typeof exports && 'undefined' !== typeof module ) {
-
-		module.exports = TOPPANO;
-
-}
-
 // TOPPANO Panorama Viewer Initialization
 TOPPANO.initMap = function(map) {
 	// threejs init

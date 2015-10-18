@@ -15,9 +15,30 @@ app.get('/', function(req, res) {
   res.render('index.ejs',{"viewCount":viewCount})
 });
 
-app.put('/hi', function (req, res) {
-  console.log("Request method :" + req.method);
-  console.log("Request body :" + req.body.PanoID);
+app.get('/get', function (req, res) {
+  console.log(req.method + ": " + req.query.id);
+  return res.send({
+      "PanoID": "00000000",
+      "imageServer": [],
+      "heading": 0,
+      "transition":
+      [
+        {
+          "lat": -17,
+          "lng": -60,
+          "size": 22,
+          "rotateX": 95,
+          "rotateY": 100,
+          "rotateZ": 0,
+          "objSphereRadius": 90,
+          "nextID": "00000001"
+        }
+      ]
+    })
+});
+
+app.get('/metadata', function (req, res) {
+  console.log(req.method + "  'PanoID' : " + req.query.id);
   var transInfo = {
     "00000000":
     {
@@ -117,7 +138,7 @@ app.put('/hi', function (req, res) {
     }
   };
 
-  return res.send(transInfo[req.body.PanoID]);
+  return res.send(transInfo[req.query.id]);
 });
 
 app.listen(1337, function () {

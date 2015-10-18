@@ -404,7 +404,6 @@ TOPPANO.rendererSetting = function() {
     TOPPANO.gv.container.bound.bottom = TOPPANO.gv.container.offsetTop + TOPPANO.gv.container.Height,
     TOPPANO.gv.container.bound.left = TOPPANO.gv.container.offsetLeft,
     TOPPANO.gv.container.bound.right = TOPPANO.gv.container.offsetLeft + TOPPANO.gv.container.Width
-    console.log(TOPPANO.gv.container.bound);
 };
 
 // if hit the objects(and the objects are visible), return: (isHit, hitObj)
@@ -491,17 +490,15 @@ TOPPANO.updateURL = function() {
 // request for metadata
 TOPPANO.requestMeta = function(ID) {
 	var xhr = new XMLHttpRequest();
-    xhr.open('PUT', 'hi', false);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            var userInfo = JSON.parse(xhr.responseText);
-            TOPPANO.gv.transInfo = userInfo;
-        }
-    };
-    xhr.send(JSON.stringify({
-        PanoID: ID
-    }));
+    xhr.open('GET', 'metadata?id=' + ID, false);
+	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhr.send(null);
+    if (xhr.status === 200) {
+        var userInfo = JSON.parse(xhr.responseText);
+        TOPPANO.gv.transInfo = userInfo;
+    }
+    else
+        console.log('XMLHttpRequest failed. Status: ' + xhr.status);
 };
 
 // render scene
