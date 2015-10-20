@@ -139,7 +139,7 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 
 	for (var i = 0 ; i < 4 ; i++) {
 		for (var j = 0 ; j < 8 ; j++) {
-			var geometry = new THREE.SphereGeometry(sphereSize, 4, 8, Math.PI/4 * j, Math.PI/4, Math.PI/4 * i, Math.PI/4);
+			var geometry = new THREE.SphereGeometry(sphereSize, 20, 20, Math.PI/4 * j, Math.PI/4, Math.PI/4 * i, Math.PI/4);
 			if (isTrans) {
 				TOPPANO.gv.para.sphereSize -= 1;
 				geometry = new THREE.SphereGeometry(TOPPANO.gv.para.sphereSize, 4, 8, Math.PI/4 * j - TOPPANO.gv.headingOffset * Math.PI / 180, Math.PI/4, Math.PI/4 * i, Math.PI/4);
@@ -231,7 +231,7 @@ TOPPANO.addObject = function(LatLng, rotation, size, transID) {
 
 	var geometryObj = new THREE.PlaneBufferGeometry(size, size, 32),
 	materialObj = new THREE.MeshBasicMaterial({
-		map: THREE.ImageUtils.loadTexture('./images/arrow1.png'),
+		map: THREE.ImageUtils.loadTexture('http://52.69.43.142:1337/images/arrow1.png'),
 		side: THREE.DoubleSide,
 		opacity: 0.5,
 		transparent: true
@@ -494,7 +494,7 @@ TOPPANO.updateURL = function() {
 // request for metadata
 TOPPANO.requestMeta = function(ID) {
 	var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'metadata?id=' + ID, false);
+    xhr.open('GET', 'http://52.69.43.142:1337/metadata?id=' + ID, false);
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhr.send(null);
     if (xhr.status === 200) {

@@ -10,7 +10,8 @@ var gulp       = require('gulp'),
 //     desPath = './build/';
 
 var path = '/Users/ike/PanoAPI/node/public/js/',
-    desPath = '/Users/ike/PanoAPI/node/public/javascripts/';
+    // desPath = '/Users/ike/PanoAPI/node/public/javascripts/';
+    desPath = '/Users/ike/PanoAPI/sdk-test/js';
 
 // process js scripts
 gulp.task('script', function() {

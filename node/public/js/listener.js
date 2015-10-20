@@ -75,7 +75,8 @@ TOPPANO.onDocumentMouseUp = function(event) {
 
 TOPPANO.onDocumentMouseWheel = function(event) {
 	// check FoV range
-	if (TOPPANO.gv.cam.camera.fov <= TOPPANO.gv.para.fov.max
+	if (TOPPANO.checkMouseInContainer()
+        && TOPPANO.gv.cam.camera.fov <= TOPPANO.gv.para.fov.max
 		&& TOPPANO.gv.cam.camera.fov >= TOPPANO.gv.para.fov.min) {
         // WebKit (Safari / Chrome)
         if (event.wheelDeltaY) {

@@ -49,7 +49,7 @@ app.get('/metadata', function (req, res) {
     "00000000":
     {
       "PanoID": "00000000",
-      "imageServer": ['./images/'],
+      "imageServer": ['http://52.69.43.142:1337/images/'],
       "heading": 0,
       "transition":
       [
@@ -68,7 +68,7 @@ app.get('/metadata', function (req, res) {
     "00000001":
     {
       "PanoID": "00000001",
-      "imageServer": [],
+      "imageServer": ['http://52.69.43.142:1337/images/'],
       "heading": 280,
       "transition":
       [
@@ -97,7 +97,7 @@ app.get('/metadata', function (req, res) {
     "00000002":
     {
       "PanoID": "00000002",
-      "imageServer": [],
+      "imageServer": ['http://52.69.43.142:1337/images/'],
       "heading": 275.8,
       "transition":
       [
@@ -126,7 +126,7 @@ app.get('/metadata', function (req, res) {
     "00000003":
     {
       "PanoID": "00000003",
-      "imageServer": [],
+      "imageServer": ['http://52.69.43.142:1337/images/'],
       "heading": 270.3,
       "transition":
       [
