@@ -9,9 +9,9 @@ var gulp       = require('gulp'),
 // var path = './js/',
 //     desPath = './build/';
 
-var path = '../viewer/js-sdk/',
-    desPath = '../node/public/javascripts/';
-    desPath2 = '../portal_ui/assets/js/';
+var path = '../js-sdk/',
+    desPath = '../../node/public/javascripts/';
+    desPath2 = '../assets/js/';
     // desPath = '/Users/ike/PanoAPI/sdk-test/js';
 
 // process js scripts
