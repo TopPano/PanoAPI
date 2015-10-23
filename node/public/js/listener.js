@@ -190,7 +190,9 @@ TOPPANO.onDocumentKeyUp = function(key) {
 
     // press 'p': snapshot save image
     if (key.which === 80) {
-        TOPPANO.saveImage();
+        console.log('hihi');
+        TOPPANO.change2Scene('00000002');
+        // TOPPANO.saveImage();
         // if (showObj) {
         //     objects.forEach(function(item) {
         //         item.visible = false;

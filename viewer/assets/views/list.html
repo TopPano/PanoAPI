@@ -1,0 +1,32 @@
+<html>
+<head>
+<style>
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<body>
+<div class="modal-header">
+  <h3 class="text-center">
+    {{name}}'s Panorama List
+  </h3>
+</div>
+<div class="modal-body">
+</div>
+<div class="row">
+<div class="sidebar list-group col-xs-6 col-md-3">
+  <a href="#/list" class="list-group-item thumbnail" ng-repeat="item in list" ng-click="change(item.panoID)">
+    <h4 class="list-group-item-heading text-center">{{item.title}}</h4>
+    <img src={{item.src}} class="img-responsive">
+  </a>
+</div>
+<div class="col-xs-12 col-md-9" id="container" style="border-style: dashed; border-width: 1px;">
+  panorama container
+</div>
+</div>
+<div class="modal-footer">
+</div>
+</body>
+</html>

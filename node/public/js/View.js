@@ -65,7 +65,7 @@ TOPPANO.addFBShare = function() {
     fbShare.setAttribute('style','position: absolute;
     bottom: 15px;
     right: 15px;
-    background-image: url("http://127.0.0.1:1337/images/share.png");
+    background-image: url("http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/share.png");
     background-size: 60px 20px;
     background-repeat: no-repeat;
     margin: 0;

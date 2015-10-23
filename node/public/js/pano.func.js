@@ -45,7 +45,10 @@ TOPPANO.threeInit = function(map) {
 	TOPPANO.preLoadImages();
 
 	// adding icon objects on scene
-	TOPPANO.addTransition(TOPPANO.gv.scene1.panoID);
+	console.log(TOPPANO.gv.objects.showObj);
+	if (TOPPANO.gv.objects.showObj) {
+		TOPPANO.addTransition(TOPPANO.gv.scene1.panoID);
+	}
 
 	// TOPPANO.addPlane();
 	// console.log(TOPPANO.gv.transInfo['00000001'].transition[0].nextID);
@@ -125,6 +128,9 @@ TOPPANO.initGV = function(para) {
 	if (para.isState) {
 		TOPPANO.gv.isState = true;
 	}
+	if (para.showObj === false) {
+		TOPPANO.gv.objects.showObj = para.showObj;
+	}
 };
 
 // loading tiles images
@@ -165,7 +171,15 @@ TOPPANO.loadTiles = function(isTrans, ID) {
 	if (isTrans) {
 		sleep(500);
 	}
-	// console.log(TOPPANO.gv.scene.children.length);  // 32
+	console.log(TOPPANO.gv.scene.children.length);  // 32
+};
+
+// jump to another scene
+TOPPANO.change2Scene = function(panoID) {
+	TOPPANO.loadTiles(false, panoID);
+	for (var i = 31 ; i >= 0 ; i--) {
+		TOPPANO.gv.scene.remove(TOPPANO.gv.scene.children[i]);
+	}
 };
 
 // snapshot canvas drawing initialization
@@ -231,7 +245,7 @@ TOPPANO.addObject = function(LatLng, rotation, size, transID) {
 
 	var geometryObj = new THREE.PlaneBufferGeometry(size, size, 32),
 	materialObj = new THREE.MeshBasicMaterial({
-		map: THREE.ImageUtils.loadTexture('http://52.69.43.142:1337/images/arrow1.png'),
+		map: THREE.ImageUtils.loadTexture('http://www.csie.ntu.edu.tw/~r03944021/PanoAPI/image/arrow1.png'),
 		side: THREE.DoubleSide,
 		opacity: 0.5,
 		transparent: true
@@ -494,7 +508,7 @@ TOPPANO.updateURL = function() {
 // request for metadata
 TOPPANO.requestMeta = function(ID) {
 	var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://52.69.43.142:1337/metadata?id=' + ID, false);
+    xhr.open('GET', TOPPANO.gv.metaURL + '/metadata?id=' + ID, false);
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhr.send(null);
     if (xhr.status === 200) {

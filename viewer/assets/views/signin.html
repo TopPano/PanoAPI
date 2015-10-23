@@ -1,0 +1,28 @@
+<html>
+<head>
+<style>
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<body>
+<div class="modal-header">
+  <h3 class="text-center">
+    TopPano1
+  </h3>
+</div>
+<div class="modal-title">
+  <h4 class="text-center"><i>Sign in to TopPano</i></h4>
+</div>
+<div class="modal-body">
+  <div class="alert alert-danger skinny" ng-show="view.failureMessage.length > 0">
+    <span>{{view.failureMessage}}</span>
+  </div>
+  <img alt="Login with Facebook" src="../images/sign-in-facebook.png" width="270" height="50" ng-click="signin('facebook')"/>
+</div>
+<div class="modal-footer">
+</div>
+</body>
+</html>

@@ -10,8 +10,9 @@ var gulp       = require('gulp'),
 //     desPath = './build/';
 
 var path = '/Users/ike/PanoAPI/node/public/js/',
-    // desPath = '/Users/ike/PanoAPI/node/public/javascripts/';
-    desPath = '/Users/ike/PanoAPI/sdk-test/js';
+    desPath = '/Users/ike/PanoAPI/node/public/javascripts/';
+    desPath2 = '/Users/ike/portal_ui/assets/js/';
+    // desPath = '/Users/ike/PanoAPI/sdk-test/js';
 
 // process js scripts
 gulp.task('script', function() {
@@ -33,7 +34,8 @@ gulp.task('script', function() {
         // .pipe(gulp.dest('./build/'))
         // .pipe(complexity())
         // .pipe(rename({ suffix: '.ugly' }))
-        .pipe(gulp.dest(desPath));
+        .pipe(gulp.dest(desPath))
+        .pipe(gulp.dest(desPath2));
 });
 
 // watch

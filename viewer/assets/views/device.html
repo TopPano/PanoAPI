@@ -1,0 +1,16 @@
+<div class="container-fluid">
+<div class="row">
+  <div class="col-md-12">
+    <button type="button" class="btn btn-default" ng-click="register()">Register device</button>
+    <div class="alert alert-danger skinny" ng-show="view.failureMessage.length > 0">
+      <span>{{view.failureMessage}}</span>
+    </div>
+    <table>
+      <tr ng-model="device.credential">
+        <td>{{ device.credential.accessKey }}</td>
+        <td>{{ device.credential.accessSecretKey }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>

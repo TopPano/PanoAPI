@@ -12,6 +12,7 @@ var map = {
 	canvas: 'container',
 	isfbShare: true,
 	isState: true
+	// showObj: false
 };
 
 test.initMap(map);

@@ -84,6 +84,7 @@ TOPPANO.gv = {
 
 	// objects in the scene
 	objects: {
+		showObj: true,
 		transitionObj: [],
 		objSphereRadius: 90
 	},
@@ -126,7 +127,8 @@ TOPPANO.gv = {
 	urlHash: window.location.hash,
 	// tilePath: 'http://helios-api-0.cloudapp.net:6688',
 	tilePath: './images/',
-	defaultMap: './image/tile/0-0.jpeg'
+	defaultMap: './image/tile/0-0.jpeg',
+	metaURL: 'http://local.host:1337'
 };
 
 
